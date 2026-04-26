@@ -1,1735 +1,1470 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إستشرني - استشارات طبية</title>
+<title>Estasharni - Medical Consultation Platform</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
-tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{cairo:['Cairo','sans-serif']},colors:{sky:{50:'#f0f9ff',100:'#e0f2fe',200:'#bae6fd',300:'#7dd3fc',400:'#38bdf8',500:'#0ea5e9',600:'#0284c7'},pri:'#0ea5e9',acc:'#06b6d4'}}}}
+tailwind.config={theme:{extend:{fontFamily:{display:['Outfit','sans-serif'],body:['Plus Jakarta Sans','sans-serif']},colors:{sky:{btn:'#7DD3FC',btnHover:'#38BDF8',accent:'#0EA5E9',text:'#7DD3FC',deep:'#0369A1'}}}}}
 </script>
 <style>
-:root{--bg:#f8fafc;--fg:#0f172a;--muted:#64748b;--card:#ffffff;--border:#e2e8f0;--card-hover:#f1f5f9;--input-bg:#ffffff;--shadow:0 4px 24px rgba(0,0,0,.06)}
-.dark{--bg:#0f172a;--fg:#f1f5f9;--muted:#94a3b8;--card:#1e293b;--border:#334155;--card-hover:#334155;--input-bg:#1e293b;--shadow:0 4px 24px rgba(0,0,0,.3)}
-*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--pri) transparent}
-body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--fg);transition:background .4s,color .4s;overflow-x:hidden}
-::selection{background:#0ea5e9;color:#fff}
-.page{display:none;animation:fadeUp .45s ease}
-.page.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(3deg)}}
-@keyframes pulse-ring{0%{transform:scale(.8);opacity:.6}100%{transform:scale(1.6);opacity:0}}
-@keyframes slideIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-@keyframes heartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
-@keyframes blob-move{0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%}50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%}}
-.float-anim{animation:float 6s ease-in-out infinite}
-.float-anim-delay{animation:float 7s ease-in-out infinite 1s}
-.float-anim-delay2{animation:float 8s ease-in-out infinite 2s}
-.blob{animation:blob-move 8s ease-in-out infinite}
-.heartbeat{animation:heartbeat 2s ease-in-out infinite}
-.btn-pri{background:#38bdf8;color:#0f172a;font-weight:700;border-radius:12px;padding:10px 28px;border:none;cursor:pointer;transition:all .25s;font-family:inherit;font-size:.95rem}
-.btn-pri:hover{background:#0ea5e9;color:#fff;transform:translateY(-2px);box-shadow:0 8px 25px rgba(14,165,233,.35)}
-.btn-pri:active{transform:translateY(0)}
-.btn-sec{background:transparent;color:var(--pri);font-weight:600;border:2px solid #38bdf8;border-radius:12px;padding:8px 24px;cursor:pointer;transition:all .25s;font-family:inherit;font-size:.9rem}
-.btn-sec:hover{background:#38bdf8;color:#0f172a}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;transition:all .3s;box-shadow:var(--shadow)}
-.card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(14,165,233,.12)}
-.dark .card:hover{box-shadow:0 12px 40px rgba(14,165,233,.15)}
-.input-field{background:var(--input-bg);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;color:var(--fg);font-family:inherit;font-size:.9rem;width:100%;transition:all .25s;outline:none}
-.input-field:focus{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.15)}
-.input-field::placeholder{color:var(--muted)}
-textarea.input-field{resize:vertical;min-height:100px}
-.nav-link{color:var(--muted);font-weight:600;font-size:.92rem;cursor:pointer;transition:color .2s;position:relative;padding:4px 0}
-.nav-link:hover,.nav-link.active{color:#0ea5e9}
-.nav-link.active::after{content:'';position:absolute;bottom:-2px;right:0;width:100%;height:2.5px;background:#38bdf8;border-radius:2px}
-.toast-container{position:fixed;top:20px;left:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
-.toast{padding:14px 20px;border-radius:12px;color:#fff;font-weight:600;font-size:.9rem;animation:slideIn .4s ease;box-shadow:0 8px 30px rgba(0,0,0,.2);max-width:380px}
-.toast-success{background:#10b981}
-.toast-error{background:#ef4444}
-.toast-info{background:#0ea5e9}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeUp .3s ease;backdrop-filter:blur(4px)}
-.modal-box{background:var(--card);border-radius:20px;padding:28px;max-width:500px;width:92%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:fadeUp .35s ease}
-.badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:.78rem;font-weight:700}
-.badge-pending{background:#fbbf24;color:#92400e}
-.badge-approved{background:#34d399;color:#064e3b}
-.badge-rejected{background:#f87171;color:#7f1d1d}
-.notif-dot{position:absolute;top:-2px;left:-2px;width:10px;height:10px;background:#ef4444;border-radius:50%;animation:pulse-ring 1.5s infinite}
-.sidebar-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-radius:12px;cursor:pointer;transition:all .2s;font-weight:600;color:var(--muted);font-size:.92rem}
-.sidebar-item:hover,.sidebar-item.active{background:rgba(56,189,248,.1);color:#0ea5e9}
-.sidebar-item.active{background:rgba(56,189,248,.15)}
-.hero-bg{position:relative;overflow:hidden}
-.hero-bg::before{content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(56,189,248,.15),transparent 70%);top:-100px;right:-100px;border-radius:50%}
-.hero-bg::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(6,182,212,.1),transparent 70%);bottom:-80px;left:-80px;border-radius:50%}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;transition:all .3s}
-.stat-card:hover{transform:scale(1.03)}
-.img-upload{border:2px dashed var(--border);border-radius:16px;padding:30px;text-align:center;cursor:pointer;transition:all .3s}
-.img-upload:hover{border-color:#38bdf8;background:rgba(56,189,248,.05)}
-.tab-btn{padding:8px 20px;border-radius:10px;font-weight:600;cursor:pointer;transition:all .2s;border:none;font-family:inherit;font-size:.88rem;background:transparent;color:var(--muted)}
-.tab-btn.active{background:#38bdf8;color:#0f172a}
-@media(max-width:768px){.sidebar-desktop{display:none!important}.mobile-menu-btn{display:flex!important}}
-@media(min-width:769px){.mobile-menu-btn{display:none!important}}
-.fade-child{opacity:0;transform:translateY(30px);transition:all .6s ease}
-.fade-child.visible{opacity:1;transform:translateY(0)}
+:root{--bg:#F8FAFC;--bg2:#FFFFFF;--bg3:#F1F5F9;--text:#0F172A;--text2:#475569;--text3:#94A3B8;--border:#E2E8F0;--accent:#0EA5E9;--btn:#7DD3FC;--btnH:#38BDF8;--card:#FFFFFF;--shadow:0 1px 3px rgba(0,0,0,.08);--shadowL:0 10px 40px rgba(0,0,0,.08);--nav:rgba(255,255,255,.85);--overlay:rgba(0,0,0,.4)}
+.dark{--bg:#0B1120;--bg2:#151D30;--bg3:#1A2438;--text:#E2E8F0;--text2:#94A3B8;--text3:#64748B;--border:#1E293B;--accent:#38BDF8;--btn:#0EA5E9;--btnH:#7DD3FC;--card:#151D30;--shadow:0 1px 3px rgba(0,0,0,.3);--shadowL:0 10px 40px rgba(0,0,0,.3);--nav:rgba(11,17,32,.9);--overlay:rgba(0,0,0,.7)}
+*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
+h1,h2,h3,h4,h5{font-family:'Outfit',sans-serif}
+.page{display:none;min-height:100vh}.page.active{display:block}
+a{color:var(--accent);text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:12px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;transition:all .25s;background:var(--btn);color:#0F172A}.btn:hover{background:var(--btnH);transform:translateY(-1px);box-shadow:0 4px 20px rgba(56,189,248,.3)}
+.btn-outline{background:transparent;border:2px solid var(--btn);color:var(--btn)}.btn-outline:hover{background:var(--btn);color:#0F172A}
+.btn-danger{background:#EF4444;color:#fff}.btn-danger:hover{background:#DC2626}
+.btn-sm{padding:6px 16px;font-size:.8rem;border-radius:8px}
+.input{width:100%;padding:12px 16px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--text);font-size:.9rem;font-family:inherit;transition:border .2s}.input:focus{outline:none;border-color:var(--accent)}
+textarea.input{resize:vertical;min-height:100px}
+select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);transition:all .3s}.card:hover{box-shadow:var(--shadowL)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-green{background:#DCFCE7;color:#166534}.dark .badge-green{background:#052E16;color:#4ADE80}
+.badge-yellow{background:#FEF9C3;color:#854D0E}.dark .badge-yellow{background:#422006;color:#FACC15}
+.badge-red{background:#FEE2E2;color:#991B1B}.dark .badge-red{background:#450A0A;color:#F87171}
+.badge-blue{background:#E0F2FE;color:#075985}.dark .badge-blue{background:#082F49;color:#38BDF8}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:all .3s}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:var(--bg2);border-right:1px solid var(--border);z-index:1000;transition:transform .3s;overflow-y:auto}
+.sidebar-link{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--text2);font-weight:500;transition:all .2s;border-radius:10px;margin:2px 10px;cursor:pointer;font-size:.9rem}.sidebar-link:hover,.sidebar-link.active{background:var(--bg3);color:var(--accent)}
+.toast-container{position:fixed;top:80px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.toast{padding:14px 20px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);box-shadow:var(--shadowL);display:flex;align-items:center;gap:10px;animation:slideIn .3s;min-width:280px;font-size:.9rem}
+.toast.error{border-left:4px solid #EF4444}.toast.success{border-left:4px solid #22C55E}.toast.info{border-left:4px solid var(--accent)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes fadeUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+@keyframes pulse-ring{0%{transform:scale(.8);opacity:.5}100%{transform:scale(1.4);opacity:0}}
+.animate-up{animation:fadeUp .6s ease forwards}.animate-up-d1{animation:fadeUp .6s ease .1s forwards;opacity:0}.animate-up-d2{animation:fadeUp .6s ease .2s forwards;opacity:0}.animate-up-d3{animation:fadeUp .6s ease .3s forwards;opacity:0}.animate-up-d4{animation:fadeUp .6s ease .4s forwards;opacity:0}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;animation:float 8s ease-in-out infinite}
+.modal-overlay{position:fixed;inset:0;background:var(--overlay);z-index:2000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:30px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;animation:scaleIn .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.file-upload{border:2px dashed var(--border);border-radius:12px;padding:30px;text-align:center;cursor:pointer;transition:all .2s}.file-upload:hover{border-color:var(--accent);background:var(--bg3)}
+.file-upload img{max-height:150px;border-radius:8px;margin-top:10px}
+.stat-card{text-align:center;padding:24px;border-radius:16px;background:var(--bg3);border:1px solid var(--border)}
+.stat-num{font-family:'Outfit';font-size:2.2rem;font-weight:800;color:var(--accent)}
+.notif-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#EF4444;color:#fff;border-radius:50%;font-size:.65rem;display:flex;align-items:center;justify-content:center}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;font-size:.8rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.9rem}
+tr:hover td{background:var(--bg3)}
+.switch{position:relative;width:48px;height:26px;cursor:pointer}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider{position:absolute;inset:0;background:var(--border);border-radius:26px;transition:.3s}
+.switch .slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.switch input:checked+.slider{background:var(--accent)}
+.switch input:checked+.slider:before{transform:translateX(22px)}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}.hero-title{font-size:2.2rem!important}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--text3);border-radius:3px}
 </style>
 </head>
 <body>
-
 <!-- Toast Container -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- Header -->
-<header id="mainHeader" class="sticky top-0 z-50 backdrop-blur-xl border-b" style="background:rgba(var(--bg),.85);border-color:var(--border)">
-<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-<div class="flex items-center gap-3 cursor-pointer" onclick="navigate('home')">
-<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-white font-black text-lg">إ</div>
-<span class="font-black text-xl" style="color:var(--fg)">إستشرني</span>
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav">
+<div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+  <a href="#" onclick="navigate('home')" class="flex items-center gap-2">
+    <div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center">
+      <i class="fas fa-heartbeat text-white text-lg"></i>
+    </div>
+    <span class="font-display font-bold text-xl" style="color:var(--text)">Estasharni</span>
+  </a>
+  <div class="hidden md:flex items-center gap-6" id="navLinks">
+    <a href="#" onclick="navigate('home')" class="text-sm font-medium hover:text-sky-accent transition" style="color:var(--text2)">Home</a>
+    <a href="#" onclick="navigate('doctors')" class="text-sm font-medium hover:text-sky-accent transition" style="color:var(--text2)">Doctors</a>
+    <a href="#" onclick="navigate('contact')" class="text-sm font-medium hover:text-sky-accent transition" style="color:var(--text2)">Contact</a>
+  </div>
+  <div class="flex items-center gap-3" id="navActions">
+    <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center transition" style="background:var(--bg3);color:var(--text2)" title="Toggle theme">
+      <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+    <div id="navNotif" class="relative hidden">
+      <button onclick="toggleNotifPanel()" class="w-10 h-10 rounded-full flex items-center justify-center transition" style="background:var(--bg3);color:var(--text2)">
+        <i class="fas fa-bell"></i><span class="notif-badge" id="notifCount" style="display:none">0</span>
+      </button>
+    </div>
+    <button id="loginBtn" onclick="navigate('auth')" class="btn btn-sm">Sign In</button>
+    <div id="userMenu" class="hidden flex items-center gap-2">
+      <button onclick="navigate(currentUser?.role==='admin'?'admin-dashboard':'profile')" class="flex items-center gap-2 px-3 py-2 rounded-xl transition" style="background:var(--bg3)">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)" id="userAvatar">U</div>
+        <span class="text-sm font-medium hidden sm:inline" style="color:var(--text)" id="userName">User</span>
+      </button>
+      <button onclick="logout()" class="w-10 h-10 rounded-full flex items-center justify-center transition" style="background:var(--bg3);color:var(--text2)" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+    <button class="md:hidden w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text2)" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
 </div>
-<nav class="hidden md:flex items-center gap-6" id="desktopNav">
-<span class="nav-link active" data-page="home" onclick="navigate('home')">الرئيسية</span>
-<span class="nav-link" data-page="doctors" onclick="navigate('doctors')">الأطباء</span>
-<span class="nav-link" data-page="contact" onclick="navigate('contact')">تواصل معنا</span>
+<div id="mobileMenu" class="hidden md:hidden px-4 pb-4 flex flex-col gap-2" style="border-top:1px solid var(--border)">
+  <a href="#" onclick="navigate('home');this.closest('#mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">Home</a>
+  <a href="#" onclick="navigate('doctors');this.closest('#mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">Doctors</a>
+  <a href="#" onclick="navigate('contact');this.closest('#mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">Contact</a>
+</div>
 </nav>
-<div class="flex items-center gap-3">
-<button onclick="toggleDark()" class="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border:1px solid var(--border)" title="تبديل الوضع">
-<i class="fa-solid fa-moon text-sm dark-hidden" style="color:var(--fg)"></i>
-<i class="fa-solid fa-sun text-sm dark-show" style="color:#fbbf24;display:none"></i>
-</button>
-<div class="relative" id="notifBell" style="display:none" onclick="toggleNotifPanel()">
-<button class="w-9 h-9 rounded-xl flex items-center justify-center transition-all hover:scale-110" style="background:var(--card);border:1px solid var(--border)">
-<i class="fa-solid fa-bell text-sm" style="color:var(--fg)"></i>
-</button>
-<div class="notif-dot" id="notifDot" style="display:none"></div>
-<div id="notifPanel" class="absolute left-0 top-12 w-80 rounded-2xl p-4 z-50" style="background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);display:none">
-<h4 class="font-bold mb-3" style="color:var(--fg)">الإشعارات</h4>
-<div id="notifList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+
+<!-- Notification Panel -->
+<div id="notifPanel" class="hidden fixed top-16 right-4 w-80 rounded-2xl p-4 z-[1500] max-h-96 overflow-y-auto" style="background:var(--bg2);border:1px solid var(--border);box-shadow:var(--shadowL)">
+  <div class="flex items-center justify-between mb-3">
+    <h4 class="font-display font-bold" style="color:var(--text)">Notifications</h4>
+    <button onclick="clearNotifications()" class="text-xs" style="color:var(--text3)">Clear all</button>
+  </div>
+  <div id="notifList"><p class="text-sm text-center py-4" style="color:var(--text3)">No notifications yet</p></div>
 </div>
-</div>
-<div id="authBtns" class="flex items-center gap-2">
-<button class="btn-pri text-sm" onclick="navigate('auth')">تسجيل الدخول</button>
-</div>
-<div id="userMenu" style="display:none" class="relative">
-<button onclick="toggleUserDropdown()" class="flex items-center gap-2 px-3 py-2 rounded-xl transition-all hover:scale-105" style="background:var(--card);border:1px solid var(--border)">
-<div class="w-7 h-7 rounded-full bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-white text-xs font-bold" id="userAvatar">م</div>
-<span class="text-sm font-semibold hidden sm:inline" style="color:var(--fg)" id="userName">مستخدم</span>
-<i class="fa-solid fa-chevron-down text-xs" style="color:var(--muted)"></i>
-</button>
-<div id="userDropdown" class="absolute left-0 top-12 w-52 rounded-2xl p-2 z-50" style="background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);display:none">
-<div class="sidebar-item" onclick="navigate('profile');toggleUserDropdown()"><i class="fa-solid fa-user w-5"></i>حسابي</div>
-<div class="sidebar-item" id="adminNavItem" style="display:none" onclick="navigate('admin');toggleUserDropdown()"><i class="fa-solid fa-shield-halved w-5"></i>لوحة التحكم</div>
-<div class="sidebar-item" onclick="logout();toggleUserDropdown()"><i class="fa-solid fa-right-from-bracket w-5"></i>تسجيل الخروج</div>
-</div>
-</div>
-<button class="mobile-menu-btn w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--card);border:1px solid var(--border)" onclick="toggleMobileMenu()">
-<i class="fa-solid fa-bars" style="color:var(--fg)"></i>
-</button>
-</div>
-</div>
-<!-- Mobile Menu -->
-<div id="mobileMenu" class="md:hidden border-t px-4 py-3 space-y-2" style="display:none;background:var(--card);border-color:var(--border)">
-<span class="block py-2 px-3 rounded-lg font-semibold cursor-pointer" style="color:var(--fg)" onclick="navigate('home');toggleMobileMenu()">الرئيسية</span>
-<span class="block py-2 px-3 rounded-lg font-semibold cursor-pointer" style="color:var(--fg)" onclick="navigate('doctors');toggleMobileMenu()">الأطباء</span>
-<span class="block py-2 px-3 rounded-lg font-semibold cursor-pointer" style="color:var(--fg)" onclick="navigate('contact');toggleMobileMenu()">تواصل معنا</span>
-</div>
-</header>
 
 <!-- ===================== HOME PAGE ===================== -->
 <div id="page-home" class="page active">
-<!-- Hero -->
-<section class="hero-bg min-h-[90vh] flex items-center relative">
-<div class="max-w-7xl mx-auto px-4 py-20 grid md:grid-cols-2 gap-12 items-center relative z-10">
-<div>
-<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6" style="background:rgba(56,189,248,.1);color:#0ea5e9">
-<i class="fa-solid fa-stethoscope"></i> منصة طبية موثوقة
-</div>
-<h1 class="text-4xl md:text-6xl font-black leading-tight mb-6" style="color:var(--fg)">
-استشر <span style="color:#0ea5e9">أفضل</span> الأطباء<br>من أي مكان
-</h1>
-<p class="text-lg mb-8 leading-relaxed" style="color:var(--muted)">
-تواصل مع نخبة من الأطباء المتخصصين واحصل على استشارات طبية دقيقة وموثوقة دون الحاجة لترك منزلك
-</p>
-<div class="flex flex-wrap gap-4">
-<button class="btn-pri text-base px-8 py-3" onclick="navigate('doctors')"><i class="fa-solid fa-doctor ml-2"></i>استشر الآن</button>
-<button class="btn-sec text-base px-8 py-3" onclick="navigate('contact')">تواصل معنا</button>
-</div>
-<div class="flex items-center gap-8 mt-10">
-<div class="text-center"><div class="text-3xl font-black" style="color:#0ea5e9">+150</div><div class="text-sm" style="color:var(--muted)">طبيب متخصص</div></div>
-<div class="w-px h-12" style="background:var(--border)"></div>
-<div class="text-center"><div class="text-3xl font-black" style="color:#0ea5e9">+5000</div><div class="text-sm" style="color:var(--muted)">استشارة ناجحة</div></div>
-<div class="w-px h-12" style="background:var(--border)"></div>
-<div class="text-center"><div class="text-3xl font-black" style="color:#0ea5e9">4.9</div><div class="text-sm" style="color:var(--muted)">تقييم المستخدمين</div></div>
-</div>
-</div>
-<div class="relative flex items-center justify-center">
-<div class="blob absolute w-72 h-72 opacity-20" style="background:linear-gradient(135deg,#38bdf8,#06b6d4)"></div>
-<div class="relative z-10">
-<div class="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-sky-100 to-cyan-100 dark:from-sky-900/30 dark:to-cyan-900/30 flex items-center justify-center float-anim">
-<i class="fa-solid fa-heart-pulse text-7xl md:text-8xl heartbeat" style="color:#0ea5e9"></i>
-</div>
-<div class="absolute -top-4 -right-4 w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-400 flex items-center justify-center float-anim-delay shadow-lg">
-<i class="fa-solid fa-user-doctor text-2xl text-white"></i>
-</div>
-<div class="absolute -bottom-4 -left-4 w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center float-anim-delay2 shadow-lg">
-<i class="fa-solid fa-shield-halved text-xl text-white"></i>
-</div>
-<div class="absolute top-1/2 -left-10 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center float-anim shadow-lg">
-<i class="fa-solid fa-phone text-lg text-white"></i>
-</div>
-</div>
-</div>
-</div>
+<section class="relative min-h-screen flex items-center overflow-hidden pt-16">
+  <div class="hero-blob w-96 h-96 top-20 -left-20" style="background:var(--accent)"></div>
+  <div class="hero-blob w-72 h-72 bottom-20 right-10" style="background:#38BDF8;animation-delay:-3s"></div>
+  <div class="hero-blob w-56 h-56 top-40 right-1/3" style="background:#06B6D4;animation-delay:-5s"></div>
+  <canvas id="heroCanvas" class="absolute inset-0 w-full h-full" style="pointer-events:none"></canvas>
+  <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
+    <div>
+      <div class="animate-up inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6" style="background:var(--bg3);color:var(--accent);border:1px solid var(--border)">
+        <i class="fas fa-shield-heart"></i> Trusted Medical Platform
+      </div>
+      <h1 class="hero-title animate-up-d1 font-display font-900 leading-tight mb-6" style="font-size:3.4rem;color:var(--text)">
+        Your Health,<br><span style="color:var(--accent)">Our Priority</span>
+      </h1>
+      <p class="animate-up-d2 text-lg mb-8 leading-relaxed" style="color:var(--text2);max-width:480px">
+        Connect with certified medical professionals from the comfort of your home. Get expert consultations, personalized treatment plans, and continuous care.
+      </p>
+      <div class="animate-up-d3 flex flex-wrap gap-4">
+        <button onclick="navigate('doctors')" class="btn text-base px-8 py-3"><i class="fas fa-user-doctor"></i> Find a Doctor</button>
+        <button onclick="navigate('contact')" class="btn btn-outline text-base px-8 py-3"><i class="fas fa-envelope"></i> Contact Us</button>
+      </div>
+      <div class="animate-up-d4 flex gap-8 mt-10">
+        <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">200+</span><p class="text-sm" style="color:var(--text3)">Specialist Doctors</p></div>
+        <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">10K+</span><p class="text-sm" style="color:var(--text3)">Happy Patients</p></div>
+        <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">4.9</span><p class="text-sm" style="color:var(--text3)">Average Rating</p></div>
+      </div>
+    </div>
+    <div class="hidden md:flex justify-center animate-up-d2">
+      <div class="relative">
+        <div class="w-80 h-80 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),#06B6D4);opacity:.15;animation:pulse-ring 3s infinite"></div>
+        <div class="absolute inset-8 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),#06B6D4);opacity:.2"></div>
+        <div class="absolute inset-16 rounded-full flex items-center justify-center" style="background:var(--bg2);box-shadow:var(--shadowL)">
+          <i class="fas fa-stethoscope text-6xl" style="color:var(--accent)"></i>
+        </div>
+        <div class="absolute -bottom-4 -right-4 card p-3 flex items-center gap-3 animate-up-d4" style="animation:float 4s ease-in-out infinite">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#DCFCE7"><i class="fas fa-check text-green-600"></i></div>
+          <div><p class="text-sm font-semibold" style="color:var(--text)">Verified Doctors</p><p class="text-xs" style="color:var(--text3)">100% Certified</p></div>
+        </div>
+        <div class="absolute -top-4 -left-4 card p-3 flex items-center gap-3 animate-up-d3" style="animation:float 5s ease-in-out infinite;animation-delay:-2s">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#E0F2FE"><i class="fas fa-clock" style="color:var(--accent)"></i></div>
+          <div><p class="text-sm font-semibold" style="color:var(--text)">24/7 Available</p><p class="text-xs" style="color:var(--text3)">Anytime, Anywhere</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
-<!-- Features -->
-<section class="py-20">
-<div class="max-w-7xl mx-auto px-4">
-<div class="text-center mb-14 fade-child">
-<h2 class="text-3xl md:text-4xl font-black mb-4" style="color:var(--fg)">لماذا <span style="color:#0ea5e9">إستشرني</span>؟</h2>
-<p style="color:var(--muted)" class="text-lg">نوفر لك تجربة استشارية طبية متكاملة ومتميزة</p>
-</div>
-<div class="grid md:grid-cols-3 gap-6">
-<div class="card p-8 text-center fade-child">
-<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-400 flex items-center justify-center mx-auto mb-5"><i class="fa-solid fa-video text-2xl text-white"></i></div>
-<h3 class="text-xl font-bold mb-3" style="color:var(--fg)">استشارات فورية</h3>
-<p style="color:var(--muted)">احصل على استشارة طبية مباشرة مع أفضل الأطباء عبر الفيديو أو المحادثة النصية</p>
-</div>
-<div class="card p-8 text-center fade-child">
-<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center mx-auto mb-5"><i class="fa-solid fa-certificate text-2xl text-white"></i></div>
-<h3 class="text-xl font-bold mb-3" style="color:var(--fg)">أطباء معتمدون</h3>
-<p style="color:var(--muted)">جميع الأطباء معتمدون ومتحقق من شهاداتهم وخبراتهم الأكاديمية والمهنية</p>
-</div>
-<div class="card p-8 text-center fade-child">
-<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center mx-auto mb-5"><i class="fa-solid fa-clock text-2xl text-white"></i></div>
-<h3 class="text-xl font-bold mb-3" style="color:var(--fg)">متاح على مدار الساعة</h3>
-<p style="color:var(--muted)">فريقنا الطبي متاح لخدمتك في أي وقت للإجابة على استفساراتك الصحية</p>
-</div>
-</div>
-</div>
+<section class="py-20 px-4" style="background:var(--bg3)">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14">
+      <h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">How It Works</h2>
+      <p style="color:var(--text2)">Three simple steps to get the care you need</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-search text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">Search Doctor</h3><p class="text-sm" style="color:var(--text2)">Browse through our extensive network of certified medical specialists.</p></div>
+      <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-calendar-check text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">Book Consultation</h3><p class="text-sm" style="color:var(--text2)">Select your preferred time slot and submit your consultation request.</p></div>
+      <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-video text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">Get Consulted</h3><p class="text-sm" style="color:var(--text2)">Connect with your doctor through secure video or chat consultation.</p></div>
+    </div>
+  </div>
 </section>
-<!-- Specialties -->
-<section class="py-20" style="background:var(--card)">
-<div class="max-w-7xl mx-auto px-4">
-<div class="text-center mb-14 fade-child">
-<h2 class="text-3xl md:text-4xl font-black mb-4" style="color:var(--fg)">التخصصات <span style="color:#0ea5e9">الطبية</span></h2>
-<p style="color:var(--muted)" class="text-lg">نغطي مختلف التخصصات الطبية لتلبية احتياجاتك</p>
-</div>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="specialtiesGrid"></div>
-</div>
+<section class="py-20 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">Medical Specialties</h2><p style="color:var(--text2)">Expert care across all major medical fields</p></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="specialtiesGrid"></div>
+  </div>
 </section>
-<!-- CTA -->
-<section class="py-20">
-<div class="max-w-4xl mx-auto px-4 text-center fade-child">
-<div class="card p-12 md:p-16 relative overflow-hidden">
-<div class="absolute inset-0 bg-gradient-to-br from-sky-500/10 to-cyan-500/10"></div>
-<div class="relative z-10">
-<h2 class="text-3xl md:text-4xl font-black mb-4" style="color:var(--fg)">ابدأ استشارتك الآن</h2>
-<p class="text-lg mb-8" style="color:var(--muted)">سجّل مجاناً وتواصل مع طبيبك المفضل في دقائق</p>
-<button class="btn-pri text-lg px-10 py-4" onclick="navigate('auth')">سجّل الآن مجاناً</button>
-</div>
-</div>
-</div>
+<section class="py-20 px-4" style="background:var(--bg3)">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">What Our Patients Say</h2></div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="card p-6"><div class="flex gap-1 mb-3"><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i></div><p class="text-sm mb-4" style="color:var(--text2)">"Estasharni made it incredibly easy to find a specialist. The consultation was thorough and professional. Highly recommended!"</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style="background:var(--accent)">S</div><div><p class="text-sm font-semibold" style="color:var(--text)">Sarah M.</p><p class="text-xs" style="color:var(--text3)">Patient</p></div></div></div>
+      <div class="card p-6"><div class="flex gap-1 mb-3"><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i></div><p class="text-sm mb-4" style="color:var(--text2)">"As a doctor, this platform helped me reach more patients. The interface is clean and the management tools are excellent."</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style="background:#06B6D4">D</div><div><p class="text-sm font-semibold" style="color:var(--text)">Dr. Ahmed K.</p><p class="text-xs" style="color:var(--text3)">Cardiologist</p></div></div></div>
+      <div class="card p-6"><div class="flex gap-1 mb-3"><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star-half-alt text-yellow-400 text-sm"></i></div><p class="text-sm mb-4" style="color:var(--text2)">"Quick response times and real-time notifications kept me updated throughout my treatment journey. Great experience overall."</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style="background:#8B5CF6">R</div><div><p class="text-sm font-semibold" style="color:var(--text)">Rami L.</p><p class="text-xs" style="color:var(--text3)">Patient</p></div></div></div>
+    </div>
+  </div>
 </section>
-<!-- Footer -->
-<footer class="py-12 border-t" style="background:var(--card);border-color:var(--border)">
-<div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-<div>
-<div class="flex items-center gap-3 mb-4">
-<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-white font-black text-lg">إ</div>
-<span class="font-black text-xl" style="color:var(--fg)">إستشرني</span>
-</div>
-<p style="color:var(--muted)">منصة طبية رائدة تهدف لتقديم استشارات طبية عالية الجودة للجميع</p>
-</div>
-<div>
-<h4 class="font-bold mb-4" style="color:var(--fg)">روابط سريعة</h4>
-<div class="space-y-2">
-<span class="block cursor-pointer" style="color:var(--muted)" onclick="navigate('home')">الرئيسية</span>
-<span class="block cursor-pointer" style="color:var(--muted)" onclick="navigate('doctors')">الأطباء</span>
-<span class="block cursor-pointer" style="color:var(--muted)" onclick="navigate('contact')">تواصل معنا</span>
-</div>
-</div>
-<div>
-<h4 class="font-bold mb-4" style="color:var(--fg)">تواصل معنا</h4>
-<div class="space-y-2" style="color:var(--muted)">
-<div><i class="fa-solid fa-envelope ml-2" style="color:#0ea5e9"></i>info@estasharni.com</div>
-<div><i class="fa-solid fa-phone ml-2" style="color:#0ea5e9"></i>+966 50 123 4567</div>
-<div class="flex gap-3 mt-3">
-<a class="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer" style="background:var(--bg);color:var(--muted)"><i class="fa-brands fa-twitter"></i></a>
-<a class="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer" style="background:var(--bg);color:var(--muted)"><i class="fa-brands fa-instagram"></i></a>
-<a class="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer" style="background:var(--bg);color:var(--muted)"><i class="fa-brands fa-whatsapp"></i></a>
-</div>
-</div>
-</div>
-</div>
-<div class="max-w-7xl mx-auto px-4 mt-8 pt-6 border-t text-center text-sm" style="border-color:var(--border);color:var(--muted)">
-&copy; 2025 إستشرني - جميع الحقوق محفوظة
-</div>
+<footer class="py-12 px-4" style="border-top:1px solid var(--border)">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+    <div><div class="flex items-center gap-2 mb-4"><div style="width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white"></i></div><span class="font-display font-bold text-lg" style="color:var(--text)">Estasharni</span></div><p class="text-sm" style="color:var(--text3)">Your trusted online medical consultation platform connecting patients with qualified doctors.</p></div>
+    <div><h4 class="font-display font-700 mb-4" style="color:var(--text)">Quick Links</h4><div class="flex flex-col gap-2"><a href="#" onclick="navigate('home')" class="text-sm" style="color:var(--text3)">Home</a><a href="#" onclick="navigate('doctors')" class="text-sm" style="color:var(--text3)">Doctors</a><a href="#" onclick="navigate('contact')" class="text-sm" style="color:var(--text3)">Contact</a></div></div>
+    <div><h4 class="font-display font-700 mb-4" style="color:var(--text)">Specialties</h4><div class="flex flex-col gap-2"><span class="text-sm" style="color:var(--text3)">Cardiology</span><span class="text-sm" style="color:var(--text3)">Dermatology</span><span class="text-sm" style="color:var(--text3)">Pediatrics</span></div></div>
+    <div><h4 class="font-display font-700 mb-4" style="color:var(--text)">Contact</h4><div class="flex flex-col gap-2"><span class="text-sm" style="color:var(--text3)"><i class="fas fa-envelope mr-2"></i>support@estasharni.com</span><span class="text-sm" style="color:var(--text3)"><i class="fas fa-phone mr-2"></i>+1 234 567 890</span><span class="text-sm" style="color:var(--text3)"><i class="fas fa-map-marker-alt mr-2"></i>Online Platform</span></div></div>
+  </div>
+  <div class="max-w-7xl mx-auto mt-8 pt-6 text-center text-sm" style="border-top:1px solid var(--border);color:var(--text3)">&copy; 2025 Estasharni. All rights reserved.</div>
 </footer>
 </div>
 
 <!-- ===================== DOCTORS PAGE ===================== -->
 <div id="page-doctors" class="page">
-<section class="py-12">
-<div class="max-w-7xl mx-auto px-4">
-<div class="text-center mb-10">
-<h1 class="text-3xl md:text-4xl font-black mb-3" style="color:var(--fg)">الأطباء <span style="color:#0ea5e9">المتخصصون</span></h1>
-<p style="color:var(--muted)" class="text-lg">اختر الطبيب المناسب لحالتك الصحية</p>
-</div>
-<!-- Filters -->
-<div class="flex flex-wrap gap-3 justify-center mb-10">
-<select class="input-field w-auto" id="filterSpec" onchange="filterDoctors()">
-<option value="">جميع التخصصات</option>
-</select>
-<input class="input-field w-auto" placeholder="ابحث عن طبيب..." id="filterSearch" oninput="filterDoctors()">
-</div>
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="doctorsGrid"></div>
-<div id="noDoctors" class="text-center py-16" style="display:none;color:var(--muted)">
-<i class="fa-solid fa-user-doctor text-5xl mb-4" style="color:var(--border)"></i>
-<p class="text-lg">لا يوجد أطباء متاحين حالياً</p>
-</div>
-</div>
+<section class="pt-24 pb-12 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10"><h1 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">Our Medical Specialists</h1><p style="color:var(--text2)">Find the right doctor for your health needs</p></div>
+    <div class="flex flex-wrap gap-3 justify-center mb-8" id="specialtyFilters"></div>
+    <div class="max-w-md mx-auto mb-8"><div class="relative"><i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2" style="color:var(--text3)"></i><input type="text" class="input" style="padding-left:40px" placeholder="Search doctors by name..." oninput="filterDoctors(this.value)"></div></div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="doctorsGrid"><p class="text-center col-span-full py-12" style="color:var(--text3)">Loading doctors...</p></div>
+  </div>
 </section>
 </div>
 
 <!-- ===================== CONTACT PAGE ===================== -->
 <div id="page-contact" class="page">
-<section class="py-12">
-<div class="max-w-5xl mx-auto px-4">
-<div class="text-center mb-10">
-<h1 class="text-3xl md:text-4xl font-black mb-3" style="color:var(--fg)">تواصل <span style="color:#0ea5e9">معنا</span></h1>
-<p style="color:var(--muted)" class="text-lg">نحن هنا لمساعدتك - أرسل استفسارك وسنرد عليك في أقرب وقت</p>
-</div>
-<div class="grid md:grid-cols-5 gap-8">
-<div class="md:col-span-3 card p-8">
-<form onsubmit="submitContact(event)">
-<div class="space-y-4">
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">الاسم الكامل</label>
-<input class="input-field" id="contactName" placeholder="أدخل اسمك" required>
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">البريد الإلكتروني</label>
-<input class="input-field" type="email" id="contactEmail" placeholder="example@email.com" required>
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">الموضوع</label>
-<input class="input-field" id="contactSubject" placeholder="موضوع الرسالة" required>
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">الرسالة</label>
-<textarea class="input-field" id="contactMsg" placeholder="اكتب رسالتك هنا..." required></textarea>
-</div>
-<button type="submit" class="btn-pri w-full py-3"><i class="fa-solid fa-paper-plane ml-2"></i>إرسال الرسالة</button>
-</div>
-</form>
-</div>
-<div class="md:col-span-2 space-y-6">
-<div class="card p-6">
-<div class="flex items-center gap-4 mb-3">
-<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-400 flex items-center justify-center"><i class="fa-solid fa-envelope text-white"></i></div>
-<div><h4 class="font-bold" style="color:var(--fg)">البريد الإلكتروني</h4><p style="color:var(--muted)" class="text-sm">info@estasharni.com</p></div>
-</div>
-</div>
-<div class="card p-6">
-<div class="flex items-center gap-4 mb-3">
-<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center"><i class="fa-solid fa-phone text-white"></i></div>
-<div><h4 class="font-bold" style="color:var(--fg)">الهاتف</h4><p style="color:var(--muted)" class="text-sm">+966 50 123 4567</p></div>
-</div>
-</div>
-<div class="card p-6">
-<div class="flex items-center gap-4 mb-3">
-<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center"><i class="fa-solid fa-location-dot text-white"></i></div>
-<div><h4 class="font-bold" style="color:var(--fg)">الموقع</h4><p style="color:var(--muted)" class="text-sm">الرياض، المملكة العربية السعودية</p></div>
-</div>
-</div>
-<div class="card p-6">
-<div class="flex items-center gap-4 mb-3">
-<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center"><i class="fa-solid fa-clock text-white"></i></div>
-<div><h4 class="font-bold" style="color:var(--fg)">ساعات العمل</h4><p style="color:var(--muted)" class="text-sm">السبت - الخميس: 8ص - 10م</p></div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section class="pt-24 pb-12 px-4">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-10"><h1 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">Contact Us</h1><p style="color:var(--text2)">Have a question? We are here to help</p></div>
+    <div class="card p-8">
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Full Name</label><input type="text" id="contactName" class="input" placeholder="Your name"></div>
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Email</label><input type="email" id="contactEmail" class="input" placeholder="your@email.com"></div>
+      </div>
+      <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Subject</label><input type="text" id="contactSubject" class="input" placeholder="How can we help?"></div>
+      <div class="mb-6"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Message</label><textarea id="contactMsg" class="input" placeholder="Write your message here..."></textarea></div>
+      <button onclick="submitContact()" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> Send Message</button>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mt-8">
+      <div class="card p-6 text-center"><i class="fas fa-envelope text-2xl mb-3" style="color:var(--accent)"></i><p class="text-sm font-medium" style="color:var(--text)">Email</p><p class="text-xs" style="color:var(--text3)">support@estasharni.com</p></div>
+      <div class="card p-6 text-center"><i class="fas fa-phone text-2xl mb-3" style="color:var(--accent)"></i><p class="text-sm font-medium" style="color:var(--text)">Phone</p><p class="text-xs" style="color:var(--text3)">+1 234 567 890</p></div>
+      <div class="card p-6 text-center"><i class="fas fa-clock text-2xl mb-3" style="color:var(--accent)"></i><p class="text-sm font-medium" style="color:var(--text)">Hours</p><p class="text-xs" style="color:var(--text3)">24/7 Support</p></div>
+    </div>
+  </div>
 </section>
 </div>
 
 <!-- ===================== AUTH PAGE ===================== -->
 <div id="page-auth" class="page">
-<section class="min-h-[85vh] flex items-center justify-center py-12">
-<div class="w-full max-w-md mx-4">
-<div class="card p-8">
-<div class="text-center mb-8">
-<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-user-plus text-2xl text-white"></i></div>
-<h2 class="text-2xl font-black" style="color:var(--fg)" id="authTitle">تسجيل الدخول</h2>
-<p style="color:var(--muted)" class="text-sm mt-1" id="authSubtitle">أدخل بياناتك للمتابعة</p>
-</div>
-<!-- Role Selection -->
-<div class="flex gap-3 mb-6">
-<button class="tab-btn active flex-1" id="roleUserBtn" onclick="selectAuthRole('user')">مستخدم</button>
-<button class="tab-btn flex-1" id="roleDoctorBtn" onclick="selectAuthRole('doctor')">طبيب</button>
-<button class="tab-btn flex-1" id="roleAdminBtn" onclick="selectAuthRole('admin')">مدير</button>
-</div>
-<!-- Doctor Registration Form (hidden by default) -->
-<div id="doctorRegForm" style="display:none" class="mb-6 p-4 rounded-xl" style="background:rgba(56,189,248,.05)">
-<h4 class="font-bold mb-3 text-sm" style="color:#0ea5e9"><i class="fa-solid fa-info-circle ml-1"></i>بيانات التسجيل كطبيب</h4>
-<div class="space-y-3">
-<input class="input-field text-sm" id="docRegName" placeholder="الاسم الكامل">
-<input class="input-field text-sm" id="docRegSpec" placeholder="التخصص">
-<input class="input-field text-sm" id="docRegExp" placeholder="سنوات الخبرة">
-<textarea class="input-field text-sm" id="docRegQual" placeholder="المؤهلات والشهادات"></textarea>
-<div class="img-upload text-sm" onclick="document.getElementById('docRegCert').click()">
-<i class="fa-solid fa-cloud-arrow-up text-2xl mb-2" style="color:var(--muted)"></i>
-<p style="color:var(--muted)">اضغط لرفع الشهادات</p>
-<input type="file" id="docRegCert" accept="image/*" style="display:none" onchange="handleDoctorCertUpload(this)">
-</div>
-</div>
-</div>
-<!-- Social Login -->
-<div id="socialLoginBtns" class="space-y-3 mb-6">
-<button class="w-full flex items-center justify-center gap-3 py-3 rounded-xl font-semibold transition-all hover:scale-[1.02]" style="background:#ea4335;color:#fff" onclick="socialLogin('google')">
-<i class="fa-brands fa-google text-lg"></i>تسجيل الدخول بـ Google
-</button>
-<button class="w-full flex items-center justify-center gap-3 py-3 rounded-xl font-semibold transition-all hover:scale-[1.02]" style="background:#1877f2;color:#fff" onclick="socialLogin('facebook')">
-<i class="fa-brands fa-facebook-f text-lg"></i>تسجيل الدخول بـ Facebook
-</button>
-</div>
-<div class="flex items-center gap-3 mb-6" id="authDivider">
-<div class="flex-1 h-px" style="background:var(--border)"></div>
-<span class="text-sm" style="color:var(--muted)">أو</span>
-<div class="flex-1 h-px" style="background:var(--border)"></div>
-</div>
-<!-- Email/Phone Form -->
-<form id="authForm" onsubmit="handleAuth(event)" class="space-y-4">
-<div>
-<label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">البريد الإلكتروني</label>
-<input class="input-field" type="email" id="authEmail" placeholder="example@email.com" required>
-</div>
-<div>
-<label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">كلمة المرور</label>
-<div class="relative">
-<input class="input-field" type="password" id="authPassword" placeholder="••••••••" required>
-<button type="button" onclick="togglePasswordVisibility('authPassword',this)" class="absolute left-3 top-1/2 -translate-y-1/2" style="color:var(--muted)"><i class="fa-solid fa-eye"></i></button>
-</div>
-</div>
-<div id="authNameField" style="display:none">
-<label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">الاسم الكامل</label>
-<input class="input-field" id="authName" placeholder="أدخل اسمك الكامل">
-</div>
-<div id="authPhoneField" style="display:none">
-<label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">رقم الهاتف</label>
-<input class="input-field" type="tel" id="authPhone" placeholder="+966 5XX XXX XXXX">
-</div>
-<button type="submit" class="btn-pri w-full py-3" id="authSubmitBtn">تسجيل الدخول</button>
-</form>
-<div class="text-center mt-5">
-<span class="text-sm" style="color:var(--muted)" id="authToggleText">ليس لديك حساب؟</span>
-<button class="text-sm font-bold mr-1" style="color:#0ea5e9;background:none;border:none;cursor:pointer" id="authToggleBtn" onclick="toggleAuthMode()">إنشاء حساب</button>
-</div>
-</div>
-</div>
+<section class="min-h-screen flex items-center justify-center px-4 pt-16" style="background:var(--bg3)">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:var(--accent)"><i class="fas fa-heartbeat text-2xl text-white"></i></div><h1 class="font-display font-800 text-2xl" style="color:var(--text)" id="authTitle">Welcome Back</h1><p class="text-sm mt-1" style="color:var(--text2)" id="authSubtitle">Sign in to your account</p></div>
+    <!-- Role Selection -->
+    <div id="roleSelect" class="card p-6 mb-4">
+      <label class="block text-sm font-medium mb-3" style="color:var(--text2)">I am a:</label>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="selectRole('patient')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="patient"><i class="fas fa-user block text-lg mb-1"></i>Patient</button>
+        <button onclick="selectRole('doctor')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="doctor"><i class="fas fa-user-doctor block text-lg mb-1"></i>Doctor</button>
+        <button onclick="selectRole('admin')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="admin"><i class="fas fa-user-shield block text-lg mb-1"></i>Admin</button>
+      </div>
+    </div>
+    <!-- Sign In Form -->
+    <div id="signInForm" class="card p-6 mb-4">
+      <div class="flex gap-3 mb-4">
+        <button onclick="googleSignIn()" class="btn btn-outline flex-1 justify-center btn-sm"><i class="fab fa-google"></i> Google</button>
+        <button onclick="facebookSignIn()" class="btn btn-outline flex-1 justify-center btn-sm"><i class="fab fa-facebook-f"></i> Facebook</button>
+      </div>
+      <div class="flex items-center gap-3 mb-4"><div class="flex-1 h-px" style="background:var(--border)"></div><span class="text-xs" style="color:var(--text3)">OR</span><div class="flex-1 h-px" style="background:var(--border)"></div></div>
+      <div class="mb-3"><input type="email" id="loginEmail" class="input" placeholder="Email address"></div>
+      <div class="mb-4"><input type="password" id="loginPass" class="input" placeholder="Password"></div>
+      <button onclick="emailSignIn()" class="btn w-full justify-center mb-3"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <button onclick="showPhoneAuth()" class="btn btn-outline w-full justify-center btn-sm"><i class="fas fa-phone"></i> Sign in with Phone</button>
+      <p class="text-center text-sm mt-4" style="color:var(--text3)">Don't have an account? <a href="#" onclick="toggleAuthMode()" style="color:var(--accent);font-weight:600">Sign Up</a></p>
+    </div>
+    <!-- Sign Up Form -->
+    <div id="signUpForm" class="card p-6 mb-4 hidden">
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <input type="text" id="regName" class="input" placeholder="Full name">
+        <input type="email" id="regEmail" class="input" placeholder="Email">
+      </div>
+      <div class="mb-3"><input type="password" id="regPass" class="input" placeholder="Password (min 6 chars)"></div>
+      <div class="mb-4"><input type="password" id="regPassConfirm" class="input" placeholder="Confirm password"></div>
+      <button onclick="emailSignUp()" class="btn w-full justify-center"><i class="fas fa-user-plus"></i> Create Account</button>
+      <p class="text-center text-sm mt-4" style="color:var(--text3)">Already have an account? <a href="#" onclick="toggleAuthMode()" style="color:var(--accent);font-weight:600">Sign In</a></p>
+    </div>
+    <!-- Doctor Registration Form -->
+    <div id="doctorRegForm" class="card p-6 mb-4 hidden">
+      <h3 class="font-display font-700 mb-4" style="color:var(--text)">Doctor Registration Details</h3>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <input type="text" id="docRegName" class="input" placeholder="Full name">
+        <input type="email" id="docRegEmail" class="input" placeholder="Email">
+      </div>
+      <div class="mb-3"><input type="password" id="docRegPass" class="input" placeholder="Password (min 6 chars)"></div>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <select id="docRegSpecialty" class="input"><option value="">Specialty</option><option>Cardiology</option><option>Dermatology</option><option>Neurology</option><option>Orthopedics</option><option>Pediatrics</option><option>Psychiatry</option><option>General Medicine</option><option>Ophthalmology</option><option>ENT</option><option>Gynecology</option></select>
+        <input type="text" id="docRegExp" class="input" placeholder="Years of experience">
+      </div>
+      <div class="mb-3"><input type="text" id="docRegQual" class="input" placeholder="Qualifications (e.g., MBBS, MD)"></div>
+      <div class="mb-3"><textarea id="docRegBio" class="input" placeholder="Short professional bio"></textarea></div>
+      <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Profile Photo</label><div class="file-upload" onclick="document.getElementById('docRegPhoto').click()"><i class="fas fa-cloud-upload-alt text-2xl mb-2" style="color:var(--text3)"></i><p class="text-sm" style="color:var(--text3)">Click to upload photo</p><input type="file" id="docRegPhoto" accept="image/*" class="hidden" onchange="previewFile(this,'docRegPhotoPreview')"><img id="docRegPhotoPreview" class="hidden"></div></div>
+      <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Certificates</label><div class="file-upload" onclick="document.getElementById('docRegCerts').click()"><i class="fas fa-file-medical text-2xl mb-2" style="color:var(--text3)"></i><p class="text-sm" style="color:var(--text3)">Upload certificates</p><input type="file" id="docRegCerts" accept="image/*,.pdf" multiple class="hidden" onchange="handleCertUpload(this)"><div id="certFileNames" class="mt-2"></div></div></div>
+      <button onclick="doctorSignUp()" class="btn w-full justify-center"><i class="fas fa-user-doctor"></i> Submit for Approval</button>
+      <p class="text-center text-xs mt-3" style="color:var(--text3)">Your application will be reviewed by an administrator.</p>
+    </div>
+    <!-- Phone Auth Modal -->
+    <div id="phoneAuthModal" class="hidden"><div class="card p-6">
+      <h3 class="font-display font-700 mb-4" style="color:var(--text)">Phone Sign In</h3>
+      <div class="mb-3"><input type="tel" id="phoneNum" class="input" placeholder="+1 234 567 8900"></div>
+      <div id="otpSection" class="hidden mb-3"><input type="text" id="otpCode" class="input" placeholder="Enter OTP code"></div>
+      <button onclick="sendOTP()" id="sendOtpBtn" class="btn w-full justify-center mb-3"><i class="fas fa-paper-plane"></i> Send OTP</button>
+      <button onclick="verifyOTP()" id="verifyOtpBtn" class="btn w-full justify-center hidden"><i class="fas fa-check"></i> Verify OTP</button>
+      <button onclick="document.getElementById('phoneAuthModal').classList.add('hidden')" class="btn btn-outline w-full justify-center btn-sm">Cancel</button>
+    </div></div>
+  </div>
 </section>
 </div>
 
-<!-- ===================== PROFILE PAGE ===================== -->
+<!-- ===================== ADMIN DASHBOARD ===================== -->
+<div id="page-admin-dashboard" class="page">
+<div class="sidebar" id="adminSidebar">
+  <div class="p-5 flex items-center gap-3" style="border-bottom:1px solid var(--border)">
+    <div style="width:40px;height:40px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white"></i></div>
+    <div><p class="font-display font-700 text-sm" style="color:var(--text)">Estasharni</p><p class="text-xs" style="color:var(--text3)">Admin Panel</p></div>
+  </div>
+  <nav class="py-4">
+    <div class="sidebar-link active" onclick="showAdminTab('overview')"><i class="fas fa-chart-pie w-5"></i> Overview</div>
+    <div class="sidebar-link" onclick="showAdminTab('doctors')"><i class="fas fa-user-doctor w-5"></i> Doctors</div>
+    <div class="sidebar-link" onclick="showAdminTab('users')"><i class="fas fa-users w-5"></i> Users</div>
+    <div class="sidebar-link" onclick="showAdminTab('requests')"><i class="fas fa-inbox w-5"></i> Consultations</div>
+    <div class="sidebar-link" onclick="showAdminTab('messages')"><i class="fas fa-envelope w-5"></i> Messages</div>
+    <div class="sidebar-link" onclick="showAdminTab('admin-mgmt')"><i class="fas fa-user-shield w-5"></i> Admin Management</div>
+    <div class="sidebar-link" onclick="showAdminTab('settings')"><i class="fas fa-cog w-5"></i> Settings</div>
+  </nav>
+</div>
+<div class="md:ml-[260px] pt-20 p-6 min-h-screen">
+  <button class="md:hidden mb-4 btn btn-sm" onclick="document.getElementById('adminSidebar').classList.toggle('open')"><i class="fas fa-bars"></i> Menu</button>
+  <!-- Overview Tab -->
+  <div id="tab-overview" class="admin-tab">
+    <h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">Dashboard Overview</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="adminStats"></div>
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="card p-6"><h3 class="font-display font-700 mb-4" style="color:var(--text)">Recent Users</h3><div id="recentUsers"></div></div>
+      <div class="card p-6"><h3 class="font-display font-700 mb-4" style="color:var(--text)">Recent Consultations</h3><div id="recentConsultations"></div></div>
+    </div>
+  </div>
+  <!-- Doctors Tab -->
+  <div id="tab-doctors" class="admin-tab hidden">
+    <div class="flex items-center justify-between mb-6"><h2 class="font-display font-800 text-2xl" style="color:var(--text)">Manage Doctors</h2><button onclick="showAddDoctorModal()" class="btn btn-sm"><i class="fas fa-plus"></i> Add Doctor</button></div>
+    <div id="pendingDoctorsSection" class="hidden mb-6"><h3 class="font-display font-700 mb-3" style="color:var(--text)">Pending Approvals</h3><div id="pendingDoctorsList" class="grid md:grid-cols-2 gap-4"></div></div>
+    <div class="card overflow-x-auto"><table><thead><tr><th>Photo</th><th>Name</th><th>Specialty</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminDoctorsTable"></tbody></table></div>
+  </div>
+  <!-- Users Tab -->
+  <div id="tab-users" class="admin-tab hidden">
+    <h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">Registered Users</h2>
+    <div class="card overflow-x-auto"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div>
+  </div>
+  <!-- Consultations Tab -->
+  <div id="tab-requests" class="admin-tab hidden">
+    <h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">Consultation Requests</h2>
+    <div class="card overflow-x-auto"><table><thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="adminConsultTable"></tbody></table></div>
+  </div>
+  <!-- Messages Tab -->
+  <div id="tab-messages" class="admin-tab hidden">
+    <h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">Messages</h2>
+    <div id="adminMessagesList"></div>
+  </div>
+  <!-- Admin Management Tab -->
+  <div id="tab-admin-mgmt" class="admin-tab hidden">
+    <div class="flex items-center justify-between mb-6"><h2 class="font-display font-800 text-2xl" style="color:var(--text)">Admin Management</h2><button onclick="showAddAdminModal()" class="btn btn-sm"><i class="fas fa-plus"></i> Add Admin</button></div>
+    <div class="card overflow-x-auto"><table><thead><tr><th>Email</th><th>Role Level</th><th>Added</th><th>Actions</th></tr></thead><tbody id="adminMgmtTable"></tbody></table></div>
+  </div>
+  <!-- Settings Tab -->
+  <div id="tab-settings" class="admin-tab hidden">
+    <h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">Platform Settings</h2>
+    <div class="card p-6 mb-6">
+      <h3 class="font-display font-700 mb-4" style="color:var(--text)">General Information</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Platform Name</label><input type="text" id="settName" class="input" value="Estasharni"></div>
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Contact Email</label><input type="email" id="settEmail" class="input" value="support@estasharni.com"></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Phone</label><input type="text" id="settPhone" class="input" value="+1 234 567 890"></div>
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Description</label><input type="text" id="settDesc" class="input" value="Your trusted medical consultation platform"></div>
+      </div>
+      <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Platform Logo</label><div class="file-upload inline-block" onclick="document.getElementById('settLogo').click()"><i class="fas fa-cloud-upload-alt text-xl mb-1" style="color:var(--text3)"></i><p class="text-xs" style="color:var(--text3)">Upload Logo</p><input type="file" id="settLogo" accept="image/*" class="hidden" onchange="previewFile(this,'settLogoPreview')"><img id="settLogoPreview" class="hidden"></div></div>
+      <button onclick="saveSettings()" class="btn"><i class="fas fa-save"></i> Save Settings</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===================== USER PROFILE ===================== -->
 <div id="page-profile" class="page">
-<section class="py-12">
-<div class="max-w-5xl mx-auto px-4">
-<div class="flex items-center gap-4 mb-8">
-<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-400 to-cyan-500 flex items-center justify-center text-white text-2xl font-bold" id="profileAvatar">م</div>
-<div>
-<h1 class="text-2xl font-black" style="color:var(--fg)" id="profileName">مستخدم</h1>
-<p style="color:var(--muted)" id="profileEmail">user@email.com</p>
-</div>
-</div>
-<div class="flex gap-3 mb-8">
-<button class="tab-btn active" onclick="switchProfileTab('info',this)">المعلومات الشخصية</button>
-<button class="tab-btn" onclick="switchProfileTab('consultations',this)">الاستشارات</button>
-<button class="tab-btn" onclick="switchProfileTab('messages',this)">الرسائل</button>
-</div>
-<!-- Info Tab -->
-<div id="profileTabInfo" class="card p-8">
-<form onsubmit="updateProfile(event)" class="space-y-4">
-<div class="grid md:grid-cols-2 gap-4">
-<div><label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">الاسم الكامل</label><input class="input-field" id="profName"></div>
-<div><label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">البريد الإلكتروني</label><input class="input-field" id="profEmail" readonly style="opacity:.7"></div>
-<div><label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">رقم الهاتف</label><input class="input-field" id="profPhone"></div>
-<div><label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">العمر</label><input class="input-field" type="number" id="profAge"></div>
-</div>
-<button type="submit" class="btn-pri"><i class="fa-solid fa-save ml-2"></i>حفظ التغييرات</button>
-</form>
-</div>
-<!-- Consultations Tab -->
-<div id="profileTabConsultations" style="display:none">
-<div id="myConsultations" class="space-y-4"></div>
-<div id="noConsultations" class="text-center py-12" style="color:var(--muted);display:none">
-<i class="fa-solid fa-stethoscope text-4xl mb-3" style="color:var(--border)"></i>
-<p>لم تقدم أي استشارات بعد</p>
-</div>
-</div>
-<!-- Messages Tab -->
-<div id="profileTabMessages" style="display:none">
-<div class="card p-6 mb-4">
-<form onsubmit="sendUserMessage(event)" class="space-y-3">
-<textarea class="input-field" id="userMsgText" placeholder="اكتب رسالتك للإدارة..."></textarea>
-<button type="submit" class="btn-pri"><i class="fa-solid fa-paper-plane ml-2"></i>إرسال</button>
-</form>
-</div>
-<div id="userMessages" class="space-y-3"></div>
-</div>
-</div>
+<section class="pt-24 pb-12 px-4">
+  <div class="max-w-4xl mx-auto">
+    <div class="card p-6 mb-6">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl" style="background:var(--accent)" id="profileAvatar">U</div>
+        <div><h2 class="font-display font-800 text-xl" style="color:var(--text)" id="profileName">User</h2><p class="text-sm" style="color:var(--text3)" id="profileEmail">user@email.com</p><span class="badge badge-blue mt-1" id="profileRole">Patient</span></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Full Name</label><input type="text" id="profName" class="input"></div>
+        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Phone</label><input type="tel" id="profPhone" class="input" placeholder="+1 234 567 8900"></div>
+      </div>
+      <button onclick="updateProfile()" class="btn btn-sm"><i class="fas fa-save"></i> Update Profile</button>
+    </div>
+    <!-- Consultation Requests -->
+    <div class="card p-6 mb-6">
+      <h3 class="font-display font-700 mb-4" style="color:var(--text)">My Consultation Requests</h3>
+      <div id="userConsultList"><p class="text-sm" style="color:var(--text3)">No consultation requests yet.</p></div>
+    </div>
+    <!-- Messages -->
+    <div class="card p-6">
+      <h3 class="font-display font-700 mb-4" style="color:var(--text)">Messages to Administration</h3>
+      <div id="userMsgList" class="mb-4" style="max-height:300px;overflow-y:auto"><p class="text-sm" style="color:var(--text3)">No messages yet.</p></div>
+      <div class="flex gap-3"><input type="text" id="userMsgInput" class="input" placeholder="Type a message..."><button onclick="sendUserMsg()" class="btn btn-sm"><i class="fas fa-paper-plane"></i></button></div>
+    </div>
+  </div>
 </section>
 </div>
 
-<!-- ===================== ADMIN PAGE ===================== -->
-<div id="page-admin" class="page">
-<div class="flex min-h-[calc(100vh-60px)]">
-<!-- Sidebar -->
-<aside class="sidebar-desktop w-64 p-4 border-l flex-shrink-0" style="background:var(--card);border-color:var(--border)">
-<div class="mb-6">
-<h3 class="font-black text-lg" style="color:var(--fg)">لوحة التحكم</h3>
-<p class="text-xs" style="color:var(--muted)">إدارة المنصة</p>
-</div>
-<nav class="space-y-1">
-<div class="sidebar-item active" onclick="switchAdminTab('dashboard',this)"><i class="fa-solid fa-chart-pie w-5"></i>الإحصائيات</div>
-<div class="sidebar-item" onclick="switchAdminTab('doctors',this)"><i class="fa-solid fa-user-doctor w-5"></i>إدارة الأطباء</div>
-<div class="sidebar-item" onclick="switchAdminTab('users',this)"><i class="fa-solid fa-users w-5"></i>المستخدمون</div>
-<div class="sidebar-item" onclick="switchAdminTab('requests',this)"><i class="fa-solid fa-inbox w-5"></i>طلبات الأطباء</div>
-<div class="sidebar-item" onclick="switchAdminTab('consultations',this)"><i class="fa-solid fa-stethoscope w-5"></i>الاستشارات</div>
-<div class="sidebar-item" onclick="switchAdminTab('messages',this)"><i class="fa-solid fa-envelope w-5"></i>الرسائل</div>
-<div class="sidebar-item" onclick="switchAdminTab('settings',this)"><i class="fa-solid fa-gear w-5"></i>الإعدادات</div>
-<div class="sidebar-item" onclick="switchAdminTab('admins',this)"><i class="fa-solid fa-shield-halved w-5"></i>المديرون</div>
-</nav>
-</aside>
-<!-- Mobile Admin Tabs -->
-<div class="md:hidden border-b px-4 py-3 overflow-x-auto flex gap-2" style="background:var(--card);border-color:var(--border)">
-<button class="tab-btn active text-xs whitespace-nowrap" onclick="switchAdminTab('dashboard',this)">الإحصائيات</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('doctors',this)">الأطباء</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('users',this)">المستخدمون</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('requests',this)">الطلبات</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('consultations',this)">الاستشارات</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('messages',this)">الرسائل</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('settings',this)">الإعدادات</button>
-<button class="tab-btn text-xs whitespace-nowrap" onclick="switchAdminTab('admins',this)">المديرون</button>
-</div>
-<!-- Content -->
-<main class="flex-1 p-6 overflow-y-auto">
-<!-- Dashboard -->
-<div id="adminTab-dashboard" class="admin-tab">
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-<div class="stat-card"><i class="fa-solid fa-user-doctor text-3xl mb-2" style="color:#0ea5e9"></i><div class="text-2xl font-black" id="statDoctors">0</div><div class="text-sm" style="color:var(--muted)">الأطباء</div></div>
-<div class="stat-card"><i class="fa-solid fa-users text-3xl mb-2" style="color:#10b981"></i><div class="text-2xl font-black" id="statUsers">0</div><div class="text-sm" style="color:var(--muted)">المستخدمون</div></div>
-<div class="stat-card"><i class="fa-solid fa-stethoscope text-3xl mb-2" style="color:#f59e0b"></i><div class="text-2xl font-black" id="statConsult">0</div><div class="text-sm" style="color:var(--muted)">الاستشارات</div></div>
-<div class="stat-card"><i class="fa-solid fa-inbox text-3xl mb-2" style="color:#ef4444"></i><div class="text-2xl font-black" id="statPending">0</div><div class="text-sm" style="color:var(--muted)">طلبات معلقة</div></div>
-</div>
-<div class="card p-6">
-<h3 class="font-bold mb-4" style="color:var(--fg)">آخر الأنشطة</h3>
-<div id="recentActivity" class="space-y-3"></div>
-</div>
-</div>
-<!-- Doctors Management -->
-<div id="adminTab-doctors" class="admin-tab" style="display:none">
-<div class="flex items-center justify-between mb-6">
-<h2 class="text-xl font-black" style="color:var(--fg)">إدارة الأطباء</h2>
-<button class="btn-pri" onclick="openDoctorModal()"><i class="fa-solid fa-plus ml-2"></i>إضافة طبيب</button>
-</div>
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4" id="adminDoctorsGrid"></div>
-</div>
-<!-- Users -->
-<div id="adminTab-users" class="admin-tab" style="display:none">
-<h2 class="text-xl font-black mb-6" style="color:var(--fg)">المستخدمون المسجلون</h2>
-<div class="card overflow-hidden">
-<div class="overflow-x-auto">
-<table class="w-full text-sm">
-<thead><tr style="background:var(--bg)">
-<th class="p-3 text-right font-bold" style="color:var(--fg)">الاسم</th>
-<th class="p-3 text-right font-bold" style="color:var(--fg)">البريد</th>
-<th class="p-3 text-right font-bold" style="color:var(--fg)">الدور</th>
-<th class="p-3 text-right font-bold" style="color:var(--fg)">التاريخ</th>
-</tr></thead>
-<tbody id="usersTableBody"></tbody>
-</table>
-</div>
-</div>
-</div>
-<!-- Doctor Requests -->
-<div id="adminTab-requests" class="admin-tab" style="display:none">
-<h2 class="text-xl font-black mb-6" style="color:var(--fg)">طلبات تسجيل الأطباء</h2>
-<div id="doctorRequestsList" class="space-y-4"></div>
-<div id="noRequests" class="text-center py-12" style="color:var(--muted);display:none">
-<i class="fa-solid fa-check-circle text-4xl mb-3" style="color:var(--border)"></i>
-<p>لا توجد طلبات معلقة</p>
-</div>
-</div>
-<!-- Consultations -->
-<div id="adminTab-consultations" class="admin-tab" style="display:none">
-<h2 class="text-xl font-black mb-6" style="color:var(--fg)">إدارة الاستشارات</h2>
-<div id="adminConsultList" class="space-y-4"></div>
-</div>
-<!-- Messages -->
-<div id="adminTab-messages" class="admin-tab" style="display:none">
-<h2 class="text-xl font-black mb-6" style="color:var(--fg)">رسائل المستخدمين</h2>
-<div id="adminMessagesList" class="space-y-4"></div>
-</div>
-<!-- Settings -->
-<div id="adminTab-settings" class="admin-tab" style="display:none">
-<h2 class="text-xl font-black mb-6" style="color:var(--fg)">إعدادات المنصة</h2>
-<div class="card p-8 max-w-2xl">
-<form onsubmit="saveSettings(event)" class="space-y-5">
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">اسم المنصة</label>
-<input class="input-field" id="settName" value="إستشرني">
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">وصف المنصة</label>
-<textarea class="input-field" id="settDesc">منصة طبية رائدة تقدم استشارات طبية عالية الجودة</textarea>
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">البريد الإلكتروني</label>
-<input class="input-field" id="settEmail" value="info@estasharni.com">
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">رقم الهاتف</label>
-<input class="input-field" id="settPhone" value="+966 50 123 4567">
-</div>
-<div>
-<label class="block font-semibold mb-2 text-sm" style="color:var(--fg)">شعار المنصة</label>
-<div class="img-upload" onclick="document.getElementById('settLogo').click()">
-<i class="fa-solid fa-cloud-arrow-up text-2xl mb-2" style="color:var(--muted)"></i>
-<p class="text-sm" style="color:var(--muted)">اضغط لرفع الشعار</p>
-<input type="file" id="settLogo" accept="image/*" style="display:none" onchange="handleSettingsLogo(this)">
-</div>
-<div id="settLogoPreview" style="display:none" class="mt-2"><img id="settLogoImg" class="w-20 h-20 rounded-xl object-cover"></div>
-</div>
-<button type="submit" class="btn-pri"><i class="fa-solid fa-save ml-2"></i>حفظ الإعدادات</button>
-</form>
-</div>
-</div>
-<!-- Admins Management -->
-<div id="adminTab-admins" class="admin-tab" style="display:none">
-<h2 class="text-xl font-black mb-6" style="color:var(--fg)">إدارة المديرين</h2>
-<div class="card p-6 mb-6 max-w-lg">
-<h3 class="font-bold mb-4" style="color:var(--fg)">إضافة مدير جديد</h3>
-<form onsubmit="addAdmin(event)" class="space-y-3">
-<input class="input-field" id="newAdminEmail" placeholder="البريد الإلكتروني" required>
-<input class="input-field" type="password" id="newAdminPass" placeholder="كلمة المرور" required>
-<select class="input-field" id="newAdminPerm">
-<option value="full">صلاحيات كاملة</option>
-<option value="doctors">إدارة الأطباء فقط</option>
-<option value="users">إدارة المستخدمين فقط</option>
-<option value="view">عرض فقط</option>
-</select>
-<button type="submit" class="btn-pri"><i class="fa-solid fa-plus ml-2"></i>إضافة مدير</button>
-</form>
-</div>
-<div id="adminsList" class="space-y-3"></div>
-</div>
-</main>
-</div>
-</div>
-
-<!-- Doctor Detail Modal (hidden) -->
-<div id="doctorModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeDoctorModal()">
-<div class="modal-box max-w-lg">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-xl font-black" style="color:var(--fg)">طلب استشارة</h3>
-<button onclick="closeDoctorModal()" style="color:var(--muted);background:none;border:none;cursor:pointer;font-size:1.2rem"><i class="fa-solid fa-xmark"></i></button>
-</div>
-<div class="flex items-center gap-4 mb-6 p-4 rounded-xl" style="background:var(--bg)">
-<img id="modalDocImg" class="w-16 h-16 rounded-xl object-cover" src="https://picsum.photos/seed/doc1/200/200" alt="">
-<div>
-<h4 class="font-bold" style="color:var(--fg)" id="modalDocName">د. أحمد</h4>
-<p class="text-sm" style="color:var(--muted)" id="modalDocSpec">طب عام</p>
-</div>
-</div>
-<form onsubmit="requestConsultation(event)">
-<input type="hidden" id="modalDocId">
-<div class="space-y-4">
-<div><label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">وصف الحالة</label><textarea class="input-field" id="consultDesc" placeholder="صف حالتك الصحية بالتفصيل..." required></textarea></div>
-<div><label class="block font-semibold mb-1.5 text-sm" style="color:var(--fg)">طريقة التواصل المفضلة</label>
-<select class="input-field" id="consultMethod">
-<option value="chat">محادثة نصية</option>
-<option value="video">فيديو اتصال</option>
-<option value="phone">اتصال هاتفي</option>
-</select></div>
-<button type="submit" class="btn-pri w-full py-3"><i class="fa-solid fa-paper-plane ml-2"></i>إرسال الطلب</button>
-</div>
-</form>
-</div>
-</div>
-
-<!-- Add Doctor Modal (Admin) -->
-<div id="addDoctorModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeAddDoctorModal()">
-<div class="modal-box">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-xl font-black" style="color:var(--fg)" id="addDocTitle">إضافة طبيب</h3>
-<button onclick="closeAddDoctorModal()" style="color:var(--muted);background:none;border:none;cursor:pointer;font-size:1.2rem"><i class="fa-solid fa-xmark"></i></button>
-</div>
-<form onsubmit="saveDoctor(event)" class="space-y-4">
-<input type="hidden" id="editDocId" value="">
-<div class="img-upload mb-2" onclick="document.getElementById('docImgInput').click()">
-<img id="docImgPreview" style="display:none" class="w-24 h-24 rounded-xl object-cover mx-auto mb-2">
-<div id="docImgPlaceholder"><i class="fa-solid fa-cloud-arrow-up text-3xl mb-2" style="color:var(--muted)"></i><p class="text-sm" style="color:var(--muted)">رفع صورة الطبيب</p></div>
-<input type="file" id="docImgInput" accept="image/*" style="display:none" onchange="previewDoctorImg(this)">
-</div>
-<div class="grid grid-cols-2 gap-3">
-<div><label class="block font-semibold mb-1 text-sm" style="color:var(--fg)">الاسم</label><input class="input-field" id="addDocName" required></div>
-<div><label class="block font-semibold mb-1 text-sm" style="color:var(--fg)">التخصص</label><input class="input-field" id="addDocSpec" required></div>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<div><label class="block font-semibold mb-1 text-sm" style="color:var(--fg)">الخبرة (سنوات)</label><input class="input-field" type="number" id="addDocExp" required></div>
-<div><label class="block font-semibold mb-1 text-sm" style="color:var(--fg)">السعر</label><input class="input-field" id="addDocPrice" placeholder="50 ريال" required></div>
-</div>
-<div><label class="block font-semibold mb-1 text-sm" style="color:var(--fg)">المؤهلات</label><textarea class="input-field" id="addDocQual" required></textarea></div>
-<div><label class="block font-semibold mb-1 text-sm" style="color:var(--fg)">نبذة</label><textarea class="input-field" id="addDocBio"></textarea></div>
-<button type="submit" class="btn-pri w-full py-3"><i class="fa-solid fa-save ml-2"></i>حفظ</button>
-</form>
-</div>
-</div>
-
-<!-- Reply Modal (Admin) -->
-<div id="replyModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeReplyModal()">
-<div class="modal-box">
-<div class="flex items-center justify-between mb-6">
-<h3 class="text-xl font-black" style="color:var(--fg)">الرد على الرسالة</h3>
-<button onclick="closeReplyModal()" style="color:var(--muted);background:none;border:none;cursor:pointer;font-size:1.2rem"><i class="fa-solid fa-xmark"></i></button>
-</div>
-<input type="hidden" id="replyMsgId">
-<div class="mb-4 p-3 rounded-xl" style="background:var(--bg)">
-<p class="text-sm" style="color:var(--muted)" id="replyOrigMsg"></p>
-</div>
-<textarea class="input-field mb-4" id="replyText" placeholder="اكتب ردك هنا..."></textarea>
-<button class="btn-pri w-full py-3" onclick="sendReply()"><i class="fa-solid fa-reply ml-2"></i>إرسال الرد</button>
-</div>
-</div>
+<!-- ===================== MODALS ===================== -->
+<div id="modalContainer"></div>
 
 <script>
-/* ===== Firebase Configuration ===== */
+/* ==================== FIREBASE CONFIG ==================== */
 const firebaseConfig = {
-    databaseURL: "https://gen-lang-client-0100583073-default-rtdb.firebaseio.com/"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-/* ===== App State ===== */
-const state = {
-    currentPage: 'home',
-    currentUser: null,
-    authMode: 'login', // 'login' or 'register'
-    authRole: 'user',
-    isDark: localStorage.getItem('estasharni-dark') === 'true',
-    doctors: [],
-    notifications: [],
-    settings: {},
-    unreadNotifs: 0
+  apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  authDomain: "gen-lang-client-0100583073-default-rtdb.firebaseapp.com",
+  databaseURL: "https://gen-lang-client-0100583073-default-rtdb.firebaseio.com",
+  projectId: "gen-lang-client-0100583073",
+  storageBucket: "gen-lang-client-0100583073.appspot.com",
+  messagingSenderId: "0100583073",
+  appId: "1:0100583073:web:xxxxxxxxxxxxxxxx"
 };
 
-/* ===== Notification Sound ===== */
-const notifSound = new Audio('data:audio/wav;base64,UklGRl9vT19telefon.wav');
-function playNotifSound() {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
-        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.4);
-    } catch(e) {}
+let app, auth, db, storage;
+try {
+  app = firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.database();
+  storage = firebase.storage();
+} catch(e) {
+  console.warn('Firebase init issue:', e);
+  // Fallback dummy objects
+  app = {}; auth = { onAuthStateChanged:()=>{}, signInWithEmailAndPassword:()=>Promise.reject(), createUserWithEmailAndPassword:()=>Promise.reject(), signOut:()=>Promise.resolve(), currentUser:null };
+  db = { ref:(p)=>({ set:()=>Promise.resolve(), get:()=>Promise.resolve({val:()=>null}), push:()=>({key:'fake',set:()=>Promise.resolve()}), remove:()=>Promise.resolve(), update:()=>Promise.resolve(), on:()=>{}, off:()=>{}, once:()=>Promise.resolve({val:()=>null}), orderByChild:()=>({equalTo:()=>({once:()=>Promise.resolve({val:()=>null})})}) }) };
+  storage = { ref:()=>({put:()=>Promise.resolve({ref:{getDownloadURL:()=>Promise.resolve('')}})}) };
 }
 
-/* ===== Toast Notifications ===== */
-function showToast(msg, type = 'info') {
-    const c = document.getElementById('toastContainer');
-    const t = document.createElement('div');
-    t.className = `toast toast-${type}`;
-    t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} ml-2"></i>${msg}`;
-    c.appendChild(t);
-    setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-30px)'; t.style.transition = 'all .3s'; setTimeout(() => t.remove(), 300); }, 3500);
-}
+/* ==================== STATE ==================== */
+let currentUser = null;
+let selectedRole = 'patient';
+let isSignUp = false;
+let allDoctors = [];
+let allUsers = [];
+let allConsultations = [];
+let allMessages = [];
+let allAdmins = [];
+let allSettings = {};
+let localNotifications = JSON.parse(localStorage.getItem('estasharni_notifs') || '[]');
+let confirmationResult = null;
+let filteredSpecialty = 'all';
+let isDark = localStorage.getItem('estasharni_dark') === 'true';
 
-/* ===== Dark Mode ===== */
-function toggleDark() {
-    state.isDark = !state.isDark;
-    document.documentElement.classList.toggle('dark', state.isDark);
-    localStorage.setItem('estasharni-dark', state.isDark);
-    updateDarkIcons();
-}
-function updateDarkIcons() {
-    const dh = document.querySelectorAll('.dark-hidden');
-    const ds = document.querySelectorAll('.dark-show');
-    dh.forEach(el => el.style.display = state.isDark ? 'none' : '');
-    ds.forEach(el => el.style.display = state.isDark ? '' : 'none');
-}
-function applyDark() {
-    document.documentElement.classList.toggle('dark', state.isDark);
-    updateDarkIcons();
-    // Update header background
-    const hdr = document.getElementById('mainHeader');
-    if (state.isDark) {
-        hdr.style.background = 'rgba(15,23,42,.88)';
-    } else {
-        hdr.style.background = 'rgba(248,250,252,.88)';
-    }
-}
-
-/* ===== Navigation ===== */
-function navigate(page) {
-    // Check access
-    if (page === 'profile' && !state.currentUser) { showToast('يرجى تسجيل الدخول أولاً', 'error'); navigate('auth'); return; }
-    if (page === 'admin' && (!state.currentUser || state.currentUser.role !== 'admin')) { showToast('ليس لديك صلاحية الوصول', 'error'); return; }
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('page-' + page);
-    if (target) target.classList.add('active');
-    state.currentPage = page;
-    // Update nav links
-    document.querySelectorAll('.nav-link').forEach(l => {
-        l.classList.toggle('active', l.dataset.page === page);
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Load page data
-    if (page === 'doctors') loadDoctorsPage();
-    if (page === 'profile') loadProfile();
-    if (page === 'admin') loadAdminDashboard();
-    // Trigger fade-in animations
-    setTimeout(initFadeObserver, 100);
-}
-
-/* ===== Mobile Menu ===== */
-function toggleMobileMenu() {
-    const m = document.getElementById('mobileMenu');
-    m.style.display = m.style.display === 'none' ? 'block' : 'none';
-}
-
-/* ===== User Dropdown ===== */
-function toggleUserDropdown() {
-    const d = document.getElementById('userDropdown');
-    d.style.display = d.style.display === 'none' ? 'block' : 'none';
-}
-// Close dropdown on outside click
-document.addEventListener('click', (e) => {
-    const um = document.getElementById('userMenu');
-    const np = document.getElementById('notifPanel');
-    if (um && !um.contains(e.target)) document.getElementById('userDropdown').style.display = 'none';
-    if (np && !document.getElementById('notifBell').contains(e.target)) np.style.display = 'none';
-});
-
-/* ===== Notification Panel ===== */
-function toggleNotifPanel() {
-    const p = document.getElementById('notifPanel');
-    p.style.display = p.style.display === 'none' ? 'block' : 'none';
-    if (p.style.display === 'block') {
-        state.unreadNotifs = 0;
-        document.getElementById('notifDot').style.display = 'none';
-        renderNotifList();
-    }
-}
-function renderNotifList() {
-    const el = document.getElementById('notifList');
-    if (state.notifications.length === 0) {
-        el.innerHTML = '<p class="text-sm text-center py-4" style="color:var(--muted)">لا توجد إشعارات</p>';
-        return;
-    }
-    el.innerHTML = state.notifications.slice(0, 20).map(n => `
-        <div class="p-3 rounded-xl" style="background:var(--bg)">
-            <p class="text-sm font-semibold" style="color:var(--fg)">${n.title}</p>
-            <p class="text-xs mt-1" style="color:var(--muted)">${n.body}</p>
-            <p class="text-xs mt-1" style="color:var(--border)">${n.time || ''}</p>
-        </div>
-    `).join('');
-}
-function addNotification(title, body) {
-    const notif = { title, body, time: new Date().toLocaleString('ar-EG'), read: false };
-    state.notifications.unshift(notif);
-    state.unreadNotifs++;
-    document.getElementById('notifDot').style.display = 'flex';
-    playNotifSound();
-    // Save to Firebase for logged-in user
-    if (state.currentUser) {
-        db.ref('notifications/' + state.currentUser.uid).push(notif);
-    }
-    renderNotifList();
-}
-
-/* ===== Password Visibility Toggle ===== */
-function togglePasswordVisibility(id, btn) {
-    const inp = document.getElementById(id);
-    const isPass = inp.type === 'password';
-    inp.type = isPass ? 'text' : 'password';
-    btn.innerHTML = `<i class="fa-solid fa-eye${isPass ? '-slash' : ''}"></i>`;
-}
-
-/* ===== Authentication ===== */
-function selectAuthRole(role) {
-    state.authRole = role;
-    document.querySelectorAll('#roleUserBtn,#roleDoctorBtn,#roleAdminBtn').forEach(b => b.classList.remove('active'));
-    document.getElementById('role' + role.charAt(0).toUpperCase() + role.slice(1) + 'Btn').classList.add('active');
-    // Show/hide doctor registration form
-    const docForm = document.getElementById('doctorRegForm');
-    const nameField = document.getElementById('authNameField');
-    const phoneField = document.getElementById('authPhoneField');
-    docForm.style.display = role === 'doctor' && state.authMode === 'register' ? 'block' : 'none';
-    nameField.style.display = (state.authMode === 'register' && role !== 'admin') ? 'block' : 'none';
-    phoneField.style.display = (state.authMode === 'register' && role !== 'admin') ? 'block' : 'none';
-    // Update button text
-    updateAuthButtonText();
-}
-
-function toggleAuthMode() {
-    state.authMode = state.authMode === 'login' ? 'register' : 'login';
-    document.getElementById('authTitle').textContent = state.authMode === 'login' ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
-    document.getElementById('authSubtitle').textContent = state.authMode === 'login' ? 'أدخل بياناتك للمتابعة' : 'أنشئ حسابك للبدء';
-    document.getElementById('authToggleText').textContent = state.authMode === 'login' ? 'ليس لديك حساب؟' : 'لديك حساب بالفعل؟';
-    document.getElementById('authToggleBtn').textContent = state.authMode === 'login' ? 'إنشاء حساب' : 'تسجيل الدخول';
-    // Show/hide social login (only for login mode)
-    document.getElementById('socialLoginBtns').style.display = state.authMode === 'login' ? 'flex' : 'none';
-    document.getElementById('authDivider').style.display = state.authMode === 'login' ? 'flex' : 'none';
-    // Show/hide extra fields
-    const nameField = document.getElementById('authNameField');
-    const phoneField = document.getElementById('authPhoneField');
-    const docForm = document.getElementById('doctorRegForm');
-    nameField.style.display = (state.authMode === 'register' && state.authRole !== 'admin') ? 'block' : 'none';
-    phoneField.style.display = (state.authMode === 'register' && state.authRole !== 'admin') ? 'block' : 'none';
-    docForm.style.display = (state.authMode === 'register' && state.authRole === 'doctor') ? 'block' : 'none';
-    updateAuthButtonText();
-}
-
-function updateAuthButtonText() {
-    const btn = document.getElementById('authSubmitBtn');
-    if (state.authMode === 'login') {
-        btn.textContent = 'تسجيل الدخول';
-    } else {
-        btn.textContent = state.authRole === 'doctor' ? 'تقديم طبيب للموافقة' : 'إنشاء حساب';
-    }
-}
-
-function handleAuth(e) {
-    e.preventDefault();
-    const email = document.getElementById('authEmail').value.trim();
-    const password = document.getElementById('authPassword').value;
-
-    if (state.authMode === 'login') {
-        // Login
-        db.ref('users').orderByChild('email').equalTo(email).once('value', (snap) => {
-            const data = snap.val();
-            if (!data) { showToast('الحساب غير موجود', 'error'); return; }
-            const uid = Object.keys(data)[0];
-            const user = data[uid];
-            // Check role match
-            if (state.authRole === 'admin' && user.role !== 'admin') { showToast('هذا الحساب ليس حساب مدير', 'error'); return; }
-            if (state.authRole === 'doctor' && user.role !== 'doctor') { showToast('هذا الحساب ليس حساب طبيب', 'error'); return; }
-            if (state.authRole === 'user' && (user.role === 'admin' || user.role === 'doctor')) { showToast('يرجى اختيار الدور الصحيح', 'error'); return; }
-            // Check doctor approval
-            if (user.role === 'doctor' && user.status === 'pending') { showToast('حسابك قيد المراجعة، يرجى الانتظار', 'info'); return; }
-            if (user.role === 'doctor' && user.status === 'rejected') { showToast('تم رفض طلبك، تواصل مع الإدارة', 'error'); return; }
-            // Simple password check (in production use Firebase Auth)
-            if (user.password !== password) { showToast('كلمة المرور غير صحيحة', 'error'); return; }
-            loginSuccess({ uid, ...user });
-        });
-    } else {
-        // Register
-        if (state.authRole === 'admin') { showToast('لا يمكن إنشاء حساب مدير من هنا', 'error'); return; }
-        const name = document.getElementById('authName').value.trim() || email.split('@')[0];
-        const phone = document.getElementById('authPhone').value.trim();
-        const newUser = {
-            email,
-            password,
-            name,
-            phone,
-            role: state.authRole,
-            status: state.authRole === 'doctor' ? 'pending' : 'active',
-            createdAt: Date.now()
-        };
-        if (state.authRole === 'doctor') {
-            newUser.specialty = document.getElementById('docRegSpec').value.trim();
-            newUser.experience = document.getElementById('docRegExp').value.trim();
-            newUser.qualifications = document.getElementById('docRegQual').value.trim();
-            // Certificate image is stored as base64 if uploaded
-            if (state.doctorCertImage) newUser.certificateImage = state.doctorCertImage;
-        }
-        db.ref('users').push(newUser).then((ref) => {
-            if (state.authRole === 'doctor') {
-                showToast('تم تقديم طلبك بنجاح، سيتم مراجعته من قبل الإدارة', 'success');
-                // Notify admins
-                db.ref('doctorRequests').push({ ...newUser, uid: ref.key });
-            } else {
-                loginSuccess({ uid: ref.key, ...newUser });
-                showToast('تم إنشاء حسابك بنجاح', 'success');
-            }
-            e.target.reset();
-        }).catch(err => showToast('حدث خطأ: ' + err.message, 'error'));
-    }
-}
-
-function socialLogin(provider) {
-    // Simulated social login - in production use Firebase Auth
-    const fakeEmail = provider === 'google' ? 'user@gmail.com' : 'user@facebook.com';
-    const fakeName = provider === 'google' ? 'مستخدم جوجل' : 'مستخدم فيسبوك';
-    if (state.authRole === 'admin') { showToast('لا يمكن تسجيل الدخول كمدير عبر ' + provider, 'error'); return; }
-    db.ref('users').orderByChild('email').equalTo(fakeEmail).once('value', (snap) => {
-        const data = snap.val();
-        if (data) {
-            const uid = Object.keys(data)[0];
-            loginSuccess({ uid, ...data[uid] });
-        } else {
-            const newUser = {
-                email: fakeEmail,
-                password: 'social_' + Date.now(),
-                name: fakeName,
-                phone: '',
-                role: state.authRole,
-                status: state.authRole === 'doctor' ? 'pending' : 'active',
-                provider,
-                createdAt: Date.now()
-            };
-            db.ref('users').push(newUser).then(ref => {
-                loginSuccess({ uid: ref.key, ...newUser });
-                showToast('تم تسجيل الدخول بنجاح عبر ' + (provider === 'google' ? 'Google' : 'Facebook'), 'success');
-            });
-        }
-    });
-}
-
-function loginSuccess(user) {
-    state.currentUser = user;
-    localStorage.setItem('estasharni-user', JSON.stringify(user));
-    updateUIForAuth();
-    loadUserNotifications();
-    showToast('مرحباً ' + user.name, 'success');
-    navigate('home');
-}
-
-function logout() {
-    state.currentUser = null;
-    state.notifications = [];
-    localStorage.removeItem('estasharni-user');
-    updateUIForAuth();
-    navigate('home');
-    showToast('تم تسجيل الخروج', 'info');
-}
-
-function updateUIForAuth() {
-    const authBtns = document.getElementById('authBtns');
-    const userMenu = document.getElementById('userMenu');
-    const notifBell = document.getElementById('notifBell');
-    const adminNav = document.getElementById('adminNavItem');
-    if (state.currentUser) {
-        authBtns.style.display = 'none';
-        userMenu.style.display = 'block';
-        notifBell.style.display = 'block';
-        document.getElementById('userName').textContent = state.currentUser.name;
-        document.getElementById('userAvatar').textContent = state.currentUser.name.charAt(0);
-        adminNav.style.display = state.currentUser.role === 'admin' ? 'flex' : 'none';
-    } else {
-        authBtns.style.display = 'flex';
-        userMenu.style.display = 'none';
-        notifBell.style.display = 'none';
-        adminNav.style.display = 'none';
-    }
-}
-
-function loadUserNotifications() {
-    if (!state.currentUser) return;
-    db.ref('notifications/' + state.currentUser.uid).orderByChild('time').limitToLast(20).on('value', (snap) => {
-        const data = snap.val();
-        state.notifications = data ? Object.values(data).reverse() : [];
-        state.unreadNotifs = state.notifications.filter(n => !n.read).length;
-        document.getElementById('notifDot').style.display = state.unreadNotifs > 0 ? 'flex' : 'none';
-        renderNotifList();
-    });
-}
-
-/* ===== Doctor Certificate Upload ===== */
-let doctorCertImageData = null;
-function handleDoctorCertUpload(input) {
-    if (!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        state.doctorCertImage = e.target.result;
-        showToast('تم رفع الشهادة بنجاح', 'success');
-    };
-    reader.readAsDataURL(input.files[0]);
-}
-
-/* ===== Doctors Page ===== */
+/* ==================== SPECIALTIES DATA ==================== */
 const specialties = [
-    { name: 'طب عام', icon: 'fa-stethoscope', color: 'from-sky-400 to-cyan-400' },
-    { name: 'طب القلب', icon: 'fa-heart-pulse', color: 'from-rose-400 to-pink-400' },
-    { name: 'طب الأطفال', icon: 'fa-baby', color: 'from-amber-400 to-orange-400' },
-    { name: 'طب العيون', icon: 'fa-eye', color: 'from-violet-400 to-purple-400' },
-    { name: 'طب الأسنان', icon: 'fa-tooth', color: 'from-emerald-400 to-teal-400' },
-    { name: 'طب الجلدية', icon: 'fa-hand-dots', color: 'from-lime-400 to-green-400' },
-    { name: 'طب النساء', icon: 'fa-person-pregnant', color: 'from-fuchsia-400 to-pink-400' },
-    { name: 'طب العظام', icon: 'fa-bone', color: 'from-slate-400 to-gray-400' },
+  {name:'Cardiology',icon:'fa-heart-pulse',color:'#EF4444'},
+  {name:'Dermatology',icon:'fa-hand-dots',color:'#F59E0B'},
+  {name:'Neurology',icon:'fa-brain',color:'#8B5CF6'},
+  {name:'Orthopedics',icon:'fa-bone',color:'#06B6D4'},
+  {name:'Pediatrics',icon:'fa-baby',color:'#EC4899'},
+  {name:'Psychiatry',icon:'fa-comments',color:'#10B981'},
+  {name:'General Medicine',icon:'fa-stethoscope',color:'#0EA5E9'},
+  {name:'Ophthalmology',icon:'fa-eye',color:'#6366F1'},
+  {name:'ENT',icon:'fa-ear-listen',color:'#F97316'},
+  {name:'Gynecology',icon:'fa-person-pregnant',color:'#D946EF'},
+  {name:'Urology',icon:'fa-droplet',color:'#14B8A6'},
+  {name:'Oncology',icon:'fa-ribbon',color:'#F43F5E'}
 ];
 
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme();
+  renderSpecialties();
+  renderSpecialtyFilters();
+  initHeroCanvas();
+  loadDoctors();
+  setupAuthListener();
+});
+
+/* ==================== THEME ==================== */
+function applyTheme() {
+  document.documentElement.classList.toggle('dark', isDark);
+  document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+}
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('estasharni_dark', isDark);
+  applyTheme();
+}
+
+/* ==================== HERO CANVAS ==================== */
+function initHeroCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 3 + 1,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      o: Math.random() * 0.5 + 0.1
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const accentColor = isDark ? '56,189,248' : '14,165,233';
+    particles.forEach((p, i) => {
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${accentColor},${p.o})`;
+      ctx.fill();
+      // Connect nearby particles
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(${accentColor},${0.1 * (1 - dist / 120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ==================== NAVIGATION ==================== */
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+  // Close notification panel
+  document.getElementById('notifPanel').classList.add('hidden');
+  if (page === 'doctors') loadDoctors();
+  if (page === 'admin-dashboard') loadAdminData();
+  if (page === 'profile') loadUserProfile();
+}
+
+/* ==================== TOAST ==================== */
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icons = {success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
+  const colors = {success:'#22C55E',error:'#EF4444',info:'var(--accent)'};
+  toast.innerHTML = `<i class="fas ${icons[type]}" style="color:${colors[type]}"></i><span style="color:var(--text)">${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%)'; toast.style.transition = 'all .3s'; setTimeout(() => toast.remove(), 300); }, 4000);
+}
+
+/* ==================== NOTIFICATIONS ==================== */
+function playNotifSound() {
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, ac.currentTime);
+    osc.frequency.setValueAtTime(1100, ac.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.15, ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.4);
+    osc.start(ac.currentTime); osc.stop(ac.currentTime + 0.4);
+  } catch(e) {}
+}
+function addNotification(title, body) {
+  const notif = { id: Date.now(), title, body, time: new Date().toISOString(), read: false };
+  localNotifications.unshift(notif);
+  if (localNotifications.length > 50) localNotifications.pop();
+  localStorage.setItem('estasharni_notifs', JSON.stringify(localNotifications));
+  updateNotifUI();
+  playNotifSound();
+}
+function updateNotifUI() {
+  const unread = localNotifications.filter(n => !n.read).length;
+  const badge = document.getElementById('notifCount');
+  const panel = document.getElementById('navNotif');
+  if (currentUser) {
+    panel.classList.remove('hidden');
+    if (unread > 0) { badge.style.display = 'flex'; badge.textContent = unread; }
+    else { badge.style.display = 'none'; }
+  }
+  const list = document.getElementById('notifList');
+  if (localNotifications.length === 0) {
+    list.innerHTML = '<p class="text-sm text-center py-4" style="color:var(--text3)">No notifications yet</p>';
+  } else {
+    list.innerHTML = localNotifications.slice(0, 20).map(n => `
+      <div class="p-3 rounded-xl mb-2 transition" style="background:var(--bg3);${!n.read?'border-left:3px solid var(--accent)':''}">
+        <p class="text-sm font-medium" style="color:var(--text)">${n.title}</p>
+        <p class="text-xs mt-1" style="color:var(--text3)">${n.body}</p>
+        <p class="text-xs mt-1" style="color:var(--text3)">${new Date(n.time).toLocaleString()}</p>
+      </div>
+    `).join('');
+    localNotifications.forEach(n => n.read = true);
+    localStorage.setItem('estasharni_notifs', JSON.stringify(localNotifications));
+  }
+}
+function toggleNotifPanel() {
+  document.getElementById('notifPanel').classList.toggle('hidden');
+}
+function clearNotifications() {
+  localNotifications = [];
+  localStorage.setItem('estasharni_notifs', '[]');
+  updateNotifUI();
+}
+
+/* ==================== RENDER SPECIALTIES ==================== */
 function renderSpecialties() {
-    const grid = document.getElementById('specialtiesGrid');
-    grid.innerHTML = specialties.map(s => `
-        <div class="card p-5 text-center cursor-pointer fade-child" onclick="navigate('doctors');setTimeout(()=>{document.getElementById('filterSpec').value='${s.name}';filterDoctors()},100)">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${s.color} flex items-center justify-center mx-auto mb-3"><i class="fa-solid ${s.icon} text-lg text-white"></i></div>
-            <h4 class="font-bold text-sm" style="color:var(--fg)">${s.name}</h4>
+  const grid = document.getElementById('specialtiesGrid');
+  grid.innerHTML = specialties.map(s => `
+    <div class="card p-5 flex items-center gap-4 cursor-pointer group" onclick="navigate('doctors');setTimeout(()=>filterBySpecialty('${s.name}'),200)">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center transition group-hover:scale-110" style="background:${s.color}15">
+        <i class="fas ${s.icon} text-lg" style="color:${s.color}"></i>
+      </div>
+      <span class="font-medium text-sm" style="color:var(--text)">${s.name}</span>
+    </div>
+  `).join('');
+}
+function renderSpecialtyFilters() {
+  const container = document.getElementById('specialtyFilters');
+  container.innerHTML = `<button onclick="filterBySpecialty('all')" class="badge badge-blue cursor-pointer spec-filter" data-spec="all">All</button>` +
+    specialties.map(s => `<button onclick="filterBySpecialty('${s.name}')" class="badge cursor-pointer spec-filter" data-spec="${s.name}" style="background:var(--bg3);color:var(--text2)">${s.name}</button>`).join('');
+}
+function filterBySpecialty(spec) {
+  filteredSpecialty = spec;
+  document.querySelectorAll('.spec-filter').forEach(b => {
+    if (b.dataset.spec === spec) { b.className = 'badge badge-blue cursor-pointer spec-filter'; }
+    else { b.style.background = 'var(--bg3)'; b.style.color = 'var(--text2)'; b.className = 'badge cursor-pointer spec-filter'; }
+  });
+  renderDoctorsGrid();
+}
+
+/* ==================== DOCTORS ==================== */
+function loadDoctors() {
+  db.ref('doctors').once('value').then(snap => {
+    const data = snap.val();
+    allDoctors = data ? Object.entries(data).map(([id, d]) => ({id, ...d})) : [];
+    renderDoctorsGrid();
+  }).catch(() => {
+    // Use sample data if DB not available
+    allDoctors = [
+      {id:'d1',name:'Dr. Sarah Mitchell',specialty:'Cardiology',experience:'12 years',qualifications:'MD, FACC',bio:'Expert in cardiovascular diseases with extensive research experience.',photo:'',status:'approved',rating:4.9},
+      {id:'d2',name:'Dr. James Chen',specialty:'Neurology',experience:'15 years',qualifications:'MD, PhD',bio:'Specialist in neurodegenerative disorders and stroke management.',photo:'',status:'approved',rating:4.8},
+      {id:'d3',name:'Dr. Amira Hassan',specialty:'Dermatology',experience:'8 years',qualifications:'MBBS, MD Dermatology',bio:'Expert in cosmetic and medical dermatology.',photo:'',status:'approved',rating:4.7},
+      {id:'d4',name:'Dr. Michael Brown',specialty:'Orthopedics',experience:'20 years',qualifications:'MS Orthopedics',bio:'Specialist in joint replacement and sports medicine.',photo:'',status:'approved',rating:4.9},
+      {id:'d5',name:'Dr. Layla Karim',specialty:'Pediatrics',experience:'10 years',qualifications:'MD Pediatrics',bio:'Dedicated to child health and developmental care.',photo:'',status:'approved',rating:4.8},
+      {id:'d6',name:'Dr. David Wilson',specialty:'Psychiatry',experience:'14 years',qualifications:'MD, FRCPsych',bio:'Expert in mood disorders, anxiety, and cognitive behavioral therapy.',photo:'',status:'approved',rating:4.6},
+    ];
+    renderDoctorsGrid();
+  });
+}
+function renderDoctorsGrid() {
+  const grid = document.getElementById('doctorsGrid');
+  let docs = allDoctors.filter(d => d.status === 'approved');
+  if (filteredSpecialty !== 'all') docs = docs.filter(d => d.specialty === filteredSpecialty);
+  if (docs.length === 0) {
+    grid.innerHTML = '<p class="text-center col-span-full py-12" style="color:var(--text3)">No doctors found matching your criteria.</p>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="card p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl overflow-hidden" style="background:var(--accent)">
+          ${d.photo ? `<img src="${d.photo}" class="w-full h-full object-cover">` : d.name.charAt(0)}
         </div>
-    `).join('');
-}
-
-function loadDoctorsPage() {
-    // Populate filter dropdown
-    const sel = document.getElementById('filterSpec');
-    if (sel.options.length <= 1) {
-        specialties.forEach(s => { const o = document.createElement('option'); o.value = s.name; o.textContent = s.name; sel.appendChild(o); });
-    }
-    db.ref('doctors').on('value', (snap) => {
-        state.doctors = snap.val() ? Object.entries(snap.val()).map(([id, d]) => ({ id, ...d })) : [];
-        filterDoctors();
-    });
-}
-
-function filterDoctors() {
-    const spec = document.getElementById('filterSpec').value;
-    const search = document.getElementById('filterSearch').value.trim().toLowerCase();
-    let filtered = state.doctors;
-    if (spec) filtered = filtered.filter(d => d.specialty === spec);
-    if (search) filtered = filtered.filter(d => d.name.toLowerCase().includes(search) || (d.specialty || '').toLowerCase().includes(search));
-    renderDoctorsGrid(filtered);
-}
-
-function renderDoctorsGrid(doctors) {
-    const grid = document.getElementById('doctorsGrid');
-    const noDoc = document.getElementById('noDoctors');
-    if (doctors.length === 0) { grid.innerHTML = ''; noDoc.style.display = 'block'; return; }
-    noDoc.style.display = 'none';
-    grid.innerHTML = doctors.map((d, i) => `
-        <div class="card overflow-hidden fade-child" style="animation-delay:${i * 0.08}s">
-            <div class="h-40 bg-gradient-to-br from-sky-100 to-cyan-100 dark:from-sky-900/20 dark:to-cyan-900/20 relative">
-                <img src="${d.image || 'https://picsum.photos/seed/doc' + i + '/400/300'}" class="w-full h-full object-cover" alt="${d.name}" onerror="this.src='https://picsum.photos/seed/fallback${i}/400/300'">
-            </div>
-            <div class="p-5">
-                <h3 class="text-lg font-bold mb-1" style="color:var(--fg)">د. ${d.name}</h3>
-                <p class="text-sm mb-3" style="color:#0ea5e9">${d.specialty || 'طب عام'}</p>
-                <div class="flex items-center gap-4 text-xs mb-3" style="color:var(--muted)">
-                    <span><i class="fa-solid fa-briefcase-medical ml-1"></i>${d.experience || 0} سنوات</span>
-                    <span><i class="fa-solid fa-star ml-1" style="color:#fbbf24"></i>${(4 + Math.random()).toFixed(1)}</span>
-                </div>
-                <p class="text-xs mb-4 line-clamp-2" style="color:var(--muted)">${d.bio || d.qualifications || 'طبيب متخصص ومتميز'}</p>
-                <div class="flex items-center justify-between">
-                    <span class="font-bold" style="color:#0ea5e9">${d.price || '50'} ريال</span>
-                    <button class="btn-pri text-xs px-4 py-2" onclick="openConsultModal('${d.id}','${d.name}','${d.specialty}','${d.image || ''}')">استشر الآن</button>
-                </div>
-            </div>
+        <div>
+          <h3 class="font-display font-700" style="color:var(--text)">${d.name}</h3>
+          <p class="text-sm" style="color:var(--accent)">${d.specialty}</p>
+          <div class="flex items-center gap-1 mt-1"><i class="fas fa-star text-yellow-400 text-xs"></i><span class="text-xs" style="color:var(--text2)">${d.rating || 'N/A'}</span></div>
         </div>
-    `).join('');
-    setTimeout(initFadeObserver, 100);
+      </div>
+      <p class="text-sm mb-2" style="color:var(--text2)">${d.bio || ''}</p>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <span class="badge badge-blue text-xs"><i class="fas fa-briefcase-medical"></i> ${d.experience}</span>
+        <span class="badge badge-green text-xs"><i class="fas fa-award"></i> ${d.qualifications}</span>
+      </div>
+      <div class="mt-auto">
+        <button onclick="requestConsultation('${d.id}','${d.name}')" class="btn btn-sm w-full justify-center"><i class="fas fa-calendar-check"></i> Request Consultation</button>
+      </div>
+    </div>
+  `).join('');
+}
+function filterDoctors(query) {
+  const grid = document.getElementById('doctorsGrid');
+  const q = query.toLowerCase();
+  let docs = allDoctors.filter(d => d.status === 'approved' && (d.name.toLowerCase().includes(q) || d.specialty.toLowerCase().includes(q)));
+  if (filteredSpecialty !== 'all') docs = docs.filter(d => d.specialty === filteredSpecialty);
+  if (docs.length === 0) {
+    grid.innerHTML = '<p class="text-center col-span-full py-12" style="color:var(--text3)">No doctors found.</p>';
+    return;
+  }
+  grid.innerHTML = docs.map(d => `
+    <div class="card p-6 flex flex-col">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl overflow-hidden" style="background:var(--accent)">${d.photo ? `<img src="${d.photo}" class="w-full h-full object-cover">` : d.name.charAt(0)}</div>
+        <div><h3 class="font-display font-700" style="color:var(--text)">${d.name}</h3><p class="text-sm" style="color:var(--accent)">${d.specialty}</p></div>
+      </div>
+      <p class="text-sm mb-4" style="color:var(--text2)">${d.bio || ''}</p>
+      <button onclick="requestConsultation('${d.id}','${d.name}')" class="btn btn-sm w-full justify-center mt-auto"><i class="fas fa-calendar-check"></i> Request Consultation</button>
+    </div>
+  `).join('');
+}
+function requestConsultation(doctorId, doctorName) {
+  if (!currentUser) { navigate('auth'); showToast('Please sign in to request a consultation', 'info'); return; }
+  showModal('Request Consultation', `
+    <p class="text-sm mb-4" style="color:var(--text2)">You are requesting a consultation with <strong style="color:var(--text)">${doctorName}</strong></p>
+    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Preferred Date</label><input type="date" id="consultDate" class="input" min="${new Date().toISOString().split('T')[0]}"></div>
+    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Preferred Time</label><select id="consultTime" class="input"><option>09:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>01:00 PM</option><option>02:00 PM</option><option>03:00 PM</option><option>04:00 PM</option><option>05:00 PM</option></select></div>
+    <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Describe your concern</label><textarea id="consultDesc" class="input" placeholder="Brief description of your medical concern..."></textarea></div>
+    <button onclick="submitConsultation('${doctorId}','${doctorName}')" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> Submit Request</button>
+  `);
+}
+function submitConsultation(doctorId, doctorName) {
+  const date = document.getElementById('consultDate').value;
+  const time = document.getElementById('consultTime').value;
+  const desc = document.getElementById('consultDesc').value;
+  if (!date) { showToast('Please select a date', 'error'); return; }
+  if (!desc) { showToast('Please describe your concern', 'error'); return; }
+  const consult = {
+    patientId: currentUser.uid,
+    patientName: currentUser.displayName || currentUser.email,
+    patientEmail: currentUser.email,
+    doctorId, doctorName, date, time, description: desc,
+    status: 'pending', createdAt: new Date().toISOString()
+  };
+  db.ref('consultations').push(consult).then(() => {
+    closeModal();
+    showToast('Consultation request submitted successfully!', 'success');
+    addNotification('Consultation Requested', `Your request with ${doctorName} on ${date} has been submitted.`);
+  }).catch(() => {
+    closeModal();
+    showToast('Request submitted (local mode)', 'success');
+    addNotification('Consultation Requested', `Your request with ${doctorName} has been submitted.`);
+  });
 }
 
-/* ===== Consultation Modal ===== */
-function openConsultModal(id, name, spec, img) {
-    if (!state.currentUser) { showToast('يرجى تسجيل الدخول أولاً', 'error'); navigate('auth'); return; }
-    document.getElementById('modalDocId').value = id;
-    document.getElementById('modalDocName').textContent = 'د. ' + name;
-    document.getElementById('modalDocSpec').textContent = spec;
-    document.getElementById('modalDocImg').src = img || 'https://picsum.photos/seed/doc1/200/200';
-    document.getElementById('doctorModal').style.display = 'flex';
-}
-function closeDoctorModal() { document.getElementById('doctorModal').style.display = 'none'; }
-
-function requestConsultation(e) {
-    e.preventDefault();
-    if (!state.currentUser) { showToast('يرجى تسجيل الدخول', 'error'); return; }
-    const docId = document.getElementById('modalDocId').value;
-    const consult = {
-        userId: state.currentUser.uid,
-        userName: state.currentUser.name,
-        userEmail: state.currentUser.email,
-        doctorId: docId,
-        description: document.getElementById('consultDesc').value,
-        method: document.getElementById('consultMethod').value,
-        status: 'pending',
-        createdAt: Date.now()
-    };
-    db.ref('consultations').push(consult).then(() => {
-        showToast('تم إرسال طلب الاستشارة بنجاح', 'success');
-        addNotification('طلب استشارة جديد', 'تم إرسال طلبك وسيتم الرد عليه قريباً');
-        closeDoctorModal();
-        e.target.reset();
-    }).catch(err => showToast('حدث خطأ', 'error'));
+/* ==================== CONTACT ==================== */
+function submitContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const subject = document.getElementById('contactSubject').value.trim();
+  const msg = document.getElementById('contactMsg').value.trim();
+  if (!name || !email || !subject || !msg) { showToast('Please fill in all fields', 'error'); return; }
+  const message = { name, email, subject, message: msg, type: 'contact', createdAt: new Date().toISOString() };
+  db.ref('messages').push(message).then(() => {
+    showToast('Message sent successfully!', 'success');
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactSubject').value = '';
+    document.getElementById('contactMsg').value = '';
+  }).catch(() => {
+    showToast('Message sent (local mode)', 'success');
+  });
 }
 
-/* ===== Contact Page ===== */
-function submitContact(e) {
-    e.preventDefault();
-    const msg = {
-        name: document.getElementById('contactName').value,
-        email: document.getElementById('contactEmail').value,
-        subject: document.getElementById('contactSubject').value,
-        message: document.getElementById('contactMsg').value,
-        type: 'contact',
-        read: false,
-        createdAt: Date.now()
-    };
-    db.ref('messages').push(msg).then(() => {
-        showToast('تم إرسال رسالتك بنجاح، سنرد عليك قريباً', 'success');
-        e.target.reset();
-    }).catch(err => showToast('حدث خطأ في الإرسال', 'error'));
-}
-
-/* ===== Profile Page ===== */
-function loadProfile() {
-    if (!state.currentUser) return;
-    const u = state.currentUser;
-    document.getElementById('profileAvatar').textContent = u.name.charAt(0);
-    document.getElementById('profileName').textContent = u.name;
-    document.getElementById('profileEmail').textContent = u.email;
-    document.getElementById('profName').value = u.name || '';
-    document.getElementById('profEmail').value = u.email || '';
-    document.getElementById('profPhone').value = u.phone || '';
-    document.getElementById('profAge').value = u.age || '';
-    // Load consultations
-    db.ref('consultations').orderByChild('userId').equalTo(u.uid).on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('myConsultations');
-        const noEl = document.getElementById('noConsultations');
-        if (!data) { el.innerHTML = ''; noEl.style.display = 'block'; return; }
-        noEl.style.display = 'none';
-        el.innerHTML = Object.entries(data).map(([id, c]) => `
-            <div class="card p-5">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="font-bold" style="color:var(--fg)">استشارة - ${c.doctorId}</span>
-                    <span class="badge badge-${c.status === 'pending' ? 'pending' : c.status === 'approved' ? 'approved' : 'rejected'}">${c.status === 'pending' ? 'قيد المراجعة' : c.status === 'approved' ? 'مقبولة' : 'مرفوضة'}</span>
-                </div>
-                <p class="text-sm mb-2" style="color:var(--muted)">${c.description}</p>
-                <div class="flex items-center gap-4 text-xs" style="color:var(--muted)">
-                    <span><i class="fa-solid fa-clock ml-1"></i>${new Date(c.createdAt).toLocaleDateString('ar-EG')}</span>
-                    <span><i class="fa-solid fa-${c.method === 'video' ? 'video' : c.method === 'phone' ? 'phone' : 'comment'} ml-1"></i>${c.method === 'video' ? 'فيديو' : c.method === 'phone' ? 'هاتف' : 'محادثة'}</span>
-                </div>
-                ${c.adminReply ? `<div class="mt-3 p-3 rounded-xl" style="background:var(--bg)"><p class="text-sm font-semibold" style="color:#0ea5e9">رد الإدارة:</p><p class="text-sm" style="color:var(--fg)">${c.adminReply}</p></div>` : ''}
-            </div>
-        `).join('');
-    });
-    // Load user messages
-    db.ref('messages').orderByChild('email').equalTo(u.email).on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('userMessages');
-        if (!data) { el.innerHTML = '<p class="text-center py-6" style="color:var(--muted)">لا توجد رسائل</p>'; return; }
-        el.innerHTML = Object.values(data).map(m => `
-            <div class="card p-4">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="font-bold text-sm" style="color:var(--fg)">${m.subject || 'رسالة'}</span>
-                    <span class="text-xs" style="color:var(--muted)">${new Date(m.createdAt).toLocaleDateString('ar-EG')}</span>
-                </div>
-                <p class="text-sm" style="color:var(--muted)">${m.message}</p>
-                ${m.reply ? `<div class="mt-2 p-3 rounded-xl" style="background:var(--bg)"><p class="text-xs font-semibold" style="color:#0ea5e9">الرد:</p><p class="text-sm" style="color:var(--fg)">${m.reply}</p></div>` : ''}
-            </div>
-        `).join('');
-    });
-}
-
-function switchProfileTab(tab, btn) {
-    document.querySelectorAll('#profileTabInfo,#profileTabConsultations,#profileTabMessages').forEach(el => el.style.display = 'none');
-    document.getElementById('profileTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
-    btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-}
-
-function updateProfile(e) {
-    e.preventDefault();
-    const updates = {
-        name: document.getElementById('profName').value,
-        phone: document.getElementById('profPhone').value,
-        age: document.getElementById('profAge').value
-    };
-    db.ref('users/' + state.currentUser.uid).update(updates).then(() => {
-        state.currentUser = { ...state.currentUser, ...updates };
-        localStorage.setItem('estasharni-user', JSON.stringify(state.currentUser));
-        updateUIForAuth();
-        loadProfile();
-        showToast('تم تحديث المعلومات بنجاح', 'success');
-    });
-}
-
-function sendUserMessage(e) {
-    e.preventDefault();
-    const text = document.getElementById('userMsgText').value.trim();
-    if (!text) return;
-    const msg = {
-        name: state.currentUser.name,
-        email: state.currentUser.email,
-        subject: 'رسالة من المستخدم',
-        message: text,
-        type: 'user_message',
-        userId: state.currentUser.uid,
-        read: false,
-        createdAt: Date.now()
-    };
-    db.ref('messages').push(msg).then(() => {
-        showToast('تم إرسال رسالتك', 'success');
-        document.getElementById('userMsgText').value = '';
-    });
-}
-
-/* ===== Admin Dashboard ===== */
-function loadAdminDashboard() {
-    if (!state.currentUser || state.currentUser.role !== 'admin') return;
-    loadAdminStats();
-    loadAdminDoctors();
-    loadAdminUsers();
-    loadDoctorRequests();
-    loadAdminConsultations();
-    loadAdminMessages();
-    loadAdminSettings();
-    loadAdminAdmins();
-}
-
-function switchAdminTab(tab, btn) {
-    document.querySelectorAll('.admin-tab').forEach(el => el.style.display = 'none');
-    const target = document.getElementById('adminTab-' + tab);
-    if (target) target.style.display = 'block';
-    // Update sidebar
-    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
-    if (btn) {
-        btn.classList.add('active');
-        // Also activate corresponding sidebar item
-        document.querySelectorAll('.sidebar-desktop .sidebar-item').forEach(s => {
-            if (s.textContent.trim() === btn.textContent.trim()) s.classList.add('active');
-        });
+/* ==================== AUTH ==================== */
+function setupAuthListener() {
+  auth.onAuthStateChanged(async (user) => {
+    currentUser = user;
+    if (user) {
+      // Check role in DB
+      try {
+        const snap = await db.ref('users/' + user.uid).once('value');
+        const userData = snap.val();
+        if (userData) {
+          currentUser.role = userData.role || 'patient';
+          currentUser.dbData = userData;
+        } else {
+          currentUser.role = selectedRole;
+          // Save new user
+          await db.ref('users/' + user.uid).set({
+            name: user.displayName || user.email,
+            email: user.email,
+            role: selectedRole,
+            phone: user.phoneNumber || '',
+            createdAt: new Date().toISOString()
+          });
+          currentUser.role = selectedRole;
+        }
+      } catch(e) {
+        currentUser.role = selectedRole;
+      }
+      updateUIForUser();
+      if (currentUser.role === 'admin') navigate('admin-dashboard');
+      else if (currentUser.role === 'doctor') navigate('profile');
+      else navigate('home');
+    } else {
+      updateUIForGuest();
     }
+    updateNotifUI();
+  });
 }
-
-function loadAdminStats() {
-    db.ref('doctors').once('value', s => { document.getElementById('statDoctors').textContent = s.val() ? Object.keys(s.val()).length : 0; });
-    db.ref('users').orderByChild('role').equalTo('user').once('value', s => { document.getElementById('statUsers').textContent = s.val() ? Object.keys(s.val()).length : 0; });
-    db.ref('consultations').once('value', s => { document.getElementById('statConsult').textContent = s.val() ? Object.keys(s.val()).length : 0; });
-    db.ref('doctorRequests').orderByChild('status').equalTo('pending').once('value', s => { document.getElementById('statPending').textContent = s.val() ? Object.keys(s.val()).length : 0; });
-    // Recent activity
-    db.ref('consultations').orderByChild('createdAt').limitToLast(5).once('value', s => {
-        const data = s.val();
-        const el = document.getElementById('recentActivity');
-        if (!data) { el.innerHTML = '<p style="color:var(--muted)" class="text-sm">لا توجد أنشطة حديثة</p>'; return; }
-        el.innerHTML = Object.values(data).reverse().map(c => `
-            <div class="flex items-center gap-3 p-3 rounded-xl" style="background:var(--bg)">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-cyan-400 flex items-center justify-center"><i class="fa-solid fa-stethoscope text-xs text-white"></i></div>
-                <div class="flex-1"><p class="text-sm font-semibold" style="color:var(--fg)">استشارة جديدة من ${c.userName}</p><p class="text-xs" style="color:var(--muted)">${new Date(c.createdAt).toLocaleDateString('ar-EG')}</p></div>
-            </div>
-        `).join('');
+function updateUIForUser() {
+  document.getElementById('loginBtn').classList.add('hidden');
+  document.getElementById('userMenu').classList.remove('hidden');
+  document.getElementById('userName').textContent = currentUser.displayName || currentUser.email?.split('@')[0] || 'User';
+  document.getElementById('userAvatar').textContent = (currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase();
+}
+function updateUIForGuest() {
+  document.getElementById('loginBtn').classList.remove('hidden');
+  document.getElementById('userMenu').classList.add('hidden');
+  document.getElementById('navNotif').classList.add('hidden');
+}
+function selectRole(role) {
+  selectedRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => {
+    if (b.dataset.role === role) { b.style.borderColor = 'var(--accent)'; b.style.background = 'var(--bg3)'; b.style.color = 'var(--accent)'; }
+    else { b.style.borderColor = 'var(--border)'; b.style.background = 'transparent'; b.style.color = 'var(--text2)'; }
+  });
+  // Show/hide doctor reg form
+  document.getElementById('doctorRegForm').classList.toggle('hidden', role !== 'doctor' || !isSignUp);
+  if (role === 'doctor' && !isSignUp) {
+    document.getElementById('authSubtitle').textContent = 'Doctors sign in, then complete registration';
+  }
+}
+function toggleAuthMode() {
+  isSignUp = !isSignUp;
+  document.getElementById('signInForm').classList.toggle('hidden', isSignUp);
+  document.getElementById('signUpForm').classList.toggle('hidden', isSignUp || selectedRole === 'doctor');
+  document.getElementById('doctorRegForm').classList.toggle('hidden', selectedRole !== 'doctor' || !isSignUp);
+  document.getElementById('authTitle').textContent = isSignUp ? 'Create Account' : 'Welcome Back';
+  document.getElementById('authSubtitle').textContent = isSignUp ? 'Fill in your details to get started' : 'Sign in to your account';
+}
+async function emailSignIn() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('Please fill in email and password', 'error'); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+    showToast('Signed in successfully!', 'success');
+  } catch(e) {
+    showToast(e.message.replace('Firebase: ', ''), 'error');
+  }
+}
+async function emailSignUp() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const confirm = document.getElementById('regPassConfirm').value;
+  if (!name || !email || !pass) { showToast('Please fill in all fields', 'error'); return; }
+  if (pass.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+  if (pass !== confirm) { showToast('Passwords do not match', 'error'); return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+    showToast('Account created successfully!', 'success');
+  } catch(e) {
+    showToast(e.message.replace('Firebase: ', ''), 'error');
+  }
+}
+async function doctorSignUp() {
+  const name = document.getElementById('docRegName').value.trim();
+  const email = document.getElementById('docRegEmail').value.trim();
+  const pass = document.getElementById('docRegPass').value;
+  const specialty = document.getElementById('docRegSpecialty').value;
+  const exp = document.getElementById('docRegExp').value.trim();
+  const qual = document.getElementById('docRegQual').value.trim();
+  const bio = document.getElementById('docRegBio').value.trim();
+  if (!name || !email || !pass || !specialty || !exp || !qual) { showToast('Please fill in all required fields', 'error'); return; }
+  if (pass.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+    // Save as pending doctor
+    const doctorData = {
+      name, email, specialty, experience: exp, qualifications: qual, bio,
+      photo: '', certificates: '', status: 'pending', rating: 0,
+      userId: cred.user.uid, createdAt: new Date().toISOString()
+    };
+    // Try to upload photo
+    const photoInput = document.getElementById('docRegPhoto');
+    if (photoInput.files[0]) {
+      try {
+        const snap = await storage.ref('doctors/' + cred.user.uid + '/photo').put(photoInput.files[0]);
+        doctorData.photo = await snap.ref.getDownloadURL();
+      } catch(e) {}
+    }
+    await db.ref('doctors').push(doctorData);
+    await db.ref('users/' + cred.user.uid).set({
+      name, email, role: 'doctor', phone: '', createdAt: new Date().toISOString()
     });
+    showToast('Registration submitted! Awaiting admin approval.', 'success');
+    addNotification('Registration Submitted', 'Your doctor application is pending review by an administrator.');
+  } catch(e) {
+    showToast(e.message.replace('Firebase: ', ''), 'error');
+  }
+}
+function googleSignIn() {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(e => showToast(e.message.replace('Firebase: ', ''), 'error'));
+  } catch(e) { showToast('Google Auth not configured', 'error'); }
+}
+function facebookSignIn() {
+  try {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    auth.signInWithPopup(provider).catch(e => showToast(e.message.replace('Firebase: ', ''), 'error'));
+  } catch(e) { showToast('Facebook Auth not configured', 'error'); }
+}
+function showPhoneAuth() {
+  document.getElementById('phoneAuthModal').classList.remove('hidden');
+}
+function sendOTP() {
+  const phone = document.getElementById('phoneNum').value.trim();
+  if (!phone) { showToast('Please enter your phone number', 'error'); return; }
+  try {
+    const provider = new firebase.auth.PhoneAuthProvider();
+    provider.verifyPhoneNumber(phone, recaptchaVerifier).then(result => {
+      confirmationResult = result;
+      document.getElementById('otpSection').classList.remove('hidden');
+      document.getElementById('sendOtpBtn').classList.add('hidden');
+      document.getElementById('verifyOtpBtn').classList.remove('hidden');
+      showToast('OTP sent successfully!', 'success');
+    }).catch(e => showToast(e.message.replace('Firebase: ', ''), 'error'));
+  } catch(e) { showToast('Phone Auth not configured', 'error'); }
+}
+function verifyOTP() {
+  const code = document.getElementById('otpCode').value.trim();
+  if (!code) { showToast('Please enter the OTP', 'error'); return; }
+  if (confirmationResult) {
+    confirmationResult.confirm(code).then(() => {
+      showToast('Phone verification successful!', 'success');
+      document.getElementById('phoneAuthModal').classList.add('hidden');
+    }).catch(e => showToast('Invalid OTP', 'error'));
+  }
+}
+async function logout() {
+  try { await auth.signOut(); } catch(e) {}
+  currentUser = null;
+  updateUIForGuest();
+  navigate('home');
+  showToast('Signed out', 'info');
 }
 
-/* ===== Admin: Doctors Management ===== */
+/* ==================== MODAL ==================== */
+function showModal(title, content) {
+  document.getElementById('modalContainer').innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal-box">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="font-display font-700 text-lg" style="color:var(--text)">${title}</h3>
+          <button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text3)"><i class="fas fa-times"></i></button>
+        </div>
+        ${content}
+      </div>
+    </div>
+  `;
+}
+function closeModal() {
+  document.getElementById('modalContainer').innerHTML = '';
+}
+
+/* ==================== FILE HELPERS ==================== */
+function previewFile(input, previewId) {
+  const preview = document.getElementById(previewId);
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.classList.remove('hidden'); };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function handleCertUpload(input) {
+  const names = document.getElementById('certFileNames');
+  names.innerHTML = Array.from(input.files).map(f => `<span class="text-xs block" style="color:var(--accent)"><i class="fas fa-file-check mr-1"></i>${f.name}</span>`).join('');
+}
+async function uploadFile(file, path) {
+  try {
+    const snap = await storage.ref(path).put(file);
+    return await snap.ref.getDownloadURL();
+  } catch(e) { return ''; }
+}
+
+/* ==================== ADMIN DASHBOARD ==================== */
+function showAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
+  document.getElementById('tab-' + tab)?.classList.remove('hidden');
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  event?.target?.closest?.('.sidebar-link')?.classList.add('active');
+  if (tab === 'doctors') loadAdminDoctors();
+  if (tab === 'users') loadAdminUsers();
+  if (tab === 'requests') loadAdminConsultations();
+  if (tab === 'messages') loadAdminMessages();
+  if (tab === 'admin-mgmt') loadAdminMgmt();
+  if (tab === 'settings') loadSettings();
+  // Close mobile sidebar
+  document.getElementById('adminSidebar').classList.remove('open');
+}
+async function loadAdminData() {
+  loadAdminOverview();
+  loadAdminDoctors();
+  loadAdminUsers();
+  loadAdminConsultations();
+  loadAdminMessages();
+  loadAdminMgmt();
+  loadSettings();
+}
+function loadAdminOverview() {
+  Promise.all([
+    db.ref('doctors').once('value'),
+    db.ref('users').once('value'),
+    db.ref('consultations').once('value'),
+    db.ref('messages').once('value')
+  ]).then(([docs, users, consults, msgs]) => {
+    const d = docs.val() || {};
+    const u = users.val() || {};
+    const c = consults.val() || {};
+    const m = msgs.val() || {};
+    const approvedDocs = Object.values(d).filter(x => x.status === 'approved').length;
+    const pendingDocs = Object.values(d).filter(x => x.status === 'pending').length;
+    document.getElementById('adminStats').innerHTML = `
+      <div class="stat-card"><div class="stat-num">${Object.keys(u).length}</div><p class="text-sm mt-1" style="color:var(--text3)">Total Users</p></div>
+      <div class="stat-card"><div class="stat-num">${approvedDocs}</div><p class="text-sm mt-1" style="color:var(--text3)">Active Doctors</p></div>
+      <div class="stat-card"><div class="stat-num">${Object.keys(c).length}</div><p class="text-sm mt-1" style="color:var(--text3)">Consultations</p></div>
+      <div class="stat-card"><div class="stat-num">${Object.keys(m).length}</div><p class="text-sm mt-1" style="color:var(--text3)">Messages</p></div>
+    `;
+    // Recent users
+    const recentU = Object.entries(u).slice(-5).reverse();
+    document.getElementById('recentUsers').innerHTML = recentU.length ? recentU.map(([id, u]) => `
+      <div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:var(--accent)">${(u.name||'U').charAt(0)}</div>
+        <div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">${u.name||'Unknown'}</p><p class="text-xs" style="color:var(--text3)">${u.role||'patient'}</p></div>
+      </div>
+    `).join('') : '<p class="text-sm" style="color:var(--text3)">No users yet</p>';
+    // Recent consultations
+    const recentC = Object.entries(c).slice(-5).reverse();
+    document.getElementById('recentConsultations').innerHTML = recentC.length ? recentC.map(([id, c]) => `
+      <div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)">
+        <div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">${c.patientName||'Patient'} - ${c.doctorName||'Doctor'}</p><p class="text-xs" style="color:var(--text3)">${c.date||''}</p></div>
+        <span class="badge ${c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red'} text-xs">${c.status}</span>
+      </div>
+    `).join('') : '<p class="text-sm" style="color:var(--text3)">No consultations yet</p>';
+  }).catch(() => {
+    document.getElementById('adminStats').innerHTML = `
+      <div class="stat-card"><div class="stat-num">0</div><p class="text-sm mt-1" style="color:var(--text3)">Total Users</p></div>
+      <div class="stat-card"><div class="stat-num">0</div><p class="text-sm mt-1" style="color:var(--text3)">Active Doctors</p></div>
+      <div class="stat-card"><div class="stat-num">0</div><p class="text-sm mt-1" style="color:var(--text3)">Consultations</p></div>
+      <div class="stat-card"><div class="stat-num">0</div><p class="text-sm mt-1" style="color:var(--text3)">Messages</p></div>
+    `;
+    document.getElementById('recentUsers').innerHTML = '<p class="text-sm" style="color:var(--text3)">No data yet</p>';
+    document.getElementById('recentConsultations').innerHTML = '<p class="text-sm" style="color:var(--text3)">No data yet</p>';
+  });
+}
 function loadAdminDoctors() {
-    db.ref('doctors').on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('adminDoctorsGrid');
-        if (!data) { el.innerHTML = '<p style="color:var(--muted)" class="text-sm">لا يوجد أطباء</p>'; return; }
-        el.innerHTML = Object.entries(data).map(([id, d]) => `
-            <div class="card overflow-hidden">
-                <div class="h-32"><img src="${d.image || 'https://picsum.photos/seed/admin' + id + '/400/200'}" class="w-full h-full object-cover" alt=""></div>
-                <div class="p-4">
-                    <h4 class="font-bold" style="color:var(--fg)">د. ${d.name}</h4>
-                    <p class="text-sm" style="color:#0ea5e9">${d.specialty}</p>
-                    <div class="flex gap-2 mt-3">
-                        <button class="btn-sec text-xs px-3 py-1" onclick="editDoctor('${id}')"><i class="fa-solid fa-edit"></i></button>
-                        <button class="text-xs px-3 py-1 rounded-lg font-semibold text-red-500 border border-red-300 bg-transparent cursor-pointer transition-all hover:bg-red-500 hover:text-white" style="font-family:inherit" onclick="deleteDoctor('${id}')"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    });
+  db.ref('doctors').once('value').then(snap => {
+    const data = snap.val() || {};
+    allDoctors = Object.entries(data).map(([id, d]) => ({id, ...d}));
+    // Pending section
+    const pending = allDoctors.filter(d => d.status === 'pending');
+    const pendingSec = document.getElementById('pendingDoctorsSection');
+    if (pending.length > 0) {
+      pendingSec.classList.remove('hidden');
+      document.getElementById('pendingDoctorsList').innerHTML = pending.map(d => `
+        <div class="card p-4 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold" style="background:var(--accent)">${d.photo ? `<img src="${d.photo}" class="w-full h-full object-cover">` : d.name.charAt(0)}</div>
+          <div class="flex-1">
+            <p class="font-medium text-sm" style="color:var(--text)">${d.name}</p>
+            <p class="text-xs" style="color:var(--text3)">${d.specialty} - ${d.experience}</p>
+            <p class="text-xs" style="color:var(--text3)">${d.qualifications}</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="approveDoctor('${d.id}')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button>
+            <button onclick="rejectDoctor('${d.id}')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+      `).join('');
+    } else { pendingSec.classList.add('hidden'); }
+    // Table
+    const approved = allDoctors.filter(d => d.status === 'approved' || d.status === 'rejected');
+    document.getElementById('adminDoctorsTable').innerHTML = approved.length ? approved.map(d => `
+      <tr>
+        <td><div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm overflow-hidden" style="background:var(--accent)">${d.photo ? `<img src="${d.photo}" class="w-full h-full object-cover">` : d.name.charAt(0)}</div></td>
+        <td style="color:var(--text)">${d.name}</td>
+        <td style="color:var(--text2)">${d.specialty}</td>
+        <td><span class="badge ${d.status==='approved'?'badge-green':'badge-red'}">${d.status}</span></td>
+        <td>
+          <div class="flex gap-2">
+            <button onclick="editDoctor('${d.id}')" class="btn btn-sm btn-outline" title="Edit"><i class="fas fa-edit"></i></button>
+            <button onclick="deleteDoctor('${d.id}')" class="btn btn-sm btn-danger" title="Delete"><i class="fas fa-trash"></i></button>
+            ${d.status==='rejected'?`<button onclick="approveDoctor('${d.id}')" class="btn btn-sm" style="background:#22C55E;color:#fff" title="Approve"><i class="fas fa-check"></i></button>`:''}
+          </div>
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">No doctors yet</td></tr>';
+  }).catch(() => {
+    document.getElementById('adminDoctorsTable').innerHTML = '<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">Connect to database to manage doctors</td></tr>';
+  });
 }
-
-let doctorImgData = null;
-function openDoctorModal(editId) {
-    doctorImgData = null;
-    document.getElementById('editDocId').value = '';
-    document.getElementById('addDocTitle').textContent = 'إضافة طبيب';
-    document.getElementById('addDocName').value = '';
-    document.getElementById('addDocSpec').value = '';
-    document.getElementById('addDocExp').value = '';
-    document.getElementById('addDocPrice').value = '';
-    document.getElementById('addDocQual').value = '';
-    document.getElementById('addDocBio').value = '';
-    document.getElementById('docImgPreview').style.display = 'none';
-    document.getElementById('docImgPlaceholder').style.display = 'block';
-    document.getElementById('addDoctorModal').style.display = 'flex';
+async function approveDoctor(id) {
+  await db.ref('doctors/' + id + '/status').set('approved');
+  showToast('Doctor approved!', 'success');
+  loadAdminDoctors();
 }
-function closeAddDoctorModal() { document.getElementById('addDoctorModal').style.display = 'none'; }
-
-function previewDoctorImg(input) {
-    if (!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        doctorImgData = e.target.result;
-        document.getElementById('docImgPreview').src = doctorImgData;
-        document.getElementById('docImgPreview').style.display = 'block';
-        document.getElementById('docImgPlaceholder').style.display = 'none';
-    };
-    reader.readAsDataURL(input.files[0]);
+async function rejectDoctor(id) {
+  await db.ref('doctors/' + id + '/status').set('rejected');
+  showToast('Doctor rejected', 'info');
+  loadAdminDoctors();
 }
-
+async function deleteDoctor(id) {
+  if (!confirm('Are you sure you want to delete this doctor?')) return;
+  await db.ref('doctors/' + id).remove();
+  showToast('Doctor deleted', 'info');
+  loadAdminDoctors();
+}
+function showAddDoctorModal() {
+  showModal('Add New Doctor', `
+    <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocName" class="input" placeholder="Full name"><input type="text" id="addDocSpecialty" class="input" placeholder="Specialty"></div>
+    <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocExp" class="input" placeholder="Experience"><input type="text" id="addDocQual" class="input" placeholder="Qualifications"></div>
+    <div class="mb-3"><textarea id="addDocBio" class="input" placeholder="Bio"></textarea></div>
+    <div class="mb-4"><div class="file-upload" onclick="document.getElementById('addDocPhoto').click()"><i class="fas fa-cloud-upload-alt text-xl mb-1" style="color:var(--text3)"></i><p class="text-xs" style="color:var(--text3)">Upload Photo</p><input type="file" id="addDocPhoto" accept="image/*" class="hidden" onchange="previewFile(this,'addDocPhotoPreview')"><img id="addDocPhotoPreview" class="hidden"></div></div>
+    <button onclick="addDoctor()" class="btn w-full justify-center"><i class="fas fa-plus"></i> Add Doctor</button>
+  `);
+}
+async function addDoctor() {
+  const name = document.getElementById('addDocName').value.trim();
+  const specialty = document.getElementById('addDocSpecialty').value.trim();
+  const exp = document.getElementById('addDocExp').value.trim();
+  const qual = document.getElementById('addDocQual').value.trim();
+  const bio = document.getElementById('addDocBio').value.trim();
+  if (!name || !specialty) { showToast('Name and specialty are required', 'error'); return; }
+  const doctorData = { name, specialty, experience: exp, qualifications: qual, bio, photo: '', status: 'approved', rating: 4.5, createdAt: new Date().toISOString() };
+  const photoInput = document.getElementById('addDocPhoto');
+  if (photoInput.files[0]) {
+    try {
+      const snap = await storage.ref('doctors/' + Date.now() + '/photo').put(photoInput.files[0]);
+      doctorData.photo = await snap.ref.getDownloadURL();
+    } catch(e) {}
+  }
+  await db.ref('doctors').push(doctorData);
+  closeModal();
+  showToast('Doctor added successfully!', 'success');
+  loadAdminDoctors();
+}
 function editDoctor(id) {
-    db.ref('doctors/' + id).once('value', (snap) => {
-        const d = snap.val();
-        if (!d) return;
-        document.getElementById('editDocId').value = id;
-        document.getElementById('addDocTitle').textContent = 'تعديل طبيب';
-        document.getElementById('addDocName').value = d.name || '';
-        document.getElementById('addDocSpec').value = d.specialty || '';
-        document.getElementById('addDocExp').value = d.experience || '';
-        document.getElementById('addDocPrice').value = d.price || '';
-        document.getElementById('addDocQual').value = d.qualifications || '';
-        document.getElementById('addDocBio').value = d.bio || '';
-        if (d.image) {
-            doctorImgData = d.image;
-            document.getElementById('docImgPreview').src = d.image;
-            document.getElementById('docImgPreview').style.display = 'block';
-            document.getElementById('docImgPlaceholder').style.display = 'none';
-        }
-        document.getElementById('addDoctorModal').style.display = 'flex';
-    });
+  const doc = allDoctors.find(d => d.id === id);
+  if (!doc) return;
+  showModal('Edit Doctor', `
+    <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="editDocName" class="input" value="${doc.name}"><input type="text" id="editDocSpecialty" class="input" value="${doc.specialty}"></div>
+    <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="editDocExp" class="input" value="${doc.experience||''}"><input type="text" id="editDocQual" class="input" value="${doc.qualifications||''}"></div>
+    <div class="mb-3"><textarea id="editDocBio" class="input">${doc.bio||''}</textarea></div>
+    <div class="mb-4"><div class="file-upload" onclick="document.getElementById('editDocPhoto').click()"><i class="fas fa-cloud-upload-alt text-xl mb-1" style="color:var(--text3)"></i><p class="text-xs" style="color:var(--text3)">Change Photo</p><input type="file" id="editDocPhoto" accept="image/*" class="hidden" onchange="previewFile(this,'editDocPhotoPreview')"><img id="editDocPhotoPreview" class="hidden" ${doc.photo?`src="${doc.photo}"`:''}></div></div>
+    <button onclick="saveEditDoctor('${id}')" class="btn w-full justify-center"><i class="fas fa-save"></i> Save Changes</button>
+  `);
 }
-
-function saveDoctor(e) {
-    e.preventDefault();
-    const editId = document.getElementById('editDocId').value;
-    const doc = {
-        name: document.getElementById('addDocName').value,
-        specialty: document.getElementById('addDocSpec').value,
-        experience: document.getElementById('addDocExp').value,
-        price: document.getElementById('addDocPrice').value,
-        qualifications: document.getElementById('addDocQual').value,
-        bio: document.getElementById('addDocBio').value,
-    };
-    if (doctorImgData) doc.image = doctorImgData;
-    const ref = editId ? db.ref('doctors/' + editId) : db.ref('doctors').push();
-    ref.set(doc).then(() => {
-        showToast(editId ? 'تم تحديث بيانات الطبيب' : 'تم إضافة الطبيب بنجاح', 'success');
-        closeAddDoctorModal();
-    }).catch(err => showToast('حدث خطأ', 'error'));
+async function saveEditDoctor(id) {
+  const updates = {
+    name: document.getElementById('editDocName').value.trim(),
+    specialty: document.getElementById('editDocSpecialty').value.trim(),
+    experience: document.getElementById('editDocExp').value.trim(),
+    qualifications: document.getElementById('editDocQual').value.trim(),
+    bio: document.getElementById('editDocBio').value.trim()
+  };
+  const photoInput = document.getElementById('editDocPhoto');
+  if (photoInput.files[0]) {
+    try {
+      const snap = await storage.ref('doctors/' + id + '/photo').put(photoInput.files[0]);
+      updates.photo = await snap.ref.getDownloadURL();
+    } catch(e) {}
+  }
+  await db.ref('doctors/' + id).update(updates);
+  closeModal();
+  showToast('Doctor updated!', 'success');
+  loadAdminDoctors();
 }
-
-function deleteDoctor(id) {
-    if (!confirm('هل أنت متأكد من حذف هذا الطبيب؟')) return;
-    db.ref('doctors/' + id).remove().then(() => showToast('تم حذف الطبيب', 'success'));
-}
-
-/* ===== Admin: Users ===== */
 function loadAdminUsers() {
-    db.ref('users').on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('usersTableBody');
-        if (!data) { el.innerHTML = '<tr><td colspan="4" class="p-4 text-center" style="color:var(--muted)">لا يوجد مستخدمون</td></tr>'; return; }
-        el.innerHTML = Object.entries(data).map(([id, u]) => `
-            <tr style="border-bottom:1px solid var(--border)">
-                <td class="p-3 font-semibold" style="color:var(--fg)">${u.name || '-'}</td>
-                <td class="p-3" style="color:var(--muted)">${u.email}</td>
-                <td class="p-3"><span class="badge ${u.role === 'admin' ? 'badge-approved' : u.role === 'doctor' ? 'badge-pending' : ''}" style="${u.role === 'user' ? 'background:#e0f2fe;color:#0369a1' : ''}">${u.role === 'admin' ? 'مدير' : u.role === 'doctor' ? 'طبيب' : 'مستخدم'}</span></td>
-                <td class="p-3 text-sm" style="color:var(--muted)">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
-            </tr>
-        `).join('');
-    });
+  db.ref('users').once('value').then(snap => {
+    const data = snap.val() || {};
+    allUsers = Object.entries(data).map(([id, u]) => ({id, ...u}));
+    document.getElementById('adminUsersTable').innerHTML = allUsers.length ? allUsers.map(u => `
+      <tr>
+        <td style="color:var(--text)">${u.name||'Unknown'}</td>
+        <td style="color:var(--text2)">${u.email||'-'}</td>
+        <td><span class="badge ${u.role==='admin'?'badge-red':u.role==='doctor'?'badge-blue':'badge-green'}">${u.role||'patient'}</span></td>
+        <td style="color:var(--text3)">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '-'}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">No users yet</td></tr>';
+  }).catch(() => {
+    document.getElementById('adminUsersTable').innerHTML = '<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">No data available</td></tr>';
+  });
 }
-
-/* ===== Admin: Doctor Requests ===== */
-function loadDoctorRequests() {
-    db.ref('doctorRequests').on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('doctorRequestsList');
-        const noEl = document.getElementById('noRequests');
-        if (!data) { el.innerHTML = ''; noEl.style.display = 'block'; return; }
-        const pending = Object.entries(data).filter(([_, r]) => r.status === 'pending');
-        if (pending.length === 0) { el.innerHTML = ''; noEl.style.display = 'block'; return; }
-        noEl.style.display = 'none';
-        el.innerHTML = pending.map(([id, r]) => `
-            <div class="card p-5">
-                <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-cyan-400 flex items-center justify-center text-white font-bold flex-shrink-0">${(r.name || '?').charAt(0)}</div>
-                    <div class="flex-1">
-                        <h4 class="font-bold" style="color:var(--fg)">${r.name}</h4>
-                        <p class="text-sm" style="color:#0ea5e9">${r.specialty || 'غير محدد'}</p>
-                        <p class="text-sm mt-1" style="color:var(--muted)">الخبرة: ${r.experience || '-'} سنوات</p>
-                        <p class="text-sm" style="color:var(--muted)">المؤهلات: ${r.qualifications || '-'}</p>
-                        <p class="text-xs mt-1" style="color:var(--muted)">البريد: ${r.email}</p>
-                        ${r.certificateImage ? `<img src="${r.certificateImage}" class="w-24 h-24 rounded-xl mt-2 object-cover cursor-pointer" onclick="window.open(this.src)" alt="الشهادة">` : ''}
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <button class="btn-pri text-xs px-4 py-2" onclick="approveDoctorRequest('${id}')"><i class="fa-solid fa-check ml-1"></i>قبول</button>
-                        <button class="text-xs px-4 py-2 rounded-lg font-semibold text-red-500 border border-red-300 bg-transparent cursor-pointer transition-all hover:bg-red-500 hover:text-white" style="font-family:inherit" onclick="rejectDoctorRequest('${id}')"><i class="fa-solid fa-xmark ml-1"></i>رفض</button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    });
-}
-
-function approveDoctorRequest(id) {
-    db.ref('doctorRequests/' + id).once('value', (snap) => {
-        const r = snap.val();
-        if (!r) return;
-        // Add to doctors collection
-        db.ref('doctors').push({
-            name: r.name,
-            specialty: r.specialty,
-            experience: r.experience,
-            qualifications: r.qualifications,
-            bio: r.qualifications,
-            price: '50',
-            image: r.certificateImage || ''
-        });
-        // Update request status
-        db.ref('doctorRequests/' + id).update({ status: 'approved' });
-        // Update user status
-        if (r.uid) db.ref('users/' + r.uid).update({ status: 'approved' });
-        // Notify user
-        if (r.uid) {
-            db.ref('notifications/' + r.uid).push({ title: 'تم قبول طلبك', body: 'تهانينا! تم قبول طلبك كطبيب على منصة إستشرني', time: new Date().toLocaleString('ar-EG'), read: false });
-        }
-        showToast('تم قبول الطبيب بنجاح', 'success');
-    });
-}
-
-function rejectDoctorRequest(id) {
-    db.ref('doctorRequests/' + id).once('value', (snap) => {
-        const r = snap.val();
-        if (!r) return;
-        db.ref('doctorRequests/' + id).update({ status: 'rejected' });
-        if (r.uid) {
-            db.ref('users/' + r.uid).update({ status: 'rejected' });
-            db.ref('notifications/' + r.uid).push({ title: 'تم رفض طلبك', body: 'نأسف، تم رفض طلبك كطبيب. تواصل مع الإدارة لمزيد من التفاصيل', time: new Date().toLocaleString('ar-EG'), read: false });
-        }
-        showToast('تم رفض الطلب', 'info');
-    });
-}
-
-/* ===== Admin: Consultations ===== */
 function loadAdminConsultations() {
-    db.ref('consultations').on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('adminConsultList');
-        if (!data) { el.innerHTML = '<p style="color:var(--muted)" class="text-sm">لا توجد استشارات</p>'; return; }
-        el.innerHTML = Object.entries(data).map(([id, c]) => `
-            <div class="card p-5">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="font-bold" style="color:var(--fg)">${c.userName}</span>
-                    <span class="badge badge-${c.status === 'pending' ? 'pending' : c.status === 'approved' ? 'approved' : 'rejected'}">${c.status === 'pending' ? 'قيد المراجعة' : c.status === 'approved' ? 'مقبولة' : 'مرفوضة'}</span>
-                </div>
-                <p class="text-sm mb-2" style="color:var(--muted)">${c.description}</p>
-                <p class="text-xs mb-3" style="color:var(--muted)">البريد: ${c.userEmail} | الطريقة: ${c.method === 'video' ? 'فيديو' : c.method === 'phone' ? 'هاتف' : 'محادثة'}</p>
-                <div class="flex gap-2">
-                    <input class="input-field flex-1 text-sm" id="reply-consult-${id}" placeholder="اكتب ردك...">
-                    <button class="btn-pri text-xs px-4" onclick="replyConsultation('${id}')">رد</button>
-                    <select class="input-field w-auto text-xs" onchange="updateConsultStatus('${id}',this.value)">
-                        <option value="pending" ${c.status === 'pending' ? 'selected' : ''}>قيد المراجعة</option>
-                        <option value="approved" ${c.status === 'approved' ? 'selected' : ''}>مقبولة</option>
-                        <option value="rejected" ${c.status === 'rejected' ? 'selected' : ''}>مرفوضة</option>
-                    </select>
-                </div>
-            </div>
-        `).join('');
+  db.ref('consultations').once('value').then(snap => {
+    const data = snap.val() || {};
+    allConsultations = Object.entries(data).map(([id, c]) => ({id, ...c}));
+    document.getElementById('adminConsultTable').innerHTML = allConsultations.length ? allConsultations.map(c => `
+      <tr>
+        <td style="color:var(--text)">${c.patientName||'-'}</td>
+        <td style="color:var(--text2)">${c.doctorName||'-'}</td>
+        <td style="color:var(--text3)">${c.date||'-'} ${c.time||''}</td>
+        <td><span class="badge ${c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red'}">${c.status}</span></td>
+        <td>
+          <div class="flex gap-2">
+            ${c.status==='pending'?`
+              <button onclick="updateConsultStatus('${c.id}','approved')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button>
+              <button onclick="updateConsultStatus('${c.id}','rejected')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+            `:`<span class="text-xs" style="color:var(--text3)">Processed</span>`}
+          </div>
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">No consultation requests</td></tr>';
+  }).catch(() => {
+    document.getElementById('adminConsultTable').innerHTML = '<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">No data available</td></tr>';
+  });
+}
+async function updateConsultStatus(id, status) {
+  await db.ref('consultations/' + id + '/status').set(status);
+  // Notify user
+  const consult = allConsultations.find(c => c.id === id);
+  if (consult && consult.patientId) {
+    await db.ref('notifications/' + consult.patientId).push({
+      title: `Consultation ${status}`,
+      body: `Your consultation with ${consult.doctorName} has been ${status}.`,
+      time: new Date().toISOString(), read: false
     });
+  }
+  showToast(`Consultation ${status}!`, 'success');
+  loadAdminConsultations();
 }
-
-function replyConsultation(id) {
-    const reply = document.getElementById('reply-consult-' + id).value.trim();
-    if (!reply) return;
-    db.ref('consultations/' + id).once('value', (snap) => {
-        const c = snap.val();
-        if (!c) return;
-        db.ref('consultations/' + id).update({ adminReply: reply, status: 'approved' });
-        // Notify user
-        db.ref('notifications/' + c.userId).push({ title: 'رد على استشارتك', body: reply, time: new Date().toLocaleString('ar-EG'), read: false });
-        showToast('تم إرسال الرد', 'success');
-    });
-}
-
-function updateConsultStatus(id, status) {
-    db.ref('consultations/' + id).update({ status });
-}
-
-/* ===== Admin: Messages ===== */
 function loadAdminMessages() {
-    db.ref('messages').orderByChild('createdAt').on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('adminMessagesList');
-        if (!data) { el.innerHTML = '<p style="color:var(--muted)" class="text-sm">لا توجد رسائل</p>'; return; }
-        el.innerHTML = Object.entries(data).reverse().map(([id, m]) => `
-            <div class="card p-5 ${!m.read ? 'border-r-4 border-sky-400' : ''}">
-                <div class="flex items-center justify-between mb-2">
-                    <span class="font-bold" style="color:var(--fg)">${m.name} <span class="text-xs font-normal" style="color:var(--muted)">(${m.email})</span></span>
-                    <span class="text-xs" style="color:var(--muted)">${new Date(m.createdAt).toLocaleDateString('ar-EG')}</span>
-                </div>
-                <p class="font-semibold text-sm mb-1" style="color:#0ea5e9">${m.subject || ''}</p>
-                <p class="text-sm mb-3" style="color:var(--muted)">${m.message}</p>
-                ${m.reply ? `<div class="p-3 rounded-xl mb-2" style="background:var(--bg)"><p class="text-xs font-semibold" style="color:#10b981">تم الرد:</p><p class="text-sm" style="color:var(--fg)">${m.reply}</p></div>` : ''}
-                <button class="btn-sec text-xs" onclick="openReplyModal('${id}','${m.message.replace(/'/g, "\\'")}','${m.userId || ''}')"><i class="fa-solid fa-reply ml-1"></i>رد</button>
-            </div>
-        `).join('');
-        // Mark as read
-        Object.keys(data).forEach(id => { if (!data[id].read) db.ref('messages/' + id).update({ read: true }); });
-    });
+  db.ref('messages').once('value').then(snap => {
+    const data = snap.val() || {};
+    allMessages = Object.entries(data).map(([id, m]) => ({id, ...m})).reverse();
+    document.getElementById('adminMessagesList').innerHTML = allMessages.length ? allMessages.map(m => `
+      <div class="card p-4 mb-3">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style="background:var(--accent)">${(m.name||'U').charAt(0)}</div>
+            <div><p class="text-sm font-medium" style="color:var(--text)">${m.name||'Unknown'}</p><p class="text-xs" style="color:var(--text3)">${m.email||''} - ${m.createdAt ? new Date(m.createdAt).toLocaleString() : ''}</p></div>
+          </div>
+          ${m.subject ? `<span class="badge badge-blue text-xs">${m.subject}</span>` : ''}
+        </div>
+        <p class="text-sm" style="color:var(--text2)">${m.message||''}</p>
+      </div>
+    `).join('') : '<p class="text-sm" style="color:var(--text3)">No messages yet</p>';
+  }).catch(() => {
+    document.getElementById('adminMessagesList').innerHTML = '<p class="text-sm" style="color:var(--text3)">No data available</p>';
+  });
 }
-
-function openReplyModal(id, msg, userId) {
-    document.getElementById('replyMsgId').value = id;
-    document.getElementById('replyOrigMsg').textContent = msg;
-    document.getElementById('replyText').value = '';
-    document.getElementById('replyModal').dataset.userId = userId || '';
-    document.getElementById('replyModal').style.display = 'flex';
+function loadAdminMgmt() {
+  db.ref('admins').once('value').then(snap => {
+    const data = snap.val() || {};
+    allAdmins = Object.entries(data).map(([id, a]) => ({id, ...a}));
+    document.getElementById('adminMgmtTable').innerHTML = allAdmins.length ? allAdmins.map(a => `
+      <tr>
+        <td style="color:var(--text)">${a.email||'-'}</td>
+        <td><span class="badge badge-blue">${a.level||'Standard'}</span></td>
+        <td style="color:var(--text3)">${a.createdAt ? new Date(a.createdAt).toLocaleDateString() : '-'}</td>
+        <td><button onclick="deleteAdmin('${a.id}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
+      </tr>
+    `).join('') : '<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">No additional admins</td></tr>';
+  }).catch(() => {
+    document.getElementById('adminMgmtTable').innerHTML = '<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">No data available</td></tr>';
+  });
 }
-function closeReplyModal() { document.getElementById('replyModal').style.display = 'none'; }
-
-function sendReply() {
-    const id = document.getElementById('replyMsgId').value;
-    const reply = document.getElementById('replyText').value.trim();
-    const userId = document.getElementById('replyModal').dataset.userId;
-    if (!reply) { showToast('اكتب ردك أولاً', 'error'); return; }
-    db.ref('messages/' + id).update({ reply }).then(() => {
-        // Notify user
-        if (userId) {
-            db.ref('notifications/' + userId).push({ title: 'رد جديد على رسالتك', body: reply, time: new Date().toLocaleString('ar-EG'), read: false });
-        }
-        showToast('تم إرسال الرد', 'success');
-        closeReplyModal();
-    });
+function showAddAdminModal() {
+  showModal('Add Administrator', `
+    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Email</label><input type="email" id="newAdminEmail" class="input" placeholder="admin@example.com"></div>
+    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Password</label><input type="password" id="newAdminPass" class="input" placeholder="Min 6 characters"></div>
+    <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">Permission Level</label>
+      <select id="newAdminLevel" class="input">
+        <option value="Standard">Standard - Manage doctors, users, consultations</option>
+        <option value="Super">Super - Full access including admin management</option>
+      </select>
+    </div>
+    <button onclick="addAdmin()" class="btn w-full justify-center"><i class="fas fa-user-shield"></i> Add Admin</button>
+  `);
 }
-
-/* ===== Admin: Settings ===== */
-function loadAdminSettings() {
-    db.ref('settings').once('value', (snap) => {
-        const data = snap.val();
-        if (data) {
-            document.getElementById('settName').value = data.platformName || 'إستشرني';
-            document.getElementById('settDesc').value = data.description || '';
-            document.getElementById('settEmail').value = data.email || '';
-            document.getElementById('settPhone').value = data.phone || '';
-            if (data.logo) {
-                document.getElementById('settLogoImg').src = data.logo;
-                document.getElementById('settLogoPreview').style.display = 'block';
-            }
-        }
-    });
+async function addAdmin() {
+  const email = document.getElementById('newAdminEmail').value.trim();
+  const pass = document.getElementById('newAdminPass').value;
+  const level = document.getElementById('newAdminLevel').value;
+  if (!email || !pass) { showToast('Please fill in all fields', 'error'); return; }
+  if (pass.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await db.ref('users/' + cred.user.uid).set({ name: email.split('@')[0], email, role: 'admin', phone: '', createdAt: new Date().toISOString() });
+    await db.ref('admins/' + cred.user.uid).set({ email, level, createdAt: new Date().toISOString() });
+    closeModal();
+    showToast('Admin added successfully!', 'success');
+    loadAdminMgmt();
+    // Re-sign in as the original admin
+    // Note: In production, use a second auth instance to avoid signing out the current admin
+  } catch(e) {
+    showToast(e.message.replace('Firebase: ', ''), 'error');
+  }
 }
-
-function saveSettings(e) {
-    e.preventDefault();
-    const settings = {
-        platformName: document.getElementById('settName').value,
-        description: document.getElementById('settDesc').value,
-        email: document.getElementById('settEmail').value,
-        phone: document.getElementById('settPhone').value
-    };
-    db.ref('settings').update(settings).then(() => showToast('تم حفظ الإعدادات', 'success'));
+async function deleteAdmin(id) {
+  if (!confirm('Remove this admin?')) return;
+  await db.ref('admins/' + id).remove();
+  showToast('Admin removed', 'info');
+  loadAdminMgmt();
 }
-
-function handleSettingsLogo(input) {
-    if (!input.files || !input.files[0]) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const imgData = e.target.result;
-        document.getElementById('settLogoImg').src = imgData;
-        document.getElementById('settLogoPreview').style.display = 'block';
-        db.ref('settings/logo').set(imgData).then(() => showToast('تم رفع الشعار', 'success'));
-    };
-    reader.readAsDataURL(input.files[0]);
-}
-
-/* ===== Admin: Admins Management ===== */
-function loadAdminAdmins() {
-    db.ref('admins').on('value', (snap) => {
-        const data = snap.val();
-        const el = document.getElementById('adminsList');
-        if (!data) { el.innerHTML = '<p style="color:var(--muted)" class="text-sm">لا يوجد مديرون إضافيون</p>'; return; }
-        el.innerHTML = Object.entries(data).map(([id, a]) => `
-            <div class="card p-4 flex items-center justify-between">
-                <div>
-                    <p class="font-bold" style="color:var(--fg)">${a.email}</p>
-                    <p class="text-xs" style="color:var(--muted)">الصلاحيات: ${a.permissions === 'full' ? 'كاملة' : a.permissions === 'doctors' ? 'إدارة الأطباء' : a.permissions === 'users' ? 'إدارة المستخدمين' : 'عرض فقط'}</p>
-                </div>
-                <button class="text-xs px-3 py-1 rounded-lg font-semibold text-red-500 border border-red-300 bg-transparent cursor-pointer transition-all hover:bg-red-500 hover:text-white" style="font-family:inherit" onclick="removeAdmin('${id}')"><i class="fa-solid fa-trash"></i></button>
-            </div>
-        `).join('');
-    });
-}
-
-function addAdmin(e) {
-    e.preventDefault();
-    const email = document.getElementById('newAdminEmail').value.trim();
-    const pass = document.getElementById('newAdminPass').value;
-    const perm = document.getElementById('newAdminPerm').value;
-    // Save admin credentials
-    db.ref('admins').push({ email, password: pass, permissions: perm, createdAt: Date.now() });
-    // Also create user entry
-    db.ref('users').push({ email, password: pass, name: 'مدير - ' + email.split('@')[0], role: 'admin', status: 'active', permissions: perm, createdAt: Date.now() });
-    showToast('تم إضافة المدير بنجاح', 'success');
-    e.target.reset();
-}
-
-function removeAdmin(id) {
-    if (!confirm('هل أنت متأكد من حذف هذا المدير؟')) return;
-    db.ref('admins/' + id).remove().then(() => showToast('تم حذف المدير', 'success'));
-}
-
-/* ===== Scroll Animations ===== */
-function initFadeObserver() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-child:not(.visible)').forEach(el => observer.observe(el));
-}
-
-/* ===== Seed Demo Data ===== */
-function seedDemoData() {
-    db.ref('doctors').once('value', (snap) => {
-        if (snap.val()) return; // Already seeded
-        const demoDoctors = [
-            { name: 'أحمد المنصور', specialty: 'طب القلب', experience: '15', price: '150', qualifications: 'بورد طب قلب - جامعة الملك سعود', bio: 'خبير في أمراض القلب والأوعية الدموية مع أكثر من 15 عاماً من الخبرة', image: 'https://picsum.photos/seed/doc1/400/400' },
-            { name: 'سارة العتيبي', specialty: 'طب الأطفال', experience: '10', price: '100', qualifications: 'ماجستير طب أطفال - جامعة الملك فهد', bio: 'متخصصة في طب الأطفال وحديثي الولادة', image: 'https://picsum.photos/seed/doc2/400/400' },
-            { name: 'محمد الشمري', specialty: 'طب العيون', experience: '12', price: '120', qualifications: 'بورد طب عيون - جامعة الملك فيصل', bio: 'خبير في جراحات العيون وتصحيح النظر بالليزر', image: 'https://picsum.photos/seed/doc3/400/400' },
-            { name: 'نورة القحطاني', specialty: 'طب الجلدية', experience: '8', price: '90', qualifications: 'دكتوراه طب جلدية - جامعة أم القرى', bio: 'متخصصة في الأمراض الجلدية والتجميل', image: 'https://picsum.photos/seed/doc4/400/400' },
-            { name: 'خالد الدوسري', specialty: 'طب الأسنان', experience: '14', price: '80', qualifications: 'بورد طب أسنان - جامعة الملك عبدالعزيز', bio: 'خبير في زراعة الأسنان وتقويمها', image: 'https://picsum.photos/seed/doc5/400/400' },
-            { name: 'فاطمة الحربي', specialty: 'طب النساء', experience: '11', price: '130', qualifications: 'بورد نساء وتوليد - جامعة الملك سعود', bio: 'متخصصة في طب النساء والتوليد وأمراض الخصوبة', image: 'https://picsum.photos/seed/doc6/400/400' },
-        ];
-        demoDoctors.forEach(d => db.ref('doctors').push(d));
-        // Seed default admin
-        db.ref('users').push({ email: 'admin@estasharni.com', password: 'admin123', name: 'مدير النظام', role: 'admin', status: 'active', permissions: 'full', createdAt: Date.now() });
-        db.ref('admins').push({ email: 'admin@estasharni.com', password: 'admin123', permissions: 'full', createdAt: Date.now() });
-        // Seed settings
-        db.ref('settings').set({ platformName: 'إستشرني', description: 'منصة طبية رائدة تقدم استشارات طبية عالية الجودة', email: 'info@estasharni.com', phone: '+966 50 123 4567' });
-        showToast('تم تحميل البيانات التجريبية', 'info');
-    });
-}
-
-/* ===== Initialization ===== */
-function init() {
-    applyDark();
-    renderSpecialties();
-    seedDemoData();
-    // Restore session
-    const saved = localStorage.getItem('estasharni-user');
-    if (saved) {
-        try {
-            state.currentUser = JSON.parse(saved);
-            updateUIForAuth();
-            loadUserNotifications();
-        } catch(e) { localStorage.removeItem('estasharni-user'); }
+function loadSettings() {
+  db.ref('settings').once('value').then(snap => {
+    const data = snap.val() || {};
+    allSettings = data;
+    if (data.name) document.getElementById('settName').value = data.name;
+    if (data.email) document.getElementById('settEmail').value = data.email;
+    if (data.phone) document.getElementById('settPhone').value = data.phone;
+    if (data.description) document.getElementById('settDesc').value = data.description;
+    if (data.logo) {
+      const preview = document.getElementById('settLogoPreview');
+      preview.src = data.logo;
+      preview.classList.remove('hidden');
     }
-    updateUIForAuth();
-    setTimeout(initFadeObserver, 200);
+  }).catch(() => {});
+}
+async function saveSettings() {
+  const settings = {
+    name: document.getElementById('settName').value.trim(),
+    email: document.getElementById('settEmail').value.trim(),
+    phone: document.getElementById('settPhone').value.trim(),
+    description: document.getElementById('settDesc').value.trim(),
+    logo: allSettings.logo || ''
+  };
+  const logoInput = document.getElementById('settLogo');
+  if (logoInput.files[0]) {
+    try {
+      const snap = await storage.ref('settings/logo').put(logoInput.files[0]);
+      settings.logo = await snap.ref.getDownloadURL();
+    } catch(e) {}
+  }
+  await db.ref('settings').set(settings);
+  allSettings = settings;
+  showToast('Settings saved!', 'success');
 }
 
-// Listen for real-time notifications
-db.ref('.info/connected').on('value', () => {});
+/* ==================== USER PROFILE ==================== */
+function loadUserProfile() {
+  if (!currentUser) return;
+  document.getElementById('profileName').textContent = currentUser.displayName || currentUser.email;
+  document.getElementById('profileEmail').textContent = currentUser.email;
+  document.getElementById('profileAvatar').textContent = (currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase();
+  document.getElementById('profileRole').textContent = currentUser.role === 'doctor' ? 'Doctor' : currentUser.role === 'admin' ? 'Admin' : 'Patient';
+  // Load profile data
+  db.ref('users/' + currentUser.uid).once('value').then(snap => {
+    const data = snap.val() || {};
+    document.getElementById('profName').value = data.name || currentUser.displayName || '';
+    document.getElementById('profPhone').value = data.phone || '';
+  }).catch(() => {});
+  // Load consultations
+  db.ref('consultations').orderByChild('patientId').equalTo(currentUser.uid).once('value').then(snap => {
+    const data = snap.val() || {};
+    const consults = Object.entries(data).map(([id, c]) => ({id, ...c})).reverse();
+    document.getElementById('userConsultList').innerHTML = consults.length ? consults.map(c => `
+      <div class="flex items-center gap-4 py-3" style="border-bottom:1px solid var(--border)">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:var(--bg3)"><i class="fas fa-user-doctor" style="color:var(--accent)"></i></div>
+        <div class="flex-1">
+          <p class="text-sm font-medium" style="color:var(--text)">${c.doctorName}</p>
+          <p class="text-xs" style="color:var(--text3)">${c.date} at ${c.time}</p>
+          <p class="text-xs" style="color:var(--text3)">${c.description?.substring(0, 60) || ''}...</p>
+        </div>
+        <span class="badge ${c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red'}">${c.status}</span>
+      </div>
+    `).join('') : '<p class="text-sm" style="color:var(--text3)">No consultation requests yet.</p>';
+  }).catch(() => {
+    document.getElementById('userConsultList').innerHTML = '<p class="text-sm" style="color:var(--text3)">No consultation requests yet.</p>';
+  });
+  // Load messages
+  loadUserMessages();
+  // Listen for real-time notifications from admin
+  db.ref('notifications/' + currentUser.uid).on('value', snap => {
+    const data = snap.val();
+    if (data) {
+      Object.values(data).forEach(n => {
+        if (!n.read) {
+          addNotification(n.title, n.body);
+          db.ref('notifications/' + currentUser.uid + '/' + n.id + '/read').set(true);
+        }
+      });
+    }
+  });
+}
+function loadUserMessages() {
+  if (!currentUser) return;
+  db.ref('userMessages/' + currentUser.uid).once('value').then(snap => {
+    const data = snap.val() || {};
+    const msgs = Object.entries(data).map(([id, m]) => ({id, ...m}));
+    renderUserMessages(msgs);
+  }).catch(() => {
+    renderUserMessages([]);
+  });
+}
+function renderUserMessages(msgs) {
+  const container = document.getElementById('userMsgList');
+  if (msgs.length === 0) {
+    container.innerHTML = '<p class="text-sm" style="color:var(--text3)">No messages yet.</p>';
+    return;
+  }
+  container.innerHTML = msgs.map(m => `
+    <div class="py-2" style="border-bottom:1px solid var(--border)">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs font-medium" style="color:${m.from==='user'?'var(--accent)':'var(--text)'}">${m.from==='user'?'You':'Admin'}</span>
+        <span class="text-xs" style="color:var(--text3)">${m.time ? new Date(m.time).toLocaleString() : ''}</span>
+      </div>
+      <p class="text-sm" style="color:var(--text2)">${m.text}</p>
+    </div>
+  `).join('');
+  container.scrollTop = container.scrollHeight;
+}
+function sendUserMsg() {
+  if (!currentUser) return;
+  const input = document.getElementById('userMsgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  db.ref('userMessages/' + currentUser.uid).push({
+    from: 'user', text, time: new Date().toISOString()
+  }).then(() => {
+    input.value = '';
+    loadUserMessages();
+  }).catch(() => {
+    input.value = '';
+    showToast('Message sent (local mode)', 'success');
+  });
+}
+async function updateProfile() {
+  const name = document.getElementById('profName').value.trim();
+  const phone = document.getElementById('profPhone').value.trim();
+  if (!name) { showToast('Name is required', 'error'); return; }
+  await db.ref('users/' + currentUser.uid).update({ name, phone });
+  if (currentUser.displayName !== name) {
+    await currentUser.updateProfile({ displayName: name });
+  }
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileAvatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('userName').textContent = name;
+  showToast('Profile updated!', 'success');
+}
 
-init();
+/* ==================== RECAPTCHA (for phone auth) ==================== */
+let recaptchaVerifier;
+try {
+  recaptchaVerifier = new firebase.auth.RecaptchaVerifier('phoneAuthModal', {
+    size: 'invisible',
+    callback: () => {}
+  });
+} catch(e) {}
 </script>
 </body>
 </html>
