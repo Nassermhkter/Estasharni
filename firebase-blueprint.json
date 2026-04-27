@@ -2,133 +2,122 @@
   "entities": {
     "User": {
       "title": "User",
-      "description": "System users including patients, doctors, and admins.",
+      "description": "User profile for clients, doctors, and admins",
       "type": "object",
       "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string", "format": "email" },
-        "role": { "type": "string", "enum": ["patient", "doctor", "admin"] },
-        "phone": { "type": "string" },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "doctor", "admin"] },
+        "status": { "type": "string", "enum": ["active", "suspended", "pending"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["email", "role"]
+      "required": ["uid", "email", "role"]
     },
-    "Doctor": {
-      "title": "Doctor",
-      "description": "Medical professionals profiles.",
+    "DoctorProfile": {
+      "title": "Doctor Profile",
+      "description": "Detailed professional information for doctors",
       "type": "object",
       "properties": {
         "userId": { "type": "string" },
-        "name": { "type": "string" },
-        "email": { "type": "string" },
         "specialty": { "type": "string" },
-        "experience": { "type": "string" },
         "qualifications": { "type": "string" },
+        "experience": { "type": "string" },
+        "certificates": { "type": "array", "items": { "type": "string" } },
         "bio": { "type": "string" },
-        "photo": { "type": "string" },
-        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
-        "rating": { "type": "number" },
-        "createdAt": { "type": "string" }
-      }
+        "availability": { "type": "object" },
+        "approvalStatus": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "rejectionReason": { "type": "string" }
+      },
+      "required": ["userId", "specialty", "approvalStatus"]
     },
     "Consultation": {
       "title": "Consultation",
-      "description": "Medical consultation requests.",
+      "description": "Medical consultation request between client and doctor",
       "type": "object",
       "properties": {
-        "patientId": { "type": "string" },
+        "clientId": { "type": "string" },
         "doctorId": { "type": "string" },
-        "patientName": { "type": "string" },
-        "doctorName": { "type": "string" },
-        "date": { "type": "string" },
-        "time": { "type": "string" },
-        "description": { "type": "string" },
-        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "completed"] },
-        "createdAt": { "type": "string" }
-      }
+        "status": { "type": "string", "enum": ["requested", "scheduled", "completed", "cancelled"] },
+        "requestDate": { "type": "string", "format": "date-time" },
+        "scheduledTime": { "type": "string", "format": "date-time" },
+        "subject": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["clientId", "doctorId", "status"]
     },
     "Message": {
       "title": "Message",
-      "description": "Contact form submissions.",
+      "description": "Messages for consultations or support",
       "type": "object",
       "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "subject": { "type": "string" },
-        "message": { "type": "string" },
-        "type": { "type": "string" },
-        "createdAt": { "type": "string" }
-      }
-    },
-    "ChatUser": {
-      "title": "ChatUser",
-      "description": "Index for active chats.",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "lastMessage": { "type": "string" },
-        "lastTime": { "type": "string" },
-        "unread": { "type": "number" }
-      }
-    },
-    "ChatMessage": {
-      "title": "ChatMessage",
-      "description": "Individual messages in a chat.",
-      "type": "object",
-      "properties": {
-        "from": { "type": "string", "enum": ["user", "admin"] },
-        "fromName": { "type": "string" },
-        "text": { "type": "string" },
-        "time": { "type": "string" }
-      }
-    },
-    "Admin": {
-      "title": "Admin",
-      "description": "Administrative users.",
-      "type": "object",
-      "properties": {
-        "email": { "type": "string" },
-        "level": { "type": "string" },
-        "createdAt": { "type": "string" }
-      }
-    },
-    "Setting": {
-      "title": "Setting",
-      "description": "Platform settings.",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "phone": { "type": "string" },
-        "description": { "type": "string" },
-        "logo": { "type": "string" }
-      }
+        "senderId": { "type": "string" },
+        "receiverId": { "type": "string" },
+        "consultationId": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "type": { "type": "string", "enum": ["text", "file"] },
+        "url": { "type": "string" }
+      },
+      "required": ["senderId", "receiverId", "content", "createdAt"]
     },
     "Notification": {
       "title": "Notification",
-      "description": "In-app notifications for users.",
+      "description": "Real-time alerts for users",
       "type": "object",
       "properties": {
         "userId": { "type": "string" },
         "title": { "type": "string" },
-        "message": { "type": "string" },
+        "body": { "type": "string" },
+        "type": { "type": "string" },
         "read": { "type": "boolean" },
-        "type": { "type": "string", "enum": ["info", "success", "warning", "error"] },
-        "link": { "type": "string" },
-        "createdAt": { "type": "string" }
+        "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["userId", "title", "message", "read", "createdAt"]
+      "required": ["userId", "title", "body", "read", "createdAt"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "Platform settings",
+      "type": "object",
+      "properties": {
+        "platformName": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "maintenanceMode": { "type": "boolean" }
+      }
     }
   },
   "firestore": {
-    "/users/{userId}": { "schema": "User", "description": "Global users collection" },
-    "/doctors/{doctorId}": { "schema": "Doctor", "description": "Doctor profiles" },
-    "/consultations/{consultId}": { "schema": "Consultation", "description": "Consultation requests" },
-    "/messages/{messageId}": { "schema": "Message", "description": "Contact messages" },
-    "/chatUsers/{userId}": { "schema": "ChatUser", "description": "Chat metadata index" },
-    "/chats/{userId}/messages/{msgId}": { "schema": "ChatMessage", "description": "Chat messages per user" },
-    "/admins/{userId}": { "schema": "Admin", "description": "Restricted admin roles" },
-    "/settings/general": { "schema": "Setting", "description": "System configuration" },
-    "/notifications/{notifId}": { "schema": "Notification", "description": "User notifications" }
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Main user collection"
+    },
+    "doctors/{doctorId}": {
+      "schema": "DoctorProfile",
+      "description": "Professional profiles linked to users"
+    },
+    "consultations/{consultationId}": {
+      "schema": "Consultation",
+      "description": "Consultation sessions"
+    },
+    "consultations/{consultationId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Chat transcript for a consultation"
+    },
+    "support_messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages to administration"
+    },
+    "notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "User notifications"
+    },
+    "settings/general": {
+      "schema": "Setting",
+      "description": "Global settings"
+    }
   }
 }

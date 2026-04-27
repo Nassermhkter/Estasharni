@@ -45,27 +45,29 @@ service cloud.firestore {
     // -------------------------------------------------------------------------
     match /users/{userId} {
       allow read: if isSignedIn() && (isOwner(userId) || isAdmin());
+      // On creation, users can set their role but role changes are restricted
       allow create: if isSignedIn() && isOwner(userId) && isValidUser(incoming())
                    && (incoming().role == 'client' || incoming().role == 'doctor');
+      // Role can only be changed by admin
       allow update: if (isSignedIn() && isOwner(userId) && isValidUser(incoming()) 
                      && incoming().role == existing().role
-                     && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'phoneNumber', 'updatedAt', 'status']))
+                     && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'phoneNumber', 'updatedAt']))
                   || isAdmin();
     }
 
     // -------------------------------------------------------------------------
-    // R2: Doctors Profile Collection
+    // R2: Doctors Profile Collection (Public for approved)
     // -------------------------------------------------------------------------
     match /doctors/{doctorId} {
-      allow read: if (existing().approvalStatus == 'approved') || isAdmin() || (isSignedIn() && isOwner(doctorId));
+      allow read: if (existing().approvalStatus == 'approved') || isAdmin() || isOwner(doctorId);
       allow create: if isSignedIn() && isOwner(doctorId) 
                    && getUserData().role == 'doctor'
                    && isValidDoctorProfile(incoming())
                    && incoming().approvalStatus == 'pending';
-      allow update: if (isSignedIn() && isOwner(doctorId) 
+      allow update: if (isOwner(doctorId) 
                      && isValidDoctorProfile(incoming())
-                     && incoming().approvalStatus == existing().approvalStatus
-                     && incoming().diff(existing()).affectedKeys().hasOnly(['specialty', 'qualifications', 'experience', 'availability', 'bio', 'certificates']))
+                     && incoming().approvalStatus == existing().approvalStatus // Only admin changes Status
+                     && incoming().diff(existing()).affectedKeys().hasOnly(['specialty', 'qualifications', 'experience', 'availability', 'bio']))
                   || (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['approvalStatus', 'rejectionReason']));
     }
 
@@ -82,16 +84,20 @@ service cloud.firestore {
                    && incoming().clientId == existing().clientId
                    && incoming().doctorId == existing().doctorId
                    && (
+                     // Doctor accepts or reschedules
                      (isOwner(existing().doctorId) && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'scheduledTime', 'notes']))
-                     || (isOwner(existing().clientId) && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'notes']))
-                     || isAdmin()
+                     || // Client cancels
+                     (isOwner(existing().clientId) && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'notes']))
+                     || // Admin full update
+                     isAdmin()
                    );
     }
 
     // -------------------------------------------------------------------------
-    // R4: Contextual Messages
+    // R4: Contextual Messages (Subcollection of consultations)
     // -------------------------------------------------------------------------
     match /consultations/{consultationId}/messages/{messageId} {
+      // Must fetch consultation to verify membership
       function getConsultation() { return get(/databases/$(database)/documents/consultations/$(consultationId)).data; }
       allow read: if isSignedIn() && (isOwner(getConsultation().clientId) || isOwner(getConsultation().doctorId) || isAdmin());
       allow create: if isSignedIn() && (isOwner(getConsultation().clientId) || isOwner(getConsultation().doctorId))
@@ -105,7 +111,7 @@ service cloud.firestore {
     match /support_messages/{messageId} {
       allow read: if isSignedIn() && (isOwner(existing().senderId) || isAdmin());
       allow create: if isSignedIn() && isOwner(incoming().senderId) && incoming().content.size() <= 5000;
-      allow update: if isAdmin();
+      allow update: if isAdmin(); // Admin replies
     }
 
     // -------------------------------------------------------------------------
@@ -115,7 +121,7 @@ service cloud.firestore {
       allow read: if isSignedIn() && isOwner(existing().userId);
       allow update: if isSignedIn() && isOwner(existing().userId) 
                    && incoming().diff(existing()).affectedKeys().hasOnly(['read']);
-      allow create: if isAdmin() || isSignedIn(); // System or sender
+      allow create: if isAdmin(); // Only system/admin creates notifications
     }
 
     // -------------------------------------------------------------------------

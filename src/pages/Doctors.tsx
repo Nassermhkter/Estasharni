@@ -1,48 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { DoctorData, SPECIALTIES } from '../types';
-import { handleFirestoreError, OperationType } from '../lib/error-handler';
+import React, { useEffect, useState } from 'react';
+import { collection, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { DoctorProfile, User } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, MapPin, Star, BriefcaseMedical, Award, Filter, X } from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { Search, MapPin, Star, Calendar, ArrowRight, Filter, X, Clock, Send } from 'lucide-react';
+import { cn } from '../lib/utils';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { addDoc, serverTimestamp } from 'firebase/firestore';
+import { notificationService, NotificationType } from '../lib/notifications';
+import toast from 'react-hot-toast';
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-interface DoctorsProps {
-  navigate: (p: string) => void;
-}
-
-export default function Doctors({ navigate }: DoctorsProps) {
-  const [doctors, setDoctors] = useState<DoctorData[]>([]);
+const Doctors = () => {
+  const { user, userData } = useAuth();
+  const navigate = useNavigate();
+  const [doctors, setDoctors] = useState<(DoctorProfile & { user: User })[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  
+  // Booking Modal State
+  const [selectedDoctor, setSelectedDoctor] = useState<(DoctorProfile & { user: User }) | null>(null);
+  const [bookingSubject, setBookingSubject] = useState('');
+  const [bookingNotes, setBookingNotes] = useState('');
+  const [isBooking, setIsBooking] = useState(false);
+
+  const specialties = [
+    { en: 'All', ar: 'الكل' },
+    { en: 'Cardiology', ar: 'أمراض القلب' },
+    { en: 'Dermatology', ar: 'الأمراض الجلدية' },
+    { en: 'Neurology', ar: 'الأعصاب' },
+    { en: 'Pediatrics', ar: 'طب الأطفال' },
+    { en: 'Psychiatry', ar: 'الطب النفسي' },
+    { en: 'General Medicine', ar: 'الطب العام' }
+  ];
 
   useEffect(() => {
     const fetchDoctors = async () => {
       setLoading(true);
       try {
-        const q = query(collection(db, 'doctors'), where('status', '==', 'approved'));
-        const snap = await getDocs(q).catch(e => handleFirestoreError(e, OperationType.LIST, 'doctors'));
-        const docs = snap.docs.map(d => ({ id: d.id, ...d.data() } as DoctorData));
+        const doctorsQuery = query(
+          collection(db, 'doctors'),
+          where('approvalStatus', '==', 'approved')
+        );
+        const querySnapshot = await getDocs(doctorsQuery);
         
-        if (docs.length === 0) {
-          // Fallback to demo data if empty
-          setDoctors([
-            { id: '1', name: 'د. سارة Mitchell', specialty: 'أمراض القلب', experience: '12 سنة', qualifications: 'زمالة أمراض القلب', bio: 'خبيرة في تشخيص وعلاج أمراض القلب والأوعية الدموية مع خبرة سريرية واسعة.', status: 'approved', rating: 4.9, createdAt: '' },
-            { id: '2', name: 'د. جيمس Chen', specialty: 'الأعصاب', experience: '15 سنة', qualifications: 'دكتوراه في جراحة الأعصاب', bio: 'متخصص في علاج الحالات العصبية المعقدة واضطرابات الدماغ.', status: 'approved', rating: 4.8, createdAt: '' },
-            { id: '3', name: 'د. أميرة حسن', specialty: 'الجلدية', experience: '8 سنوات', qualifications: 'ماجستير الأمراض الجلدية', bio: 'متخصصة في العلاجات الجلدية المتقدمة والتجميل الطبي.', status: 'approved', rating: 4.7, createdAt: '' },
-            { id: '4', name: 'د. مايكل رامي', specialty: 'العظام', experience: '20 سنة', qualifications: 'زمالة جراحة العظام', bio: 'خبير في جراحات المفاصل وإصابات الملاعب والكسور المعقدة.', status: 'approved', rating: 4.9, createdAt: '' },
-          ]);
-        } else {
-          setDoctors(docs);
-        }
-      } catch (err) {
-        console.error(err);
+        const doctorData = await Promise.all(
+          querySnapshot.docs.map(async (docSnap) => {
+            const profile = docSnap.data() as DoctorProfile;
+            const userDoc = await getDoc(doc(db, 'users', profile.userId));
+            const user = userDoc.data() as User;
+            return { ...profile, user };
+          })
+        );
+        
+        setDoctors(doctorData);
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
       } finally {
         setLoading(false);
       }
@@ -51,122 +65,261 @@ export default function Doctors({ navigate }: DoctorsProps) {
     fetchDoctors();
   }, []);
 
-  const filteredDoctors = doctors.filter(doctor => {
-    const matchesFilter = filter === 'all' || doctor.specialty === filter;
-    const matchesSearch = doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
+  const filteredDoctors = doctors.filter(doc => {
+    const matchesSearch = doc.user.displayName?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          doc.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSpecialty = selectedSpecialty === 'All' || doc.specialty === selectedSpecialty;
+    return matchesSearch && matchesSpecialty;
   });
 
+  const handleBook = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !selectedDoctor) {
+      toast.error(language === 'ar' ? 'يرجى تسجيل الدخول لحجز استشارة' : 'Please login to book a consultation');
+      return;
+    }
+
+    setIsBooking(true);
+    try {
+      const consultationData = {
+        clientId: user.uid,
+        doctorId: selectedDoctor.userId,
+        status: 'requested',
+        requestDate: new Date().toISOString(),
+        subject: bookingSubject,
+        notes: bookingNotes,
+        createdAt: serverTimestamp()
+      };
+
+      await addDoc(collection(db, 'consultations'), consultationData);
+
+      // Send notification to doctor
+      await notificationService.send(
+        selectedDoctor.userId,
+        language === 'ar' ? 'طلب استشارة جديد!' : 'New Consultation Request!',
+        language === 'ar' 
+          ? `${userData?.displayName || 'مريض'} أرسل طلب استشارة بخصوص: ${bookingSubject}`
+          : `${userData?.displayName || 'A patient'} has requested a consultation regarding: ${bookingSubject}`,
+        NotificationType.APPOINTMENT,
+        '/profile'
+      );
+
+      toast.success(language === 'ar' ? 'تم إرسال طلب الاستشارة بنجاح!' : 'Consultation request sent successfully!');
+      setSelectedDoctor(null);
+      setBookingSubject('');
+      setBookingNotes('');
+    } catch (error) {
+      console.error(error);
+      toast.error(language === 'ar' ? 'فشل إرسال الطلب' : 'Failed to send request');
+    } finally {
+      setIsBooking(false);
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-display font-black mb-4">نخبة الأطباء المتخصصين</h1>
-        <p className="text-slate-500 max-w-2xl mx-auto">تواصل مع أفضل الكوادر الطبية المعتمدة في مختلف التخصصات للحصول على رعاية صحية متميزة.</p>
-      </div>
-
-      {/* Search & Filters */}
-      <div className="flex flex-col gap-8 mb-12">
-        <div className="relative max-w-2xl mx-auto w-full">
-          <Search className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-          <input
-            type="text"
-            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 pr-14 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-right shadow-sm"
-            placeholder="ابحث عن طبيب بالاسم أو التخصص..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+    <div className="bg-surface-bg dark:bg-slate-950 min-h-screen py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-right">
+          <h1 className="text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+            {language === 'ar' ? 'أطباؤنا' : 'Our'} <span className="text-brand">{language === 'ar' ? 'المختصون' : 'Specialists'}</span>
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">
+            {language === 'ar' ? 'احجز موعداً مع نخبة من الخبراء الطبيين المعتمدين من جميع أنحاء العالم.' : 'Book an appointment with board-certified medical experts from various fields worldwide.'}
+          </p>
         </div>
 
-        <div className="flex items-center gap-4 overflow-x-auto pb-4 no-scrollbar justify-center">
-          <FilterButton active={filter === 'all'} onClick={() => setFilter('all')}>الكل</FilterButton>
-          {SPECIALTIES.map(s => (
-            <FilterButton key={s.name} active={filter === s.name} onClick={() => setFilter(s.name)}>
-              {s.name}
-            </FilterButton>
-          ))}
+        {/* Filters */}
+        <div className="flex flex-col lg:flex-row gap-8 mb-16">
+          <div className="relative flex-grow group">
+            <Search className={cn("absolute top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-brand transition-colors", language === 'ar' ? 'right-5' : 'left-5')} />
+            <input
+              type="text"
+              placeholder={language === 'ar' ? 'ابحث بالاسم، التخصص، أو العيادة...' : 'Search by name, specialty, or clinic...'}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={cn(
+                "w-full py-4 rounded-sleek border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-brand/10 transition-all dark:text-white shadow-sm font-medium",
+                language === 'ar' ? 'pr-14 pl-6' : 'pl-14 pr-6'
+              )}
+            />
+          </div>
+          <div className="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-hide">
+            <div className="flex items-center gap-2 p-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <Filter className="w-4 h-4 text-slate-400 ml-2" />
+              {specialties.map(spec => (
+                <button
+                  key={spec.en}
+                  onClick={() => setSelectedSpecialty(spec.en)}
+                  className={cn(
+                    "px-5 py-2 rounded-xl whitespace-nowrap text-xs font-black uppercase tracking-widest transition-all",
+                    selectedSpecialty === spec.en 
+                      ? "bg-brand text-white shadow-lg shadow-brand/20" 
+                      : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  )}
+                >
+                  {language === 'ar' ? spec.ar : spec.en}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Doctor Grid */}
         {loading ? (
-          Array(4).fill(0).map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 h-80 rounded-3xl animate-pulse border border-slate-100 dark:border-slate-800" />
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="h-96 bg-white dark:bg-slate-800 rounded-3xl animate-pulse shadow-sm border border-slate-100 dark:border-slate-800" />
+            ))}
+          </div>
         ) : filteredDoctors.length > 0 ? (
-          filteredDoctors.map((doctor) => (
-            <motion.div
-              key={doctor.id}
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-[2.5rem] flex flex-col hover:shadow-2xl hover:shadow-slate-200 dark:hover:shadow-none transition-all group relative overflow-hidden shadow-sm"
-            >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-500" />
-              
-              <div className="flex items-start gap-4 mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary font-black text-2xl overflow-hidden shrink-0 border border-blue-100 dark:border-blue-800/50">
-                  {doctor.photo ? <img src={doctor.photo} className="w-full h-full object-cover" /> : doctor.name.charAt(0)}
-                </div>
-                <div className="text-right">
-                  <h3 className="font-display font-black text-lg leading-tight mb-1 group-hover:text-primary transition-colors">{doctor.name}</h3>
-                  <div className="text-primary text-[10px] font-black uppercase tracking-widest">{doctor.specialty}</div>
-                  <div className="flex items-center justify-end gap-1 mt-2">
-                    <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{doctor.rating}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {filteredDoctors.map((doc, idx) => (
+              <motion.div
+                key={doc.userId}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className="group bg-white dark:bg-slate-900 rounded-sleek shadow-xl shadow-slate-200/50 dark:shadow-none border border-white dark:border-slate-800 overflow-hidden hover:shadow-2xl transition-all hover:-translate-y-1"
+              >
+                <div className="relative h-64 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <img 
+                    src={doc.user.photoURL || `https://ui-avatars.com/api/?name=${doc.user.displayName}&background=0ea5e9&color=fff`} 
+                    alt={doc.user.displayName}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute top-5 right-5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-xl border border-white/20">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm font-black dark:text-white">4.9</span>
+                  </div>
+                  <div className={cn("absolute bottom-5 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0", language === 'ar' ? 'right-5' : 'left-5')}>
+                    <span className="px-3 py-1 bg-brand text-white text-[10px] font-black uppercase tracking-widest rounded-lg">
+                      {language === 'ar' ? 'متاح للاستشارة' : 'Available for Chat'}
+                    </span>
                   </div>
                 </div>
-              </div>
 
-              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 mb-6 text-right leading-relaxed">
-                {doctor.bio}
-              </p>
+                <div className="p-8 text-right">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white group-hover:text-brand transition-colors tracking-tight">
+                      {language === 'ar' ? 'د.' : 'Dr.'} {doc.user.displayName}
+                    </h3>
+                    <div className="flex items-center justify-end gap-2 mt-1">
+                      <div className="w-1.5 h-1.5 bg-brand rounded-full" />
+                      <p className="text-brand font-bold text-sm tracking-tight italic">
+                        {language === 'ar' ? specialties.find(s => s.en === doc.specialty)?.ar : doc.specialty}
+                      </p>
+                    </div>
+                  </div>
 
-              <div className="flex flex-wrap gap-2 justify-end mb-6 mt-auto">
-                <Badge icon={<BriefcaseMedical size={12} />}>{doctor.experience}</Badge>
-                <Badge icon={<Award size={12} />}>{doctor.qualifications}</Badge>
-              </div>
+                  <div className="space-y-3 mb-8">
+                    <div className="flex items-center justify-end gap-3 text-sm font-medium text-slate-500 dark:text-slate-400">
+                      <span className="tracking-tight">{language === 'ar' ? 'الرياض، السعودية' : 'Riyadh Specialized Center'}</span>
+                      <div className="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-slate-800">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                    </div>
+                  </div>
 
-              <button
-                onClick={() => navigate('auth')}
-                className="w-full bg-slate-900 dark:bg-slate-800 text-white p-4 rounded-xl font-bold hover:bg-primary transition-all shadow-md active:scale-95 text-sm"
-              >
-                طلب استشارة
-              </button>
-            </motion.div>
-          ))
+                  <button
+                    onClick={() => setSelectedDoctor(doc)}
+                    className="w-full py-4 bg-brand hover:bg-brand-hover text-white font-black rounded-xl transition-all shadow-lg shadow-brand/20 flex items-center justify-center gap-3 active:scale-95 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all"
+                  >
+                    {language === 'ar' ? 'طلب استشارة' : 'Request Consultation'}
+                    <ArrowRight className={cn("w-5 h-5 group-hover:translate-x-1 transition-transform", language === 'ar' && "rotate-180")} />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         ) : (
-          <div className="col-span-full py-20 text-center">
-            <Search size={48} className="mx-auto text-slate-200 mb-4" />
-            <h3 className="text-xl font-display font-bold text-slate-400">لا يوجد أطباء مطابقون لبحثك</h3>
+          <div className="text-center py-24 bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
+              <Search className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold dark:text-white mb-2">No doctors found</h3>
+            <p className="text-slate-500">Try adjusting your search or filter settings.</p>
           </div>
         )}
+        {/* Booking Modal */}
+        <AnimatePresence>
+          {selectedDoctor && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedDoctor(null)}
+                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-sleek-lg shadow-2xl p-8 lg:p-12 overflow-hidden"
+              >
+                <button 
+                  onClick={() => setSelectedDoctor(null)}
+                  className="absolute top-8 right-8 p-3 text-slate-400 hover:text-brand transition-all rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+
+                <div className="flex items-center gap-6 mb-10 border-b border-slate-100 dark:border-slate-800 pb-8">
+                  <div className="w-20 h-20 bg-brand rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-brand/30">
+                    <Calendar className="w-10 h-10" />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-black dark:text-white tracking-tight italic">Request <span className="text-brand">Consultation</span></h2>
+                    <p className="text-slate-500 font-medium italic">Booking with Dr. {selectedDoctor.user.displayName}</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handleBook} className="space-y-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Consultation Subject</label>
+                    <input 
+                      type="text" 
+                      required
+                      placeholder="Briefly describe your concern..."
+                      value={bookingSubject}
+                      onChange={e => setBookingSubject(e.target.value)}
+                      className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-4 focus:ring-brand/10 outline-none transition-all dark:text-white font-bold"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Additional Notes (Optional)</label>
+                    <textarea 
+                      rows={4}
+                      placeholder="Symptoms, history, or specific questions..."
+                      value={bookingNotes}
+                      onChange={e => setBookingNotes(e.target.value)}
+                      className="w-full px-6 py-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-4 focus:ring-brand/10 outline-none transition-all dark:text-white font-medium resize-none"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-4 p-5 bg-brand/5 dark:bg-brand/10 border border-brand/20 rounded-xl">
+                    <Clock className="w-6 h-6 text-brand" />
+                    <p className="text-xs font-bold text-slate-600 dark:text-slate-400 leading-relaxed">
+                      Your request will be sent to the doctor. They will review it and coordinate a time with you via real-time messenger.
+                    </p>
+                  </div>
+
+                  <button 
+                    disabled={isBooking}
+                    className="w-full py-5 bg-brand hover:bg-brand-hover text-white font-black rounded-sleek shadow-2xl shadow-brand/30 transition-all flex items-center justify-center gap-4 text-xl tracking-tight active:scale-95 disabled:opacity-50"
+                  >
+                    {isBooking ? 'Sending Request...' : 'Confirm Request'}
+                    <Send className="w-6 h-6" />
+                  </button>
+                </form>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
-}
+};
 
-function FilterButton({ children, active, onClick }: { children: React.ReactNode; active: boolean; onClick: () => void; key?: React.Key }) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "px-6 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap active:scale-95 uppercase tracking-widest border",
-        active 
-          ? "bg-primary text-white border-primary shadow-lg shadow-blue-100 dark:shadow-none" 
-          : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:border-primary hover:text-primary"
-      )}
-    >
-      {children}
-    </button>
-  );
-}
-
-function Badge({ children, icon }: { children: React.ReactNode; icon: React.ReactNode }) {
-  return (
-    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold border border-slate-200/50 dark:border-slate-700/50">
-      {icon}
-      {children}
-    </div>
-  );
-}
+export default Doctors;

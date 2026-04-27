@@ -1,6 +1,9 @@
 {
-  "name": "استشرني - Estasharni",
-  "description": "منصة احترافية للاستشارات الطبية تتيح التواصل المباشر مع الأطباء المعتمدين وإدارة المواعيد والدردشة الفورية.",
-  "requestFramePermissions": [],
+  "name": "Estasharni",
+  "description": "A multilingual (English/Arabic) medical consultation platform connecting patients with specialized doctors. Features include RTL support, real-time messaging, doctor verification, and a comprehensive admin terminal.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
   "majorCapabilities": []
 }
