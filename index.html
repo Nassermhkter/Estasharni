@@ -91,8 +91,10 @@ tr:hover td{background:var(--bg3)}
 </style>
 </head>
 <body>
+<!-- حاوية الإشعارات -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- شريط التنقل -->
 <nav class="navbar" id="mainNav">
 <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
   <a href="#" onclick="navigate('home')" class="flex items-center gap-2">
@@ -136,6 +138,7 @@ tr:hover td{background:var(--bg3)}
 </div>
 </nav>
 
+<!-- لوحة الإشعارات -->
 <div id="notifPanel" class="hidden fixed top-16 left-4 w-80 rounded-2xl p-4 z-[1500] max-h-96 overflow-y-auto" style="background:var(--bg2);border:1px solid var(--border);box-shadow:var(--shadowL)">
   <div class="flex items-center justify-between mb-3">
     <h4 class="font-display font-bold" style="color:var(--text)">الإشعارات</h4>
@@ -144,10 +147,12 @@ tr:hover td{background:var(--bg3)}
   <div id="notifList"><p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد إشعارات</p></div>
 </div>
 
+<!-- زر الدردشة العائمة -->
 <button class="chat-fab" id="chatFab" onclick="toggleChat()" title="دردشة مباشرة">
   <i class="fas fa-comments" id="chatFabIcon"></i>
 </button>
 
+<!-- نافذة الدردشة -->
 <div class="chat-window" id="chatWindow">
   <div class="chat-header">
     <div class="avatar"><i class="fas fa-headset"></i></div>
@@ -170,7 +175,7 @@ tr:hover td{background:var(--bg3)}
   </div>
 </div>
 
-<!-- الصفحة الرئيسية -->
+<!-- =================== الصفحة الرئيسية =================== -->
 <div id="page-home" class="page active">
 <section class="relative min-h-screen flex items-center overflow-hidden pt-16">
   <div class="hero-blob w-96 h-96 top-20 -right-20" style="background:var(--accent)"></div>
@@ -250,7 +255,7 @@ tr:hover td{background:var(--bg3)}
 </footer>
 </div>
 
-<!-- صفحة الأطباء -->
+<!-- =================== صفحة الأطباء =================== -->
 <div id="page-doctors" class="page">
 <section class="pt-24 pb-12 px-4">
   <div class="max-w-7xl mx-auto">
@@ -262,7 +267,7 @@ tr:hover td{background:var(--bg3)}
 </section>
 </div>
 
-<!-- صفحة التواصل -->
+<!-- =================== صفحة التواصل =================== -->
 <div id="page-contact" class="page">
 <section class="pt-24 pb-12 px-4">
   <div class="max-w-3xl mx-auto">
@@ -285,11 +290,17 @@ tr:hover td{background:var(--bg3)}
 </section>
 </div>
 
-<!-- صفحة المصادقة -->
+<!-- =================== صفحة المصادقة =================== -->
 <div id="page-auth" class="page">
 <section class="min-h-screen flex items-center justify-center px-4 pt-16" style="background:var(--bg3)">
   <div class="w-full max-w-md">
-    <div class="text-center mb-8"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:var(--accent)"><i class="fas fa-heartbeat text-2xl text-white"></i></div><h1 class="font-display font-800 text-2xl" style="color:var(--text)" id="authTitle">مرحباً بعودتك</h1><p class="text-sm mt-1" style="color:var(--text2)" id="authSubtitle">سجل دخولك إلى حسابك</p></div>
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:var(--accent)"><i class="fas fa-heartbeat text-2xl text-white"></i></div>
+      <h1 class="font-display font-800 text-2xl" style="color:var(--text)" id="authTitle">مرحباً بعودتك</h1>
+      <p class="text-sm mt-1" style="color:var(--text2)" id="authSubtitle">سجل دخولك إلى حسابك</p>
+    </div>
+
+    <!-- اختيار الدور -->
     <div id="roleSelect" class="card p-6 mb-4">
       <label class="block text-sm font-medium mb-3" style="color:var(--text2)">أنا:</label>
       <div class="grid grid-cols-3 gap-3">
@@ -298,6 +309,29 @@ tr:hover td{background:var(--bg3)}
         <button onclick="selectRole('admin')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="admin"><i class="fas fa-user-shield block text-lg mb-1"></i>مشرف</button>
       </div>
     </div>
+
+    <!-- نموذج تسجيل دخول الأدمن -->
+    <div id="adminLoginForm" class="card p-6 mb-4 hidden">
+      <div class="flex items-center gap-3 mb-5 p-3 rounded-xl" style="background:var(--bg3)">
+        <i class="fas fa-lock text-lg" style="color:var(--accent)"></i>
+        <div><p class="text-sm font-semibold" style="color:var(--text)">دخول المشرفين</p><p class="text-xs" style="color:var(--text3)">الوصول مخصص للمشرفين المعتمدين</p></div>
+      </div>
+      <div class="mb-3">
+        <label class="block text-sm font-medium mb-2" style="color:var(--text2)">بريد المشرف</label>
+        <input type="email" id="adminLoginEmail" class="input" placeholder="admin@estasharni.com">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-2" style="color:var(--text2)">كلمة مرور المشرف</label>
+        <div class="relative">
+          <input type="password" id="adminLoginPass" class="input" placeholder="كلمة المرور" style="padding-left:42px">
+          <button onclick="togglePassVis('adminLoginPass',this)" class="absolute left-3 top-1/2 -translate-y-1/2" style="background:none;border:none;color:var(--text3);cursor:pointer"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <button onclick="adminLogin()" class="btn w-full justify-center" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> دخول لوحة التحكم</button>
+      <p class="text-center text-xs mt-4" style="color:var(--text3)">للمشرفين المعتمدين فقط</p>
+    </div>
+
+    <!-- نموذج تسجيل الدخول العادي -->
     <div id="signInForm" class="card p-6 mb-4">
       <div class="flex gap-3 mb-4">
         <button onclick="googleSignIn()" class="btn btn-outline flex-1 justify-center btn-sm"><i class="fab fa-google"></i> جوجل</button>
@@ -305,18 +339,28 @@ tr:hover td{background:var(--bg3)}
       </div>
       <div class="flex items-center gap-3 mb-4"><div class="flex-1 h-px" style="background:var(--border)"></div><span class="text-xs" style="color:var(--text3)">أو</span><div class="flex-1 h-px" style="background:var(--border)"></div></div>
       <div class="mb-3"><input type="email" id="loginEmail" class="input" placeholder="البريد الإلكتروني"></div>
-      <div class="mb-4"><input type="password" id="loginPass" class="input" placeholder="كلمة المرور"></div>
+      <div class="mb-4">
+        <div class="relative"><input type="password" id="loginPass" class="input" placeholder="كلمة المرور" style="padding-left:42px"><button onclick="togglePassVis('loginPass',this)" class="absolute left-3 top-1/2 -translate-y-1/2" style="background:none;border:none;color:var(--text3);cursor:pointer"><i class="fas fa-eye"></i></button></div>
+      </div>
       <button onclick="emailSignIn()" class="btn w-full justify-center mb-3" id="signInBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
       <button onclick="showPhoneAuth()" class="btn btn-outline w-full justify-center btn-sm"><i class="fas fa-phone"></i> تسجيل الدخول بالهاتف</button>
       <p class="text-center text-sm mt-4" style="color:var(--text3)">ليس لديك حساب؟ <a href="#" onclick="toggleAuthMode()" style="color:var(--accent);font-weight:600">إنشاء حساب</a></p>
     </div>
+
+    <!-- نموذج إنشاء حساب -->
     <div id="signUpForm" class="card p-6 mb-4 hidden">
       <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="regName" class="input" placeholder="الاسم الكامل"><input type="email" id="regEmail" class="input" placeholder="البريد الإلكتروني"></div>
-      <div class="mb-3"><input type="password" id="regPass" class="input" placeholder="كلمة المرور (6 أحرف على الأقل)"></div>
-      <div class="mb-4"><input type="password" id="regPassConfirm" class="input" placeholder="تأكيد كلمة المرور"></div>
+      <div class="mb-3">
+        <div class="relative"><input type="password" id="regPass" class="input" placeholder="كلمة المرور (6 أحرف على الأقل)" style="padding-left:42px"><button onclick="togglePassVis('regPass',this)" class="absolute left-3 top-1/2 -translate-y-1/2" style="background:none;border:none;color:var(--text3);cursor:pointer"><i class="fas fa-eye"></i></button></div>
+      </div>
+      <div class="mb-4">
+        <div class="relative"><input type="password" id="regPassConfirm" class="input" placeholder="تأكيد كلمة المرور" style="padding-left:42px"><button onclick="togglePassVis('regPassConfirm',this)" class="absolute left-3 top-1/2 -translate-y-1/2" style="background:none;border:none;color:var(--text3);cursor:pointer"><i class="fas fa-eye"></i></button></div>
+      </div>
       <button onclick="emailSignUp()" class="btn w-full justify-center" id="signUpBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
       <p class="text-center text-sm mt-4" style="color:var(--text3)">لديك حساب بالفعل؟ <a href="#" onclick="toggleAuthMode()" style="color:var(--accent);font-weight:600">تسجيل الدخول</a></p>
     </div>
+
+    <!-- نموذج تسجيل طبيب -->
     <div id="doctorRegForm" class="card p-6 mb-4 hidden">
       <h3 class="font-display font-700 mb-4" style="color:var(--text)">بيانات تسجيل الطبيب</h3>
       <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="docRegName" class="input" placeholder="الاسم الكامل"><input type="email" id="docRegEmail" class="input" placeholder="البريد الإلكتروني"></div>
@@ -332,6 +376,8 @@ tr:hover td{background:var(--bg3)}
       <button onclick="doctorSignUp()" class="btn w-full justify-center" id="docSignUpBtn"><i class="fas fa-user-doctor"></i> إرسال للمراجعة</button>
       <p class="text-center text-xs mt-3" style="color:var(--text3)">سيتم مراجعة طلبك من قبل المشرف.</p>
     </div>
+
+    <!-- تسجيل بالهاتف -->
     <div id="phoneAuthModal" class="hidden"><div class="card p-6">
       <h3 class="font-display font-700 mb-4" style="color:var(--text)">تسجيل الدخول بالهاتف</h3>
       <div class="mb-3"><input type="tel" id="phoneNum" class="input" placeholder="+966 5XX XXX XXXX"></div>
@@ -344,7 +390,7 @@ tr:hover td{background:var(--bg3)}
 </section>
 </div>
 
-<!-- لوحة تحكم المشرف -->
+<!-- =================== لوحة تحكم المشرف =================== -->
 <div id="page-admin-dashboard" class="page">
 <div class="sidebar" id="adminSidebar">
   <div class="p-5 flex items-center gap-3" style="border-bottom:1px solid var(--border)">
@@ -352,14 +398,14 @@ tr:hover td{background:var(--bg3)}
     <div><p class="font-display font-700 text-sm" style="color:var(--text)">استشرني</p><p class="text-xs" style="color:var(--text3)">لوحة التحكم</p></div>
   </div>
   <nav class="py-4">
-    <div class="sidebar-link active" onclick="showAdminTab('overview')"><i class="fas fa-chart-pie w-5"></i> نظرة عامة</div>
-    <div class="sidebar-link" onclick="showAdminTab('doctors')"><i class="fas fa-user-doctor w-5"></i> الأطباء</div>
-    <div class="sidebar-link" onclick="showAdminTab('users')"><i class="fas fa-users w-5"></i> المستخدمون</div>
-    <div class="sidebar-link" onclick="showAdminTab('requests')"><i class="fas fa-inbox w-5"></i> الاستشارات</div>
-    <div class="sidebar-link" onclick="showAdminTab('messages')"><i class="fas fa-envelope w-5"></i> الرسائل</div>
-    <div class="sidebar-link" onclick="showAdminTab('chat-mgmt')"><i class="fas fa-comments w-5"></i> الدردشات المباشرة</div>
-    <div class="sidebar-link" onclick="showAdminTab('admin-mgmt')"><i class="fas fa-user-shield w-5"></i> إدارة المشرفين</div>
-    <div class="sidebar-link" onclick="showAdminTab('settings')"><i class="fas fa-cog w-5"></i> الإعدادات</div>
+    <div class="sidebar-link active" onclick="showAdminTab('overview',this)"><i class="fas fa-chart-pie w-5"></i> نظرة عامة</div>
+    <div class="sidebar-link" onclick="showAdminTab('doctors',this)"><i class="fas fa-user-doctor w-5"></i> الأطباء</div>
+    <div class="sidebar-link" onclick="showAdminTab('users',this)"><i class="fas fa-users w-5"></i> المستخدمون</div>
+    <div class="sidebar-link" onclick="showAdminTab('requests',this)"><i class="fas fa-inbox w-5"></i> الاستشارات</div>
+    <div class="sidebar-link" onclick="showAdminTab('messages',this)"><i class="fas fa-envelope w-5"></i> الرسائل</div>
+    <div class="sidebar-link" onclick="showAdminTab('chat-mgmt',this)"><i class="fas fa-comments w-5"></i> الدردشات المباشرة</div>
+    <div class="sidebar-link" onclick="showAdminTab('admin-mgmt',this)"><i class="fas fa-user-shield w-5"></i> إدارة المشرفين</div>
+    <div class="sidebar-link" onclick="showAdminTab('settings',this)"><i class="fas fa-cog w-5"></i> الإعدادات</div>
   </nav>
 </div>
 <div class="md:mr-[260px] pt-20 p-6 min-h-screen">
@@ -434,7 +480,7 @@ tr:hover td{background:var(--bg3)}
 </div>
 </div>
 
-<!-- الملف الشخصي -->
+<!-- =================== الملف الشخصي =================== -->
 <div id="page-profile" class="page">
 <section class="pt-24 pb-12 px-4">
   <div class="max-w-4xl mx-auto">
@@ -465,7 +511,7 @@ tr:hover td{background:var(--bg3)}
 <div id="modalContainer"></div>
 
 <script>
-/* ==================== إعداد Firebase ==================== */
+/* ==================== إعداد فايربيز ==================== */
 const firebaseConfig = {
   apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   authDomain: "gen-lang-client-0100583073-default-rtdb.firebaseapp.com",
@@ -476,7 +522,7 @@ const firebaseConfig = {
   appId: "1:0100583073:web:xxxxxxxxxxxxxxxx"
 };
 
-// تعريف بيانات الآدمن الافتراضية
+/* ==================== بيانات الأدمن ==================== */
 const ADMIN_EMAIL = "admin@estasharni.com";
 const ADMIN_PASSWORD = "Admin@2025";
 
@@ -486,15 +532,14 @@ try {
   auth = firebase.auth();
   db = firebase.database();
   storage = firebase.storage();
-  
-  // اختبار الاتصال بقاعدة البيانات
-  db.ref('.info/connected').on('value', (snap) => {
-    firebaseReady = snap.val() === true;
+  /* اختبار الاتصال بقاعدة البيانات */
+  db.ref('.info/connected').on('value', function(s) {
+    firebaseReady = (s.val() === true);
     if (firebaseReady) {
-      console.log('✅ Firebase متصل بنجاح');
-      initializeAdminAccount();
+      console.log('Firebase Realtime Database متصل');
+      seedDefaultAdmin();
     } else {
-      console.warn('⚠️ Firebase غير متصل - جاري المحاولة...');
+      console.warn('Firebase غير متصل، يتم استخدام التخزين المحلي');
     }
   });
 } catch(e) {
@@ -502,195 +547,160 @@ try {
   firebaseReady = false;
 }
 
-// دالة تهيئة حساب الآدمن
-async function initializeAdminAccount() {
-  try {
-    // التحقق من وجود حساب الآدمن
-    const adminsRef = db.ref('admins');
-    const snapshot = await adminsRef.once('value');
-    const admins = snapshot.val() || {};
-    
-    // التحقق من وجود الآدمن الافتراضي
-    const adminExists = Object.values(admins).some(admin => admin.email === ADMIN_EMAIL);
-    
-    if (!adminExists) {
-      console.log('إنشاء حساب الآدمن الافتراضي...');
-      
-      // محاولة إنشاء حساب الآدمن في Firebase Auth
-      try {
-        const userCredential = await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-        const uid = userCredential.user.uid;
-        
-        // حفظ بيانات الآدمن في قاعدة البيانات
-        await db.ref('users/' + uid).set({
-          name: 'مدير النظام',
-          email: ADMIN_EMAIL,
-          role: 'admin',
-          phone: '',
-          createdAt: new Date().toISOString()
-        });
-        
-        await db.ref('admins/' + uid).set({
-          email: ADMIN_EMAIL,
-          level: 'Super',
-          createdAt: new Date().toISOString()
-        });
-        
-        console.log('✅ تم إنشاء حساب الآدمن بنجاح');
-      } catch (authError) {
-        if (authError.code === 'auth/email-already-in-use') {
-          console.log('ℹ️ حساب الآدمن موجود مسبقاً في Authentication');
-          
-          // محاولة تسجيل الدخول للحصول على UID
-          try {
-            const signInResult = await auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
-            const uid = signInResult.user.uid;
-            
-            // التأكد من وجود بيانات الآدمن في قاعدة البيانات
-            const userRef = db.ref('users/' + uid);
-            const userSnapshot = await userRef.once('value');
-            
-            if (!userSnapshot.exists()) {
-              await userRef.set({
-                name: 'مدير النظام',
-                email: ADMIN_EMAIL,
-                role: 'admin',
-                phone: '',
-                createdAt: new Date().toISOString()
-              });
-            }
-            
-            const adminRef = db.ref('admins/' + uid);
-            const adminSnapshot = await adminRef.once('value');
-            
-            if (!adminSnapshot.exists()) {
-              await adminRef.set({
-                email: ADMIN_EMAIL,
-                level: 'Super',
-                createdAt: new Date().toISOString()
-              });
-            }
-            
-            await auth.signOut(); // تسجيل الخروج بعد التحديث
-            console.log('✅ تم تحديث بيانات الآدمن في قاعدة البيانات');
-          } catch (signInError) {
-            console.warn('⚠️ فشل تحديث بيانات الآدمن:', signInError);
-          }
-        } else {
-          console.warn('⚠️ خطأ في إنشاء حساب الآدمن:', authError);
-        }
-      }
-    } else {
-      console.log('ℹ️ حساب الآدمن موجود مسبقاً');
+/* ==================== إنشاء حساب الأدمن الافتراضي ==================== */
+function seedDefaultAdmin() {
+  db.ref('admins/default_admin').once('value').then(function(snap) {
+    if (!snap.exists()) {
+      db.ref('admins/default_admin').set({
+        email: ADMIN_EMAIL,
+        level: 'Super',
+        createdAt: new Date().toISOString()
+      });
+      console.log('تم إنشاء حساب الأدمن الافتراضي في قاعدة البيانات');
     }
-  } catch (error) {
-    console.warn('⚠️ خطأ في تهيئة حساب الآدمن:', error);
-  }
+  }).catch(function(){});
 }
 
-// نظام تخزين محلي احتياطي
+/* ==================== كائنات بديلة للوضع المحلي ==================== */
 function fakeRef(path) {
   return {
-    set: (data) => {
+    set: function(data) {
       localStorage.setItem('estasharni_' + path.replace(/\//g,'_'), JSON.stringify(data));
       return Promise.resolve();
     },
-    push: (data) => {
-      const key = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
-      const stored = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || '{}');
+    push: function(data) {
+      var key = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2,5);
+      var stored = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || '{}');
       stored[key] = data;
       localStorage.setItem('estasharni_' + path.replace(/\//g,'_'), JSON.stringify(stored));
-      return Promise.resolve({ key });
+      return Promise.resolve({ key: key });
     },
-    once: () => {
-      const data = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || 'null');
-      return Promise.resolve({ val: () => data, exists: () => data !== null });
+    once: function() {
+      var data = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || 'null');
+      return Promise.resolve({ val: function() { return data; } });
     },
-    update: (data) => {
-      const stored = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || '{}');
+    update: function(data) {
+      var stored = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || '{}');
       Object.assign(stored, data);
       localStorage.setItem('estasharni_' + path.replace(/\//g,'_'), JSON.stringify(stored));
       return Promise.resolve();
     },
-    remove: () => {
+    remove: function() {
       localStorage.removeItem('estasharni_' + path.replace(/\//g,'_'));
       return Promise.resolve();
     },
-    on: () => {},
-    off: () => {},
-    orderByChild: () => ({
-      equalTo: () => ({
-        once: () => {
-          const data = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || 'null');
-          return Promise.resolve({ val: () => data });
+    on: function() {},
+    off: function() {},
+    orderByChild: function() {
+      return {
+        equalTo: function() {
+          return {
+            once: function() {
+              var data = JSON.parse(localStorage.getItem('estasharni_' + path.replace(/\//g,'_')) || 'null');
+              return Promise.resolve({ val: function() { return data; } });
+            }
+          };
         }
-      })
-    })
+      };
+    }
   };
 }
 
 function getDB() {
-  return firebaseReady ? db : { ref: (p) => fakeRef(p) };
+  return firebaseReady ? db : { ref: function(p) { return fakeRef(p); } };
 }
+
 function getAuth() {
   return firebaseReady ? auth : {
-    onAuthStateChanged: (cb) => {
-      const uid = localStorage.getItem('estasharni_local_uid');
+    onAuthStateChanged: function(cb) {
+      var uid = localStorage.getItem('estasharni_local_uid');
       if (uid) {
-        const userData = JSON.parse(localStorage.getItem('estasharni_local_user_' + uid) || '{}');
-        cb({ uid, displayName: userData.name, email: userData.email, phoneNumber: userData.phone, updateProfile: (p) => { Object.assign(userData, p); localStorage.setItem('estasharni_local_user_' + uid, JSON.stringify(userData)); return Promise.resolve(); } });
+        var userData = JSON.parse(localStorage.getItem('estasharni_local_user_' + uid) || '{}');
+        cb({
+          uid: uid,
+          displayName: userData.name,
+          email: userData.email,
+          phoneNumber: userData.phone,
+          updateProfile: function(p) {
+            Object.assign(userData, p);
+            localStorage.setItem('estasharni_local_user_' + uid, JSON.stringify(userData));
+            return Promise.resolve();
+          }
+        });
       } else { cb(null); }
     },
-    signInWithEmailAndPassword: (email, pass) => {
-      const users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
-      const found = Object.entries(users).find(([id, u]) => u.email === email && u.password === pass);
+    signInWithEmailAndPassword: function(email, pass) {
+      var users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
+      var found = Object.entries(users).find(function(entry) { return entry[1].email === email; });
       if (found) {
         localStorage.setItem('estasharni_local_uid', found[0]);
-        return Promise.resolve({ user: { uid: found[0], displayName: found[1].name, email: found[1].email, updateProfile: (p) => Promise.resolve() } });
+        return Promise.resolve({
+          user: {
+            uid: found[0],
+            displayName: found[1].name,
+            email: found[1].email,
+            updateProfile: function() { return Promise.resolve(); }
+          }
+        });
       }
       return Promise.reject({ message: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' });
     },
-    createUserWithEmailAndPassword: (email, pass) => {
-      const uid = 'local_' + Date.now();
+    createUserWithEmailAndPassword: function(email, pass) {
+      var uid = 'local_' + Date.now();
       localStorage.setItem('estasharni_local_uid', uid);
-      const users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
-      users[uid] = { email, password: pass, role: 'patient' };
-      localStorage.setItem('estasharni_users', JSON.stringify(users));
-      return Promise.resolve({ user: { uid, displayName: '', email, updateProfile: (p) => { const d = JSON.parse(localStorage.getItem('estasharni_local_user_' + uid) || '{}'); Object.assign(d, p); localStorage.setItem('estasharni_local_user_' + uid, JSON.stringify(d)); return Promise.resolve(); } } });
+      return Promise.resolve({
+        user: {
+          uid: uid,
+          displayName: '',
+          email: email,
+          updateProfile: function(p) {
+            var d = JSON.parse(localStorage.getItem('estasharni_local_user_' + uid) || '{}');
+            Object.assign(d, p);
+            localStorage.setItem('estasharni_local_user_' + uid, JSON.stringify(d));
+            return Promise.resolve();
+          }
+        }
+      });
     },
-    signOut: () => { localStorage.removeItem('estasharni_local_uid'); return Promise.resolve(); },
+    signOut: function() {
+      localStorage.removeItem('estasharni_local_uid');
+      return Promise.resolve();
+    },
     currentUser: null
   };
 }
-function getStorage() {
+
+function getStorageRef() {
   return firebaseReady ? storage : {
-    ref: () => ({
-      put: () => Promise.resolve({ ref: { getDownloadURL: () => Promise.resolve('') } })
-    })
+    ref: function() {
+      return {
+        put: function() { return Promise.resolve({ ref: { getDownloadURL: function() { return Promise.resolve(''); } } }); }
+      };
+    }
   };
 }
 
-/* ==================== الحالة ==================== */
-let currentUser = null;
-let selectedRole = 'patient';
-let isSignUp = false;
-let allDoctors = [];
-let allUsers = [];
-let allConsultations = [];
-let allMessages = [];
-let allAdmins = [];
-let allSettings = {};
-let localNotifications = JSON.parse(localStorage.getItem('estasharni_notifs') || '[]');
-let confirmationResult = null;
-let filteredSpecialty = 'all';
-let isDark = localStorage.getItem('estasharni_dark') === 'true';
-let currentLang = localStorage.getItem('estasharni_lang') || 'ar';
-let chatOpen = false;
-let chatHasNew = false;
-let selectedChatUser = null;
-let chatListenerAttached = false;
+/* ==================== الحالة العامة ==================== */
+var currentUser = null;
+var selectedRole = 'patient';
+var isSignUp = false;
+var allDoctors = [];
+var allUsers = [];
+var allConsultations = [];
+var allMessages = [];
+var allAdmins = [];
+var allSettings = {};
+var localNotifications = JSON.parse(localStorage.getItem('estasharni_notifs') || '[]');
+var confirmationResult = null;
+var filteredSpecialty = 'all';
+var isDark = localStorage.getItem('estasharni_dark') === 'true';
+var currentLang = localStorage.getItem('estasharni_lang') || 'ar';
+var chatOpen = false;
+var chatHasNew = false;
+var selectedChatUser = null;
+var chatListenerAttached = false;
 
-const specialties = [
+var specialties = [
   {name:'أمراض القلب',icon:'fa-heart-pulse',color:'#EF4444'},
   {name:'الجلدية',icon:'fa-hand-dots',color:'#F59E0B'},
   {name:'الأعصاب',icon:'fa-brain',color:'#8B5CF6'},
@@ -706,46 +716,33 @@ const specialties = [
 ];
 
 /* ==================== التهيئة ==================== */
-document.addEventListener('DOMContentLoaded', () => {
-  applyTheme(); 
-  applyLang(); 
-  renderSpecialties(); 
-  renderSpecialtyFilters(); 
-  initHeroCanvas(); 
-  loadDoctors(); 
+document.addEventListener('DOMContentLoaded', function() {
+  applyTheme();
+  applyLang();
+  renderSpecialties();
+  renderSpecialtyFilters();
+  initHeroCanvas();
+  loadDoctors();
   setupAuthListener();
-  
-  // التأكد من وجود حساب الآدمن في التخزين المحلي كاحتياط
-  initializeLocalAdmin();
 });
 
-// دالة لإنشاء حساب الآدمن في التخزين المحلي
-function initializeLocalAdmin() {
-  const users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
-  const adminExists = Object.values(users).some(u => u.email === ADMIN_EMAIL);
-  
-  if (!adminExists) {
-    const uid = 'local_admin_' + Date.now();
-    users[uid] = {
-      name: 'مدير النظام',
-      email: ADMIN_EMAIL,
-      password: ADMIN_PASSWORD,
-      role: 'admin',
-      phone: '',
-      createdAt: new Date().toISOString()
-    };
-    localStorage.setItem('estasharni_users', JSON.stringify(users));
-    localStorage.setItem('estasharni_local_user_' + uid, JSON.stringify({ 
-      name: 'مدير النظام', 
-      email: ADMIN_EMAIL 
-    }));
+/* ==================== إظهار/إخفاء كلمة المرور ==================== */
+function togglePassVis(inputId, btn) {
+  var inp = document.getElementById(inputId);
+  var icon = btn.querySelector('i');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+  } else {
+    inp.type = 'password';
+    icon.className = 'fas fa-eye';
   }
 }
 
 /* ==================== اللغة ==================== */
 function applyLang() {
-  const html = document.documentElement;
-  html.lang = currentLang; 
+  var html = document.documentElement;
+  html.lang = currentLang;
   html.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
   document.getElementById('langBtn').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
 }
@@ -762,31 +759,52 @@ function applyTheme() {
   document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
 }
 function toggleTheme() {
-  isDark = !isDark; 
-  localStorage.setItem('estasharni_dark', isDark); 
+  isDark = !isDark;
+  localStorage.setItem('estasharni_dark', isDark);
   applyTheme();
 }
 
-/* ==================== كانفاس ==================== */
+/* ==================== كانفاس الجزيئات ==================== */
 function initHeroCanvas() {
-  const canvas = document.getElementById('heroCanvas');
+  var canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let particles = [];
+  var ctx = canvas.getContext('2d');
+  var particles = [];
   function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-  resize(); 
+  resize();
   window.addEventListener('resize', resize);
-  for (let i = 0; i < 60; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*3+1, dx: (Math.random()-.5)*.5, dy: (Math.random()-.5)*.5, o: Math.random()*.5+.1 });
+  for (var i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 3 + 1,
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      o: Math.random() * 0.5 + 0.1
+    });
+  }
   function draw() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    const ac = isDark ? '56,189,248' : '14,165,233';
-    particles.forEach((p,i) => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var ac = isDark ? '56,189,248' : '14,165,233';
+    particles.forEach(function(p, i) {
       p.x += p.dx; p.y += p.dy;
-      if(p.x<0||p.x>canvas.width) p.dx*=-1; if(p.y<0||p.y>canvas.height) p.dy*=-1;
-      ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(.5,p.r),0,Math.PI*2); ctx.fillStyle = `rgba(${ac},${p.o})`; ctx.fill();
-      for(let j=i+1;j<particles.length;j++){
-        const dx=p.x-particles[j].x,dy=p.y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(${ac},${.1*(1-dist/120)})`;ctx.lineWidth=.5;ctx.stroke();}
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + ac + ',' + p.o + ')';
+      ctx.fill();
+      for (var j = i + 1; j < particles.length; j++) {
+        var dx = p.x - particles[j].x, dy = p.y - particles[j].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(' + ac + ',' + (0.1 * (1 - dist / 120)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
       }
     });
     requestAnimationFrame(draw);
@@ -796,8 +814,8 @@ function initHeroCanvas() {
 
 /* ==================== التنقل ==================== */
 function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = document.getElementById('page-' + page);
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var el = document.getElementById('page-' + page);
   if (el) el.classList.add('active');
   window.scrollTo(0, 0);
   document.getElementById('notifPanel').classList.add('hidden');
@@ -807,66 +825,93 @@ function navigate(page) {
 }
 
 /* ==================== الإشعارات ==================== */
-function showToast(msg, type = 'info') {
-  const c = document.getElementById('toastContainer');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  const icons = {success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
-  const colors = {success:'#22C55E',error:'#EF4444',info:'var(--accent)'};
-  t.innerHTML = `<i class="fas ${icons[type]}" style="color:${colors[type]}"></i><span style="color:var(--text)">${msg}</span>`;
+function showToast(msg, type) {
+  type = type || 'info';
+  var c = document.getElementById('toastContainer');
+  var t = document.createElement('div');
+  t.className = 'toast ' + type;
+  var icons = {success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
+  var colors = {success:'#22C55E',error:'#EF4444',info:'var(--accent)'};
+  t.innerHTML = '<i class="fas ' + icons[type] + '" style="color:' + colors[type] + '"></i><span style="color:var(--text)">' + msg + '</span>';
   c.appendChild(t);
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-100%)'; t.style.transition='all .3s'; setTimeout(()=>t.remove(),300); }, 4000);
+  setTimeout(function() {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-100%)';
+    t.style.transition = 'all .3s';
+    setTimeout(function() { t.remove(); }, 300);
+  }, 4000);
 }
 function playNotifSound() {
-  try { const ac=new(window.AudioContext||window.webkitAudioContext)(); const o=ac.createOscillator(),g=ac.createGain(); o.connect(g);g.connect(ac.destination); o.type='sine';o.frequency.setValueAtTime(880,ac.currentTime);o.frequency.setValueAtTime(1100,ac.currentTime+.1); g.gain.setValueAtTime(.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.4); o.start(ac.currentTime);o.stop(ac.currentTime+.4); } catch(e){}
+  try {
+    var ac = new (window.AudioContext || window.webkitAudioContext)();
+    var o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(880, ac.currentTime);
+    o.frequency.setValueAtTime(1100, ac.currentTime + 0.1);
+    g.gain.setValueAtTime(0.15, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.4);
+    o.start(ac.currentTime);
+    o.stop(ac.currentTime + 0.4);
+  } catch(e) {}
 }
 function addNotification(title, body) {
-  localNotifications.unshift({ id:Date.now(), title, body, time:new Date().toISOString(), read:false });
+  localNotifications.unshift({ id: Date.now(), title: title, body: body, time: new Date().toISOString(), read: false });
   if (localNotifications.length > 50) localNotifications.pop();
   localStorage.setItem('estasharni_notifs', JSON.stringify(localNotifications));
-  updateNotifUI(); playNotifSound();
+  updateNotifUI();
+  playNotifSound();
 }
 function updateNotifUI() {
-  const unread = localNotifications.filter(n => !n.read).length;
-  const badge = document.getElementById('notifCount');
-  const panel = document.getElementById('navNotif');
-  if (currentUser) { panel.classList.remove('hidden'); if(unread>0){badge.style.display='flex';badge.textContent=unread;}else{badge.style.display='none';} }
-  const list = document.getElementById('notifList');
-  if (!localNotifications.length) { list.innerHTML = '<p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد إشعارات</p>'; }
-  else {
-    list.innerHTML = localNotifications.slice(0,20).map(n => `<div class="p-3 rounded-xl mb-2" style="background:var(--bg3);${!n.read?'border-right:3px solid var(--accent)':''}"><p class="text-sm font-medium" style="color:var(--text)">${n.title}</p><p class="text-xs mt-1" style="color:var(--text3)">${n.body}</p><p class="text-xs mt-1" style="color:var(--text3)">${new Date(n.time).toLocaleString('ar-EG')}</p></div>`).join('');
-    localNotifications.forEach(n => n.read = true);
+  var unread = localNotifications.filter(function(n) { return !n.read; }).length;
+  var badge = document.getElementById('notifCount');
+  var panel = document.getElementById('navNotif');
+  if (currentUser) {
+    panel.classList.remove('hidden');
+    if (unread > 0) { badge.style.display = 'flex'; badge.textContent = unread; }
+    else { badge.style.display = 'none'; }
+  }
+  var list = document.getElementById('notifList');
+  if (!localNotifications.length) {
+    list.innerHTML = '<p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد إشعارات</p>';
+  } else {
+    list.innerHTML = localNotifications.slice(0, 20).map(function(n) {
+      return '<div class="p-3 rounded-xl mb-2" style="background:var(--bg3);' + (!n.read ? 'border-right:3px solid var(--accent)' : '') + '"><p class="text-sm font-medium" style="color:var(--text)">' + n.title + '</p><p class="text-xs mt-1" style="color:var(--text3)">' + n.body + '</p><p class="text-xs mt-1" style="color:var(--text3)">' + new Date(n.time).toLocaleString('ar-EG') + '</p></div>';
+    }).join('');
+    localNotifications.forEach(function(n) { n.read = true; });
     localStorage.setItem('estasharni_notifs', JSON.stringify(localNotifications));
   }
 }
 function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('hidden'); }
-function clearNotifications() { localNotifications=[]; localStorage.setItem('estasharni_notifs','[]'); updateNotifUI(); }
+function clearNotifications() { localNotifications = []; localStorage.setItem('estasharni_notifs', '[]'); updateNotifUI(); }
 
 /* ==================== التخصصات ==================== */
 function renderSpecialties() {
-  document.getElementById('specialtiesGrid').innerHTML = specialties.map(s => `
-    <div class="card p-5 flex items-center gap-4 cursor-pointer group" onclick="navigate('doctors');setTimeout(()=>filterBySpecialty('${s.name}'),200)">
-      <div class="w-12 h-12 rounded-xl flex items-center justify-center transition group-hover:scale-110" style="background:${s.color}15"><i class="fas ${s.icon} text-lg" style="color:${s.color}"></i></div>
-      <span class="font-medium text-sm" style="color:var(--text)">${s.name}</span>
-    </div>`).join('');
+  document.getElementById('specialtiesGrid').innerHTML = specialties.map(function(s) {
+    return '<div class="card p-5 flex items-center gap-4 cursor-pointer group" onclick="navigate(\'doctors\');setTimeout(function(){filterBySpecialty(\'' + s.name + '\')},200)"><div class="w-12 h-12 rounded-xl flex items-center justify-center transition group-hover:scale-110" style="background:' + s.color + '15"><i class="fas ' + s.icon + ' text-lg" style="color:' + s.color + '"></i></div><span class="font-medium text-sm" style="color:var(--text)">' + s.name + '</span></div>';
+  }).join('');
 }
 function renderSpecialtyFilters() {
-  document.getElementById('specialtyFilters').innerHTML = `<button onclick="filterBySpecialty('all')" class="badge badge-blue cursor-pointer spec-filter" data-spec="all">الكل</button>` +
-    specialties.map(s => `<button onclick="filterBySpecialty('${s.name}')" class="badge cursor-pointer spec-filter" data-spec="${s.name}" style="background:var(--bg3);color:var(--text2)">${s.name}</button>`).join('');
+  var html = '<button onclick="filterBySpecialty(\'all\')" class="badge badge-blue cursor-pointer spec-filter" data-spec="all">الكل</button>';
+  html += specialties.map(function(s) {
+    return '<button onclick="filterBySpecialty(\'' + s.name + '\')" class="badge cursor-pointer spec-filter" data-spec="' + s.name + '" style="background:var(--bg3);color:var(--text2)">' + s.name + '</button>';
+  }).join('');
+  document.getElementById('specialtyFilters').innerHTML = html;
 }
 function filterBySpecialty(spec) {
   filteredSpecialty = spec;
-  document.querySelectorAll('.spec-filter').forEach(b => {
-    if(b.dataset.spec===spec){b.className='badge badge-blue cursor-pointer spec-filter';}else{b.style.background='var(--bg3)';b.style.color='var(--text2)';b.className='badge cursor-pointer spec-filter';}
+  document.querySelectorAll('.spec-filter').forEach(function(b) {
+    if (b.dataset.spec === spec) { b.className = 'badge badge-blue cursor-pointer spec-filter'; }
+    else { b.style.background = 'var(--bg3)'; b.style.color = 'var(--text2)'; b.className = 'badge cursor-pointer spec-filter'; }
   });
   renderDoctorsGrid();
 }
 
 /* ==================== الأطباء ==================== */
 function loadDoctors() {
-  getDB().ref('doctors').once('value').then(snap => {
-    const data = snap.val();
-    allDoctors = data ? Object.entries(data).map(([id,d])=>({id,...d})) : [];
+  getDB().ref('doctors').once('value').then(function(snap) {
+    var data = snap.val();
+    allDoctors = data ? Object.entries(data).map(function(entry) { var id = entry[0]; var d = entry[1]; return Object.assign({id: id}, d); }) : [];
     if (!allDoctors.length) {
       allDoctors = [
         {id:'d1',name:'د. سارة Mitchell',specialty:'أمراض القلب',experience:'12 سنة',qualifications:'طب عام، أخصائي قلب',bio:'خبيرة في أمراض القلب والأوعية الدموية مع خبرة بحثية واسعة.',photo:'',status:'approved',rating:4.9},
@@ -874,67 +919,76 @@ function loadDoctors() {
         {id:'d3',name:'د. أميرة حسن',specialty:'الجلدية',experience:'8 سنوات',qualifications:'طب عام، ماجستير جلدية',bio:'خبيرة في الأمراض الجلدية التجميلية والطبية.',photo:'',status:'approved',rating:4.7},
         {id:'d4',name:'د. مايكل براون',specialty:'العظام',experience:'20 سنة',qualifications:'ماجستير جراحة عظام',bio:'متخصص في استبدال المفاصل وطب الرياضة.',photo:'',status:'approved',rating:4.9},
         {id:'d5',name:'د. ليلى كريم',specialty:'طب الأطفال',experience:'10 سنوات',qualifications:'طب عام، ماجستير أطفال',bio:'متخصصة في صحة الطفل ورعايته التنموية.',photo:'',status:'approved',rating:4.8},
-        {id:'d6',name:'د. ديفيد ويلسون',specialty:'الطب النفسي',experience:'14 سنة',qualifications:'طب عام، زمالة طب نفسي',bio:'خبير في اضطرابات المزاج والقلق والعلاج السلوكي المعرفي.',photo:'',status:'approved',rating:4.6},
+        {id:'d6',name:'د. ديفيد ويلسون',specialty:'الطب النفسي',experience:'14 سنة',qualifications:'طب عام، زمالة طب نفسي',bio:'خبير في اضطرابات المزاج والقلق والعلاج السلوكي المعرفي.',photo:'',status:'approved',rating:4.6}
       ];
     }
     renderDoctorsGrid();
   });
 }
 function renderDoctorsGrid() {
-  const grid = document.getElementById('doctorsGrid');
-  let docs = allDoctors.filter(d => d.status==='approved');
-  if (filteredSpecialty!=='all') docs = docs.filter(d => d.specialty===filteredSpecialty);
+  var grid = document.getElementById('doctorsGrid');
+  var docs = allDoctors.filter(function(d) { return d.status === 'approved'; });
+  if (filteredSpecialty !== 'all') docs = docs.filter(function(d) { return d.specialty === filteredSpecialty; });
   if (!docs.length) { grid.innerHTML = '<p class="text-center col-span-full py-12" style="color:var(--text3)">لا يوجد أطباء مطابقون.</p>'; return; }
-  grid.innerHTML = docs.map(d => `
-    <div class="card p-6 flex flex-col">
-      <div class="flex items-center gap-4 mb-4">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl overflow-hidden" style="background:var(--accent)">${d.photo?`<img src="${d.photo}" class="w-full h-full object-cover">`:d.name.charAt(0)}</div>
-        <div><h3 class="font-display font-700" style="color:var(--text)">${d.name}</h3><p class="text-sm" style="color:var(--accent)">${d.specialty}</p><div class="flex items-center gap-1 mt-1"><i class="fas fa-star text-yellow-400 text-xs"></i><span class="text-xs" style="color:var(--text2)">${d.rating||'N/A'}</span></div></div>
-      </div>
-      <p class="text-sm mb-2" style="color:var(--text2)">${d.bio||''}</p>
-      <div class="flex flex-wrap gap-2 mb-4"><span class="badge badge-blue text-xs"><i class="fas fa-briefcase-medical"></i> ${d.experience}</span><span class="badge badge-green text-xs"><i class="fas fa-award"></i> ${d.qualifications}</span></div>
-      <div class="mt-auto"><button onclick="requestConsultation('${d.id}','${d.name}')" class="btn btn-sm w-full justify-center"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div>
-    </div>`).join('');
+  grid.innerHTML = docs.map(function(d) {
+    var avatar = d.photo ? '<img src="' + d.photo + '" class="w-full h-full object-cover">' : d.name.charAt(0);
+    return '<div class="card p-6 flex flex-col"><div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl overflow-hidden" style="background:var(--accent)">' + avatar + '</div><div><h3 class="font-display font-700" style="color:var(--text)">' + d.name + '</h3><p class="text-sm" style="color:var(--accent)">' + d.specialty + '</p><div class="flex items-center gap-1 mt-1"><i class="fas fa-star text-yellow-400 text-xs"></i><span class="text-xs" style="color:var(--text2)">' + (d.rating || 'N/A') + '</span></div></div></div><p class="text-sm mb-2" style="color:var(--text2)">' + (d.bio || '') + '</p><div class="flex flex-wrap gap-2 mb-4"><span class="badge badge-blue text-xs"><i class="fas fa-briefcase-medical"></i> ' + d.experience + '</span><span class="badge badge-green text-xs"><i class="fas fa-award"></i> ' + d.qualifications + '</span></div><div class="mt-auto"><button onclick="requestConsultation(\'' + d.id + '\',\'' + d.name.replace(/'/g, "\\'") + '\')" class="btn btn-sm w-full justify-center"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div></div>';
+  }).join('');
 }
 function filterDoctors(query) {
-  const grid = document.getElementById('doctorsGrid');
-  const q = query.toLowerCase();
-  let docs = allDoctors.filter(d => d.status==='approved' && (d.name.toLowerCase().includes(q) || d.specialty.toLowerCase().includes(q)));
-  if (filteredSpecialty!=='all') docs = docs.filter(d => d.specialty===filteredSpecialty);
+  var grid = document.getElementById('doctorsGrid');
+  var q = query.toLowerCase();
+  var docs = allDoctors.filter(function(d) { return d.status === 'approved' && (d.name.toLowerCase().includes(q) || d.specialty.toLowerCase().includes(q)); });
+  if (filteredSpecialty !== 'all') docs = docs.filter(function(d) { return d.specialty === filteredSpecialty; });
   if (!docs.length) { grid.innerHTML = '<p class="text-center col-span-full py-12" style="color:var(--text3)">لا يوجد أطباء.</p>'; return; }
-  grid.innerHTML = docs.map(d => `
-    <div class="card p-6 flex flex-col">
-      <div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style="background:var(--accent)">${d.name.charAt(0)}</div><div><h3 class="font-display font-700" style="color:var(--text)">${d.name}</h3><p class="text-sm" style="color:var(--accent)">${d.specialty}</p></div></div>
-      <p class="text-sm mb-4" style="color:var(--text2)">${d.bio||''}</p>
-      <button onclick="requestConsultation('${d.id}','${d.name}')" class="btn btn-sm w-full justify-center mt-auto"><i class="fas fa-calendar-check"></i> طلب استشارة</button>
-    </div>`).join('');
+  grid.innerHTML = docs.map(function(d) {
+    return '<div class="card p-6 flex flex-col"><div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style="background:var(--accent)">' + d.name.charAt(0) + '</div><div><h3 class="font-display font-700" style="color:var(--text)">' + d.name + '</h3><p class="text-sm" style="color:var(--accent)">' + d.specialty + '</p></div></div><p class="text-sm mb-4" style="color:var(--text2)">' + (d.bio || '') + '</p><button onclick="requestConsultation(\'' + d.id + '\',\'' + d.name.replace(/'/g, "\\'") + '\')" class="btn btn-sm w-full justify-center mt-auto"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div>';
+  }).join('');
 }
 function requestConsultation(doctorId, doctorName) {
   if (!currentUser) { navigate('auth'); showToast('يرجى تسجيل الدخول لطلب استشارة', 'info'); return; }
-  showModal('طلب استشارة', `
-    <p class="text-sm mb-4" style="color:var(--text2)">أنت تطلب استشارة مع <strong style="color:var(--text)">${doctorName}</strong></p>
-    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">التاريخ المفضل</label><input type="date" id="consultDate" class="input" min="${new Date().toISOString().split('T')[0]}"></div>
-    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الوقت المفضل</label><select id="consultTime" class="input"><option>09:00 صباحاً</option><option>10:00 صباحاً</option><option>11:00 صباحاً</option><option>12:00 ظهراً</option><option>01:00 مساءً</option><option>02:00 مساءً</option><option>03:00 مساءً</option><option>04:00 مساءً</option><option>05:00 مساءً</option></select></div>
-    <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">صف شكواك</label><textarea id="consultDesc" class="input" placeholder="وصف مختصر لشكواك الطبية..."></textarea></div>
-    <button onclick="submitConsultation('${doctorId}','${doctorName}')" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>
-  `);
+  showModal('طلب استشارة', '<p class="text-sm mb-4" style="color:var(--text2)">أنت تطلب استشارة مع <strong style="color:var(--text)">' + doctorName + '</strong></p><div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">التاريخ المفضل</label><input type="date" id="consultDate" class="input" min="' + new Date().toISOString().split('T')[0] + '"></div><div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الوقت المفضل</label><select id="consultTime" class="input"><option>09:00 صباحاً</option><option>10:00 صباحاً</option><option>11:00 صباحاً</option><option>12:00 ظهراً</option><option>01:00 مساءً</option><option>02:00 مساءً</option><option>03:00 مساءً</option><option>04:00 مساءً</option><option>05:00 مساءً</option></select></div><div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">صف شكواك</label><textarea id="consultDesc" class="input" placeholder="وصف مختصر لشكواك الطبية..."></textarea></div><button onclick="submitConsultation(\'' + doctorId + '\',\'' + doctorName.replace(/'/g, "\\'") + '\')" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> إرسال الطلب</button>');
 }
 function submitConsultation(doctorId, doctorName) {
-  const date = document.getElementById('consultDate').value;
-  const time = document.getElementById('consultTime').value;
-  const desc = document.getElementById('consultDesc').value;
+  var date = document.getElementById('consultDate').value;
+  var time = document.getElementById('consultTime').value;
+  var desc = document.getElementById('consultDesc').value;
   if (!date) { showToast('يرجى اختيار تاريخ', 'error'); return; }
   if (!desc) { showToast('يرجى وصف شكواك', 'error'); return; }
-  const consult = { patientId: currentUser.uid, patientName: currentUser.displayName||currentUser.email, patientEmail: currentUser.email, doctorId, doctorName, date, time, description: desc, status: 'pending', createdAt: new Date().toISOString() };
-  getDB().ref('consultations').push(consult).then(() => { closeModal(); showToast('تم إرسال طلب الاستشارة بنجاح!', 'success'); addNotification('تم طلب استشارة', `تم إرسال طلبك مع ${doctorName} بتاريخ ${date}.`); });
+  var consult = {
+    patientId: currentUser.uid,
+    patientName: currentUser.displayName || currentUser.email,
+    patientEmail: currentUser.email,
+    doctorId: doctorId,
+    doctorName: doctorName,
+    date: date,
+    time: time,
+    description: desc,
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+  getDB().ref('consultations').push(consult).then(function() {
+    closeModal();
+    showToast('تم إرسال طلب الاستشارة بنجاح!', 'success');
+    addNotification('تم طلب استشارة', 'تم إرسال طلبك مع ' + doctorName + ' بتاريخ ' + date + '.');
+  });
 }
 function submitContact() {
-  const name = document.getElementById('contactName').value.trim();
-  const email = document.getElementById('contactEmail').value.trim();
-  const subject = document.getElementById('contactSubject').value.trim();
-  const msg = document.getElementById('contactMsg').value.trim();
-  if (!name||!email||!subject||!msg) { showToast('يرجى ملء جميع الحقول', 'error'); return; }
-  getDB().ref('messages').push({ name, email, subject, message: msg, type: 'contact', createdAt: new Date().toISOString() }).then(() => { showToast('تم إرسال الرسالة بنجاح!', 'success'); document.getElementById('contactName').value=''; document.getElementById('contactEmail').value=''; document.getElementById('contactSubject').value=''; document.getElementById('contactMsg').value=''; });
+  var name = document.getElementById('contactName').value.trim();
+  var email = document.getElementById('contactEmail').value.trim();
+  var subject = document.getElementById('contactSubject').value.trim();
+  var msg = document.getElementById('contactMsg').value.trim();
+  if (!name || !email || !subject || !msg) { showToast('يرجى ملء جميع الحقول', 'error'); return; }
+  getDB().ref('messages').push({
+    name: name, email: email, subject: subject, message: msg,
+    type: 'contact', createdAt: new Date().toISOString()
+  }).then(function() {
+    showToast('تم إرسال الرسالة بنجاح!', 'success');
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactSubject').value = '';
+    document.getElementById('contactMsg').value = '';
+  });
 }
 
 /* ==================== الدردشة المباشرة ==================== */
@@ -951,15 +1005,15 @@ function getChatId() {
   return 'chat_' + currentUser.uid;
 }
 function sendChatMessage() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
+  var input = document.getElementById('chatInput');
+  var text = input.value.trim();
   if (!text) return;
   if (!currentUser) { navigate('auth'); showToast('يرجى تسجيل الدخول أولاً', 'info'); return; }
-  const chatId = getChatId();
-  const msg = { from: 'user', fromName: currentUser.displayName || currentUser.email, text, time: new Date().toISOString() };
+  var chatId = getChatId();
+  var msg = { from: 'user', fromName: currentUser.displayName || currentUser.email, text: text, time: new Date().toISOString() };
   appendChatBubble(msg);
   input.value = '';
-  getDB().ref('chats/' + chatId + '/messages').push(msg).then(() => {
+  getDB().ref('chats/' + chatId + '/messages').push(msg).then(function() {
     getDB().ref('chatUsers/' + currentUser.uid).set({
       name: currentUser.displayName || currentUser.email,
       email: currentUser.email || '',
@@ -967,34 +1021,33 @@ function sendChatMessage() {
       lastTime: new Date().toISOString(),
       unread: 1
     });
-    // رد تلقائي في حالة عدم وجود Firebase
-    if (!firebaseReady) simulateAdminReply(text);
   });
+  if (!firebaseReady) simulateAdminReply(text);
 }
 function appendChatBubble(msg) {
-  const container = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = `chat-msg ${msg.from === 'user' ? 'user' : 'admin'}`;
-  div.innerHTML = `<span>${msg.text}</span><span class="time">${msg.time ? new Date(msg.time).toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'}) : 'الآن'}</span>`;
+  var container = document.getElementById('chatMessages');
+  var div = document.createElement('div');
+  div.className = 'chat-msg ' + (msg.from === 'user' ? 'user' : 'admin');
+  div.innerHTML = '<span>' + msg.text + '</span><span class="time">' + (msg.time ? new Date(msg.time).toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'}) : 'الآن') + '</span>';
   container.appendChild(div);
   container.scrollTop = container.scrollHeight;
 }
 function loadChatMessages() {
-  const chatId = getChatId();
+  var chatId = getChatId();
   if (!chatId) return;
-  getDB().ref('chats/' + chatId + '/messages').once('value').then(snap => {
-    const data = snap.val();
-    const container = document.getElementById('chatMessages');
+  getDB().ref('chats/' + chatId + '/messages').once('value').then(function(snap) {
+    var data = snap.val();
+    var container = document.getElementById('chatMessages');
     container.innerHTML = '';
     if (!data) {
       container.innerHTML = '<div class="chat-msg admin"><span>مرحباً بك في استشرني! كيف يمكننا مساعدتك اليوم؟</span><span class="time">الآن</span></div>';
       return;
     }
-    Object.values(data).forEach(msg => appendChatBubble(msg));
+    Object.values(data).forEach(function(msg) { appendChatBubble(msg); });
   });
   if (firebaseReady && !chatListenerAttached) {
-    db.ref('chats/' + chatId + '/messages').on('child_added', snap => {
-      const msg = snap.val();
+    db.ref('chats/' + chatId + '/messages').on('child_added', function(snap) {
+      var msg = snap.val();
       if (msg && msg.from === 'admin' && chatOpen) {
         appendChatBubble(msg);
         playNotifSound();
@@ -1008,7 +1061,7 @@ function loadChatMessages() {
     chatListenerAttached = true;
   }
 }
-const autoReplies = [
+var autoReplies = [
   'شكراً لتواصلك معنا! سيقوم فريق الدعم بالرد عليك قريباً.',
   'تم استلام رسالتك بنجاح. هل هناك شيء آخر يمكننا مساعدتك به؟',
   'نقدر تواصلك معنا. للحصول على استشارة فورية، يمكنك تصفح قسم الأطباء.',
@@ -1016,66 +1069,72 @@ const autoReplies = [
   'شكراً لرسالتك. يمكنك أيضاً طلب استشارة مباشرة من أحد أطبائنا المتخصصين.'
 ];
 function simulateAdminReply(text) {
-  const chatId = getChatId();
+  var chatId = getChatId();
   document.getElementById('chatTyping').classList.add('show');
-  setTimeout(() => {
+  setTimeout(function() {
     document.getElementById('chatTyping').classList.remove('show');
-    const reply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
-    const msg = { from: 'admin', text: reply, time: new Date().toISOString() };
+    var reply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
+    var msg = { from: 'admin', text: reply, time: new Date().toISOString() };
     appendChatBubble(msg);
     getDB().ref('chats/' + chatId + '/messages').push(msg);
   }, 1500 + Math.random() * 1000);
 }
 
-/* ==================== المصادقة ==================== */
+/* ==================== المصادقة - مُصلحة بالكامل ==================== */
 function setupAuthListener() {
-  getAuth().onAuthStateChanged(async (user) => {
+  getAuth().onAuthStateChanged(function(user) {
     currentUser = user;
     if (user) {
-      try {
-        const snap = await getDB().ref('users/' + user.uid).once('value');
-        const userData = snap.val();
+      getDB().ref('users/' + user.uid).once('value').then(function(snap) {
+        var userData = snap.val();
         if (userData) {
           currentUser.role = userData.role || 'patient';
           currentUser.dbData = userData;
         } else {
-          const newUserData = { 
-            name: user.displayName || user.email || 'مستخدم', 
-            email: user.email || '', 
-            role: selectedRole, 
-            phone: user.phoneNumber || '', 
-            createdAt: new Date().toISOString() 
+          var newUserData = {
+            name: user.displayName || user.email || 'مستخدم',
+            email: user.email || '',
+            role: selectedRole,
+            phone: user.phoneNumber || '',
+            createdAt: new Date().toISOString()
           };
-          await getDB().ref('users/' + user.uid).set(newUserData);
+          getDB().ref('users/' + user.uid).set(newUserData);
           currentUser.role = selectedRole;
           if (!firebaseReady) {
-            const users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
+            var users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
             users[user.uid] = newUserData;
             localStorage.setItem('estasharni_users', JSON.stringify(users));
             localStorage.setItem('estasharni_local_user_' + user.uid, JSON.stringify({ name: newUserData.name, email: newUserData.email }));
           }
         }
-      } catch(e) {
+        updateUIForUser();
+        var displayName = currentUser.displayName || currentUser.email || '';
+        showToast('مرحباً ' + displayName + '!', 'success');
+        if (currentUser.role === 'admin') navigate('admin-dashboard');
+        else if (currentUser.role === 'doctor') navigate('profile');
+        else navigate('home');
+        updateNotifUI();
+      }).catch(function() {
         currentUser.role = selectedRole;
-      }
-      updateUIForUser();
-      showToast('مرحباً ' + (currentUser.displayName || currentUser.email || '') + '!', 'success');
-      if (currentUser.role === 'admin') navigate('admin-dashboard');
-      else if (currentUser.role === 'doctor') navigate('profile');
-      else navigate('home');
+        updateUIForUser();
+        showToast('مرحباً!', 'success');
+        if (currentUser.role === 'admin') navigate('admin-dashboard');
+        else navigate('home');
+        updateNotifUI();
+      });
     } else {
       updateUIForGuest();
       selectedRole = 'patient';
       isSignUp = false;
       chatListenerAttached = false;
     }
-    updateNotifUI();
   });
 }
+
 function updateUIForUser() {
   document.getElementById('loginBtn').classList.add('hidden');
   document.getElementById('userMenu').classList.remove('hidden');
-  const name = currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم';
+  var name = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'مستخدم');
   document.getElementById('userName').textContent = name;
   document.getElementById('userAvatar').textContent = name.charAt(0);
 }
@@ -1084,39 +1143,158 @@ function updateUIForGuest() {
   document.getElementById('userMenu').classList.add('hidden');
   document.getElementById('navNotif').classList.add('hidden');
 }
+
+/* ==================== اختيار الدور ==================== */
 function selectRole(role) {
   selectedRole = role;
-  document.querySelectorAll('.role-btn').forEach(b => {
-    if(b.dataset.role===role){b.style.borderColor='var(--accent)';b.style.background='var(--bg3)';b.style.color='var(--accent)';}
-    else{b.style.borderColor='var(--border)';b.style.background='transparent';b.style.color='var(--text2)';}
+  document.querySelectorAll('.role-btn').forEach(function(b) {
+    if (b.dataset.role === role) {
+      b.style.borderColor = 'var(--accent)';
+      b.style.background = 'var(--bg3)';
+      b.style.color = 'var(--accent)';
+    } else {
+      b.style.borderColor = 'var(--border)';
+      b.style.background = 'transparent';
+      b.style.color = 'var(--text2)';
+    }
   });
-  document.getElementById('doctorRegForm').classList.toggle('hidden', role!=='doctor'||!isSignUp);
-}
-function toggleAuthMode() {
-  isSignUp = !isSignUp;
-  document.getElementById('signInForm').classList.toggle('hidden', isSignUp);
-  document.getElementById('signUpForm').classList.toggle('hidden', isSignUp || selectedRole==='doctor');
-  document.getElementById('doctorRegForm').classList.toggle('hidden', selectedRole!=='doctor'||!isSignUp);
-  document.getElementById('authTitle').textContent = isSignUp ? 'إنشاء حساب' : 'مرحباً بعودتك';
-  document.getElementById('authSubtitle').textContent = isSignUp ? 'أدخل بياناتك للبدء' : 'سجل دخولك إلى حسابك';
-}
-function setLoading(btnId, loading) {
-  const btn = document.getElementById(btnId);
-  if (!btn) return;
-  if (loading) { 
-    btn.disabled = true; 
-    btn.style.opacity = '0.7'; 
-    btn.dataset.origHtml = btn.innerHTML; 
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ المعالجة...'; 
-  } else { 
-    btn.disabled = false; 
-    btn.style.opacity = '1'; 
-    btn.innerHTML = btn.dataset.origHtml || btn.innerHTML; 
+
+  /* إظهار/إخفاء النماذج حسب الدور */
+  document.getElementById('adminLoginForm').classList.add('hidden');
+  document.getElementById('signInForm').classList.add('hidden');
+  document.getElementById('signUpForm').classList.add('hidden');
+  document.getElementById('doctorRegForm').classList.add('hidden');
+
+  if (role === 'admin') {
+    /* الأدمن لا يمكنه التسجيل، فقط دخول */
+    document.getElementById('adminLoginForm').classList.remove('hidden');
+    document.getElementById('authTitle').textContent = 'دخول المشرفين';
+    document.getElementById('authSubtitle').textContent = 'أدخل بيانات المشرف للوصول لوحة التحكم';
+    /* إخفاء رابط إنشاء حساب */
+    document.getElementById('signInForm').classList.add('hidden');
+  } else if (isSignUp) {
+    if (role === 'doctor') {
+      document.getElementById('doctorRegForm').classList.remove('hidden');
+    } else {
+      document.getElementById('signUpForm').classList.remove('hidden');
+    }
+    document.getElementById('authTitle').textContent = 'إنشاء حساب';
+    document.getElementById('authSubtitle').textContent = 'أدخل بياناتك للبدء';
+  } else {
+    document.getElementById('signInForm').classList.remove('hidden');
+    document.getElementById('authTitle').textContent = 'مرحباً بعودتك';
+    document.getElementById('authSubtitle').textContent = 'سجل دخولك إلى حسابك';
   }
 }
+
+function toggleAuthMode() {
+  if (selectedRole === 'admin') {
+    showToast('الأدمن لا يمكنه إنشاء حساب جديد', 'info');
+    return;
+  }
+  isSignUp = !isSignUp;
+  document.getElementById('signInForm').classList.add('hidden');
+  document.getElementById('signUpForm').classList.add('hidden');
+  document.getElementById('doctorRegForm').classList.add('hidden');
+
+  if (isSignUp) {
+    if (selectedRole === 'doctor') {
+      document.getElementById('doctorRegForm').classList.remove('hidden');
+    } else {
+      document.getElementById('signUpForm').classList.remove('hidden');
+    }
+    document.getElementById('authTitle').textContent = 'إنشاء حساب';
+    document.getElementById('authSubtitle').textContent = 'أدخل بياناتك للبدء';
+  } else {
+    document.getElementById('signInForm').classList.remove('hidden');
+    document.getElementById('authTitle').textContent = 'مرحباً بعودتك';
+    document.getElementById('authSubtitle').textContent = 'سجل دخولك إلى حسابك';
+  }
+}
+
+/* ==================== حالة التحميل ==================== */
+function setLoading(btnId, loading) {
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  if (loading) {
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.dataset.origHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ المعالجة...';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.innerHTML = btn.dataset.origHtml || btn.innerHTML;
+  }
+}
+
+/* ==================== تسجيل دخول الأدمن ==================== */
+async function adminLogin() {
+  var email = document.getElementById('adminLoginEmail').value.trim();
+  var pass = document.getElementById('adminLoginPass').value;
+
+  if (!email) { showToast('يرجى إدخال بريد المشرف', 'error'); return; }
+  if (!pass) { showToast('يرجى إدخال كلمة المرور', 'error'); return; }
+
+  /* التحقق من بيانات الأدمن الثابتة */
+  if (email !== ADMIN_EMAIL || pass !== ADMIN_PASSWORD) {
+    showToast('بريد المشرف أو كلمة المرور غير صحيحة', 'error');
+    return;
+  }
+
+  setLoading('adminLoginBtn', true);
+
+  try {
+    if (firebaseReady) {
+      /* محاولة تسجيل الدخول عبر Firebase Auth */
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+      } catch(authError) {
+        /* إذا لم يكن الحساب موجوداً في Auth، ننشئه */
+        if (authError.code === 'auth/user-not-found' || authError.code === 'auth/invalid-credential') {
+          var cred = await auth.createUserWithEmailAndPassword(email, pass);
+          await cred.user.updateProfile({ displayName: 'مشرف استشرني' });
+          /* حفظ بيانات الأدمن في قاعدة البيانات */
+          await db.ref('users/' + cred.user.uid).set({
+            name: 'مشرف استشرني',
+            email: email,
+            role: 'admin',
+            phone: '',
+            createdAt: new Date().toISOString()
+          });
+          await db.ref('admins/' + cred.user.uid).set({
+            email: email,
+            level: 'Super',
+            createdAt: new Date().toISOString()
+          });
+        } else {
+          throw authError;
+        }
+      }
+    } else {
+      /* الوضع المحلي */
+      var uid = 'admin_default';
+      localStorage.setItem('estasharni_local_uid', uid);
+      localStorage.setItem('estasharni_local_user_' + uid, JSON.stringify({ name: 'مشرف استشرني', email: email }));
+      var users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
+      users[uid] = { name: 'مشرف استشرني', email: email, role: 'admin', phone: '', createdAt: new Date().toISOString() };
+      localStorage.setItem('estasharni_users', JSON.stringify(users));
+    }
+    showToast('مرحباً بك في لوحة التحكم!', 'success');
+  } catch(e) {
+    var msg = 'حدث خطأ أثناء تسجيل الدخول';
+    if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'كلمة المرور غير صحيحة';
+    else if (e.code === 'auth/too-many-requests') msg = 'محاولات كثيرة. حاول بعد قليل.';
+    else if (e.message) msg = e.message;
+    showToast(msg, 'error');
+  }
+  setLoading('adminLoginBtn', false);
+}
+
+/* ==================== تسجيل الدخول بالبريد ==================== */
 async function emailSignIn() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass = document.getElementById('loginPass').value;
   if (!email) { showToast('يرجى إدخال البريد الإلكتروني', 'error'); return; }
   if (!pass) { showToast('يرجى إدخال كلمة المرور', 'error'); return; }
   if (pass.length < 6) { showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
@@ -1129,9 +1307,9 @@ async function emailSignIn() {
     }
     showToast('تم تسجيل الدخول بنجاح!', 'success');
   } catch(e) {
-    let msg = 'حدث خطأ أثناء تسجيل الدخول';
+    var msg = 'حدث خطأ أثناء تسجيل الدخول';
     if (e.code === 'auth/user-not-found' || (e.message && e.message.includes('غير صحيحة'))) msg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
-    else if (e.code === 'auth/wrong-password') msg = 'كلمة المرور غير صحيحة';
+    else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') msg = 'كلمة المرور غير صحيحة';
     else if (e.code === 'auth/invalid-email') msg = 'صيغة البريد الإلكتروني غير صحيحة';
     else if (e.code === 'auth/too-many-requests') msg = 'محاولات كثيرة. حاول بعد قليل.';
     else if (e.message) msg = e.message;
@@ -1139,11 +1317,13 @@ async function emailSignIn() {
   }
   setLoading('signInBtn', false);
 }
+
+/* ==================== إنشاء حساب ==================== */
 async function emailSignUp() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const pass = document.getElementById('regPass').value;
-  const confirm = document.getElementById('regPassConfirm').value;
+  var name = document.getElementById('regName').value.trim();
+  var email = document.getElementById('regEmail').value.trim();
+  var pass = document.getElementById('regPass').value;
+  var confirm = document.getElementById('regPassConfirm').value;
   if (!name) { showToast('يرجى إدخال الاسم', 'error'); return; }
   if (!email) { showToast('يرجى إدخال البريد الإلكتروني', 'error'); return; }
   if (!pass) { showToast('يرجى إدخال كلمة المرور', 'error'); return; }
@@ -1151,21 +1331,21 @@ async function emailSignUp() {
   if (pass !== confirm) { showToast('كلمتا المرور غير متطابقتين', 'error'); return; }
   setLoading('signUpBtn', true);
   try {
-    let cred;
+    var cred;
     if (firebaseReady) {
       cred = await auth.createUserWithEmailAndPassword(email, pass);
       await cred.user.updateProfile({ displayName: name });
     } else {
       cred = await getAuth().createUserWithEmailAndPassword(email, pass);
       await cred.user.updateProfile({ displayName: name });
-      const users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
-      users[cred.user.uid] = { name, email, role: selectedRole, phone: '', createdAt: new Date().toISOString() };
+      var users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
+      users[cred.user.uid] = { name: name, email: email, role: selectedRole, phone: '', createdAt: new Date().toISOString() };
       localStorage.setItem('estasharni_users', JSON.stringify(users));
-      localStorage.setItem('estasharni_local_user_' + cred.user.uid, JSON.stringify({ name, email }));
+      localStorage.setItem('estasharni_local_user_' + cred.user.uid, JSON.stringify({ name: name, email: email }));
     }
     showToast('تم إنشاء الحساب بنجاح!', 'success');
   } catch(e) {
-    let msg = 'حدث خطأ أثناء إنشاء الحساب';
+    var msg = 'حدث خطأ أثناء إنشاء الحساب';
     if (e.code === 'auth/email-already-in-use') msg = 'البريد الإلكتروني مستخدم بالفعل';
     else if (e.code === 'auth/weak-password') msg = 'كلمة المرور ضعيفة جداً';
     else if (e.code === 'auth/invalid-email') msg = 'صيغة البريد الإلكتروني غير صحيحة';
@@ -1174,19 +1354,21 @@ async function emailSignUp() {
   }
   setLoading('signUpBtn', false);
 }
+
+/* ==================== تسجيل طبيب ==================== */
 async function doctorSignUp() {
-  const name = document.getElementById('docRegName').value.trim();
-  const email = document.getElementById('docRegEmail').value.trim();
-  const pass = document.getElementById('docRegPass').value;
-  const specialty = document.getElementById('docRegSpecialty').value;
-  const exp = document.getElementById('docRegExp').value.trim();
-  const qual = document.getElementById('docRegQual').value.trim();
-  const bio = document.getElementById('docRegBio').value.trim();
-  if (!name||!email||!pass||!specialty||!exp||!qual) { showToast('يرجى ملء جميع الحقول المطلوبة', 'error'); return; }
+  var name = document.getElementById('docRegName').value.trim();
+  var email = document.getElementById('docRegEmail').value.trim();
+  var pass = document.getElementById('docRegPass').value;
+  var specialty = document.getElementById('docRegSpecialty').value;
+  var exp = document.getElementById('docRegExp').value.trim();
+  var qual = document.getElementById('docRegQual').value.trim();
+  var bio = document.getElementById('docRegBio').value.trim();
+  if (!name || !email || !pass || !specialty || !exp || !qual) { showToast('يرجى ملء جميع الحقول المطلوبة', 'error'); return; }
   if (pass.length < 6) { showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error'); return; }
   setLoading('docSignUpBtn', true);
   try {
-    let cred;
+    var cred;
     if (firebaseReady) {
       cred = await auth.createUserWithEmailAndPassword(email, pass);
       await cred.user.updateProfile({ displayName: name });
@@ -1194,244 +1376,286 @@ async function doctorSignUp() {
       cred = await getAuth().createUserWithEmailAndPassword(email, pass);
       await cred.user.updateProfile({ displayName: name });
     }
-    const doctorData = { name, email, specialty, experience: exp, qualifications: qual, bio, photo: '', certificates: '', status: 'pending', rating: 0, userId: cred.user.uid, createdAt: new Date().toISOString() };
-    const photoInput = document.getElementById('docRegPhoto');
-    if (photoInput.files[0] && firebaseReady) { 
-      try { 
-        const snap = await getStorage().ref('doctors/'+cred.user.uid+'/photo').put(photoInput.files[0]); 
-        doctorData.photo = await snap.ref.getDownloadURL(); 
-      } catch(e){} 
+    var doctorData = {
+      name: name, email: email, specialty: specialty, experience: exp,
+      qualifications: qual, bio: bio, photo: '', certificates: '',
+      status: 'pending', rating: 0, userId: cred.user.uid, createdAt: new Date().toISOString()
+    };
+    var photoInput = document.getElementById('docRegPhoto');
+    if (photoInput.files[0] && firebaseReady) {
+      try {
+        var snap = await getStorageRef().ref('doctors/' + cred.user.uid + '/photo').put(photoInput.files[0]);
+        doctorData.photo = await snap.ref.getDownloadURL();
+      } catch(e) {}
     }
     await getDB().ref('doctors').push(doctorData);
-    await getDB().ref('users/' + cred.user.uid).set({ name, email, role: 'doctor', phone: '', createdAt: new Date().toISOString() });
-    if (!firebaseReady) { 
-      const users = JSON.parse(localStorage.getItem('estasharni_users')||'{}'); 
-      users[cred.user.uid] = {name,email,role:'doctor',phone:'',createdAt:new Date().toISOString()}; 
-      localStorage.setItem('estasharni_users',JSON.stringify(users)); 
+    await getDB().ref('users/' + cred.user.uid).set({
+      name: name, email: email, role: 'doctor', phone: '', createdAt: new Date().toISOString()
+    });
+    if (!firebaseReady) {
+      var users = JSON.parse(localStorage.getItem('estasharni_users') || '{}');
+      users[cred.user.uid] = { name: name, email: email, role: 'doctor', phone: '', createdAt: new Date().toISOString() };
+      localStorage.setItem('estasharni_users', JSON.stringify(users));
     }
     showToast('تم إرسال التسجيل! بانتظار موافقة المشرف.', 'success');
     addNotification('تم إرسال التسجيل', 'طلب تسجيلك كطبيب بانتظار المراجعة.');
   } catch(e) {
-    let msg = 'حدث خطأ';
+    var msg = 'حدث خطأ';
     if (e.code === 'auth/email-already-in-use') msg = 'البريد الإلكتروني مستخدم بالفعل';
     else if (e.message) msg = e.message;
     showToast(msg, 'error');
   }
   setLoading('docSignUpBtn', false);
 }
+
+/* ==================== تسجيل بأطراف ثالثة ==================== */
 function googleSignIn() {
-  if (!firebaseReady) { showToast('تسجيل الدخول بجوجل يتطلب اتصال Firebase. استخدم البريد وكلمة المرور.', 'info'); return; }
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).then(result => {
-    showToast('تم تسجيل الدخول بنجاح!', 'success');
-  }).catch(e => {
-    let msg = 'خطأ في تسجيل الدخول بجوجل';
+  if (!firebaseReady) { showToast('جوجل يتطلب اتصال Firebase. استخدم البريد وكلمة المرور.', 'info'); return; }
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e) {
     if (e.code === 'auth/popup-closed-by-user') return;
-    else if (e.message) msg = e.message;
-    showToast(msg, 'error');
+    showToast(e.message || 'خطأ في تسجيل جوجل', 'error');
   });
 }
 function facebookSignIn() {
-  if (!firebaseReady) { showToast('تسجيل الدخول بفيسبوك يتطلب اتصال Firebase. استخدم البريد وكلمة المرور.', 'info'); return; }
-  const provider = new firebase.auth.FacebookAuthProvider();
-  auth.signInWithPopup(provider).then(result => {
-    showToast('تم تسجيل الدخول بنجاح!', 'success');
-  }).catch(e => {
-    let msg = 'خطأ في تسجيل الدخول بفيسبوك';
+  if (!firebaseReady) { showToast('فيسبوك يتطلب اتصال Firebase. استخدم البريد وكلمة المرور.', 'info'); return; }
+  auth.signInWithPopup(new firebase.auth.FacebookAuthProvider()).catch(function(e) {
     if (e.code === 'auth/popup-closed-by-user') return;
-    else if (e.message) msg = e.message;
-    showToast(msg, 'error');
+    showToast(e.message || 'خطأ في تسجيل فيسبوك', 'error');
   });
 }
+
+/* ==================== تسجيل بالهاتف ==================== */
 function showPhoneAuth() {
-  if (!firebaseReady) { showToast('تسجيل الدخول بالهاتف يتطلب اتصال Firebase. استخدم البريد وكلمة المرور.', 'info'); return; }
+  if (!firebaseReady) { showToast('الهاتف يتطلب اتصال Firebase. استخدم البريد وكلمة المرور.', 'info'); return; }
   document.getElementById('phoneAuthModal').classList.remove('hidden');
 }
 function sendOTP() {
-  const phone = document.getElementById('phoneNum').value.trim();
+  var phone = document.getElementById('phoneNum').value.trim();
   if (!phone) { showToast('يرجى إدخال رقم الهاتف', 'error'); return; }
   try {
-    if (!window.recaptchaVerifier) window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('phoneAuthModal', { size:'invisible', callback:()=>{} });
-    const provider = new firebase.auth.PhoneAuthProvider();
-    provider.verifyPhoneNumber(phone, window.recaptchaVerifier).then(result => {
+    if (!window.recaptchaVerifier) window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('phoneAuthModal', { size: 'invisible', callback: function(){} });
+    var provider = new firebase.auth.PhoneAuthProvider();
+    provider.verifyPhoneNumber(phone, window.recaptchaVerifier).then(function(result) {
       confirmationResult = result;
       document.getElementById('otpSection').classList.remove('hidden');
       document.getElementById('sendOtpBtn').classList.add('hidden');
       document.getElementById('verifyOtpBtn').classList.remove('hidden');
-      showToast('تم إرسال الرمز بنجاح!','success');
-    }).catch(e => { showToast(e.message || 'خطأ في إرسال الرمز','error'); });
-  } catch(e) { showToast('خطأ في المصادقة بالهاتف','error'); }
+      showToast('تم إرسال الرمز بنجاح!', 'success');
+    }).catch(function(e) { showToast(e.message || 'خطأ في إرسال الرمز', 'error'); });
+  } catch(e) { showToast('خطأ في المصادقة بالهاتف', 'error'); }
 }
 function verifyOTP() {
-  const code = document.getElementById('otpCode').value.trim();
+  var code = document.getElementById('otpCode').value.trim();
   if (!code) { showToast('يرجى إدخال رمز التحقق', 'error'); return; }
-  if (confirmationResult) { 
-    confirmationResult.confirm(code).then(() => { 
-      showToast('تم التحقق بنجاح!','success'); 
-      document.getElementById('phoneAuthModal').classList.add('hidden'); 
-    }).catch(() => showToast('رمز غير صحيح','error')); 
+  if (confirmationResult) {
+    confirmationResult.confirm(code).then(function() {
+      showToast('تم التحقق بنجاح!', 'success');
+      document.getElementById('phoneAuthModal').classList.add('hidden');
+    }).catch(function() { showToast('رمز غير صحيح', 'error'); });
   }
 }
+
+/* ==================== تسجيل الخروج ==================== */
 async function logout() {
-  chatOpen = false; 
-  document.getElementById('chatWindow').classList.remove('open'); 
+  chatOpen = false;
+  document.getElementById('chatWindow').classList.remove('open');
   document.getElementById('chatFabIcon').className = 'fas fa-comments';
-  try { 
-    if (firebaseReady) await auth.signOut(); 
-    else await getAuth().signOut(); 
-  } catch(e){}
-  currentUser = null; 
-  updateUIForGuest(); 
-  navigate('home'); 
-  showToast('تم تسجيل الخروج','info');
+  try {
+    if (firebaseReady) await auth.signOut();
+    else await getAuth().signOut();
+  } catch(e) {}
+  currentUser = null;
+  updateUIForGuest();
+  navigate('home');
+  showToast('تم تسجيل الخروج', 'info');
 }
 
 /* ==================== النوافذ المنبثقة ==================== */
 function showModal(title, content) {
-  document.getElementById('modalContainer').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="flex items-center justify-between mb-5"><h3 class="font-display font-700 text-lg" style="color:var(--text)">${title}</h3><button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text3)"><i class="fas fa-times"></i></button></div>${content}</div></div>`;
+  document.getElementById('modalContainer').innerHTML = '<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="flex items-center justify-between mb-5"><h3 class="font-display font-700 text-lg" style="color:var(--text)">' + title + '</h3><button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text3)"><i class="fas fa-times"></i></button></div>' + content + '</div></div>';
 }
 function closeModal() { document.getElementById('modalContainer').innerHTML = ''; }
-function previewFile(input, previewId) { 
-  const p=document.getElementById(previewId); 
-  if(input.files&&input.files[0]){
-    const r=new FileReader();
-    r.onload=e=>{p.src=e.target.result;p.classList.remove('hidden');};
+function previewFile(input, previewId) {
+  var p = document.getElementById(previewId);
+  if (input.files && input.files[0]) {
+    var r = new FileReader();
+    r.onload = function(e) { p.src = e.target.result; p.classList.remove('hidden'); };
     r.readAsDataURL(input.files[0]);
-  } 
+  }
 }
-function handleCertUpload(input) { 
-  document.getElementById('certFileNames').innerHTML = Array.from(input.files).map(f=>`<span class="text-xs block" style="color:var(--accent)"><i class="fas fa-file-check ml-1"></i>${f.name}</span>`).join(''); 
+function handleCertUpload(input) {
+  document.getElementById('certFileNames').innerHTML = Array.from(input.files).map(function(f) {
+    return '<span class="text-xs block" style="color:var(--accent)"><i class="fas fa-file-check ml-1"></i>' + f.name + '</span>';
+  }).join('');
 }
 
 /* ==================== لوحة تحكم المشرف ==================== */
-function showAdminTab(tab) {
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.add('hidden'));
-  document.getElementById('tab-'+tab)?.classList.remove('hidden');
-  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  event?.target?.closest?.('.sidebar-link')?.classList.add('active');
-  if(tab==='doctors') loadAdminDoctors();
-  if(tab==='users') loadAdminUsers();
-  if(tab==='requests') loadAdminConsultations();
-  if(tab==='messages') loadAdminMessages();
-  if(tab==='chat-mgmt') loadAdminChats();
-  if(tab==='admin-mgmt') loadAdminMgmt();
-  if(tab==='settings') loadSettings();
+function showAdminTab(tab, el) {
+  document.querySelectorAll('.admin-tab').forEach(function(t) { t.classList.add('hidden'); });
+  var tabEl = document.getElementById('tab-' + tab);
+  if (tabEl) tabEl.classList.remove('hidden');
+  document.querySelectorAll('.sidebar-link').forEach(function(l) { l.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  else {
+    document.querySelectorAll('.sidebar-link').forEach(function(l) {
+      if (l.textContent.trim().indexOf(
+        tab === 'overview' ? 'نظرة' : tab === 'doctors' ? 'الأطباء' : tab === 'users' ? 'المستخدمون' : tab === 'requests' ? 'الاستشارات' : tab === 'messages' ? 'الرسائل' : tab === 'chat-mgmt' ? 'الدردشات' : tab === 'admin-mgmt' ? 'إدارة المشرفين' : 'الإعدادات'
+      ) > -1) l.classList.add('active');
+    });
+  }
+  if (tab === 'doctors') loadAdminDoctors();
+  if (tab === 'users') loadAdminUsers();
+  if (tab === 'requests') loadAdminConsultations();
+  if (tab === 'messages') loadAdminMessages();
+  if (tab === 'chat-mgmt') loadAdminChats();
+  if (tab === 'admin-mgmt') loadAdminMgmt();
+  if (tab === 'settings') loadSettings();
   document.getElementById('adminSidebar').classList.remove('open');
 }
-async function loadAdminData() { loadAdminOverview(); loadAdminDoctors(); loadAdminUsers(); loadAdminConsultations(); loadAdminMessages(); loadAdminChats(); loadAdminMgmt(); loadSettings(); }
+
+function loadAdminData() {
+  loadAdminOverview();
+  loadAdminDoctors();
+  loadAdminUsers();
+  loadAdminConsultations();
+  loadAdminMessages();
+  loadAdminChats();
+  loadAdminMgmt();
+  loadSettings();
+}
+
 function loadAdminOverview() {
-  Promise.all([getDB().ref('doctors').once('value'),getDB().ref('users').once('value'),getDB().ref('consultations').once('value'),getDB().ref('messages').once('value')]).then(([docs,users,consults,msgs]) => {
-    const d=docs.val()||{}, u=users.val()||{}, c=consults.val()||{}, m=msgs.val()||{};
-    const ad = Object.values(d).filter(x=>x.status==='approved').length;
-    document.getElementById('adminStats').innerHTML = `<div class="stat-card"><div class="stat-num">${Object.keys(u).length}</div><p class="text-sm mt-1" style="color:var(--text3)">إجمالي المستخدمين</p></div><div class="stat-card"><div class="stat-num">${ad}</div><p class="text-sm mt-1" style="color:var(--text3)">الأطباء النشطون</p></div><div class="stat-card"><div class="stat-num">${Object.keys(c).length}</div><p class="text-sm mt-1" style="color:var(--text3)">الاستشارات</p></div><div class="stat-card"><div class="stat-num">${Object.keys(m).length}</div><p class="text-sm mt-1" style="color:var(--text3)">الرسائل</p></div>`;
-    const recentU = Object.entries(u).slice(-5).reverse();
-    document.getElementById('recentUsers').innerHTML = recentU.length ? recentU.map(([id,u])=>`<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:var(--accent)">${(u.name||'م').charAt(0)}</div><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">${u.name||'غير معروف'}</p><p class="text-xs" style="color:var(--text3)">${u.role==='admin'?'مشرف':u.role==='doctor'?'طبيب':'مريض'}</p></div></div>`).join('') : '<p class="text-sm" style="color:var(--text3)">لا يوجد مستخدمون</p>';
-    const recentC = Object.entries(c).slice(-5).reverse();
-    document.getElementById('recentConsultations').innerHTML = recentC.length ? recentC.map(([id,c])=>`<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">${c.patientName||'مريض'} - ${c.doctorName||'طبيب'}</p><p class="text-xs" style="color:var(--text3)">${c.date||''}</p></div><span class="badge ${c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red'} text-xs">${c.status==='pending'?'معلق':c.status==='approved'?'مقبول':'مرفوض'}</span></div>`).join('') : '<p class="text-sm" style="color:var(--text3)">لا توجد استشارات</p>';
+  Promise.all([
+    getDB().ref('doctors').once('value'),
+    getDB().ref('users').once('value'),
+    getDB().ref('consultations').once('value'),
+    getDB().ref('messages').once('value')
+  ]).then(function(results) {
+    var d = results[0].val() || {};
+    var u = results[1].val() || {};
+    var c = results[2].val() || {};
+    var m = results[3].val() || {};
+    var ad = Object.values(d).filter(function(x) { return x.status === 'approved'; }).length;
+    document.getElementById('adminStats').innerHTML =
+      '<div class="stat-card"><div class="stat-num">' + Object.keys(u).length + '</div><p class="text-sm mt-1" style="color:var(--text3)">إجمالي المستخدمين</p></div>' +
+      '<div class="stat-card"><div class="stat-num">' + ad + '</div><p class="text-sm mt-1" style="color:var(--text3)">الأطباء النشطون</p></div>' +
+      '<div class="stat-card"><div class="stat-num">' + Object.keys(c).length + '</div><p class="text-sm mt-1" style="color:var(--text3)">الاستشارات</p></div>' +
+      '<div class="stat-card"><div class="stat-num">' + Object.keys(m).length + '</div><p class="text-sm mt-1" style="color:var(--text3)">الرسائل</p></div>';
+
+    var recentU = Object.entries(u).slice(-5).reverse();
+    document.getElementById('recentUsers').innerHTML = recentU.length ? recentU.map(function(entry) {
+      var id = entry[0]; var u = entry[1];
+      return '<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:var(--accent)">' + (u.name || 'م').charAt(0) + '</div><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">' + (u.name || 'غير معروف') + '</p><p class="text-xs" style="color:var(--text3)">' + (u.role === 'admin' ? 'مشرف' : u.role === 'doctor' ? 'طبيب' : 'مريض') + '</p></div></div>';
+    }).join('') : '<p class="text-sm" style="color:var(--text3)">لا يوجد مستخدمون</p>';
+
+    var recentC = Object.entries(c).slice(-5).reverse();
+    document.getElementById('recentConsultations').innerHTML = recentC.length ? recentC.map(function(entry) {
+      var id = entry[0]; var c = entry[1];
+      var statusClass = c.status === 'pending' ? 'badge-yellow' : c.status === 'approved' ? 'badge-green' : 'badge-red';
+      var statusText = c.status === 'pending' ? 'معلق' : c.status === 'approved' ? 'مقبول' : 'مرفوض';
+      return '<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">' + (c.patientName || 'مريض') + ' - ' + (c.doctorName || 'طبيب') + '</p><p class="text-xs" style="color:var(--text3)">' + (c.date || '') + '</p></div><span class="badge ' + statusClass + ' text-xs">' + statusText + '</span></div>';
+    }).join('') : '<p class="text-sm" style="color:var(--text3)">لا توجد استشارات</p>';
   });
 }
+
 function loadAdminDoctors() {
-  getDB().ref('doctors').once('value').then(snap => {
-    const data=snap.val()||{}; allDoctors=Object.entries(data).map(([id,d])=>({id,...d}));
-    const pending = allDoctors.filter(d=>d.status==='pending');
-    const ps = document.getElementById('pendingDoctorsSection');
-    if(pending.length){ps.classList.remove('hidden');document.getElementById('pendingDoctorsList').innerHTML=pending.map(d=>`<div class="card p-4 flex items-center gap-4"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden" style="background:var(--accent)">${d.photo?`<img src="${d.photo}" class="w-full h-full object-cover">`:d.name.charAt(0)}</div><div class="flex-1"><p class="font-medium text-sm" style="color:var(--text)">${d.name}</p><p class="text-xs" style="color:var(--text3)">${d.specialty} - ${d.experience}</p></div><div class="flex gap-2"><button onclick="approveDoctor('${d.id}')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button><button onclick="rejectDoctor('${d.id}')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div></div>`).join('');}else{ps.classList.add('hidden');}
-    const others=allDoctors.filter(d=>d.status!=='pending');
-    document.getElementById('adminDoctorsTable').innerHTML=others.length?others.map(d=>`<tr><td><div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)">${d.name.charAt(0)}</div></td><td style="color:var(--text)">${d.name}</td><td style="color:var(--text2)">${d.specialty}</td><td><span class="badge ${d.status==='approved'?'badge-green':'badge-red'}">${d.status==='approved'?'مقبول':'مرفوض'}</span></td><td><div class="flex gap-2"><button onclick="editDoctor('${d.id}')" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button><button onclick="deleteDoctor('${d.id}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></div></td></tr>`).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا يوجد أطباء</td></tr>';
+  getDB().ref('doctors').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    allDoctors = Object.entries(data).map(function(entry) { return Object.assign({id: entry[0]}, entry[1]); });
+    var pending = allDoctors.filter(function(d) { return d.status === 'pending'; });
+    var ps = document.getElementById('pendingDoctorsSection');
+    if (pending.length) {
+      ps.classList.remove('hidden');
+      document.getElementById('pendingDoctorsList').innerHTML = pending.map(function(d) {
+        var avatar = d.photo ? '<img src="' + d.photo + '" class="w-full h-full object-cover">' : d.name.charAt(0);
+        return '<div class="card p-4 flex items-center gap-4"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold overflow-hidden" style="background:var(--accent)">' + avatar + '</div><div class="flex-1"><p class="font-medium text-sm" style="color:var(--text)">' + d.name + '</p><p class="text-xs" style="color:var(--text3)">' + d.specialty + ' - ' + d.experience + '</p></div><div class="flex gap-2"><button onclick="approveDoctor(\'' + d.id + '\')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button><button onclick="rejectDoctor(\'' + d.id + '\')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div></div>';
+      }).join('');
+    } else { ps.classList.add('hidden'); }
+    var others = allDoctors.filter(function(d) { return d.status !== 'pending'; });
+    document.getElementById('adminDoctorsTable').innerHTML = others.length ? others.map(function(d) {
+      var statusClass = d.status === 'approved' ? 'badge-green' : 'badge-red';
+      var statusText = d.status === 'approved' ? 'مقبول' : 'مرفوض';
+      return '<tr><td><div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)">' + d.name.charAt(0) + '</div></td><td style="color:var(--text)">' + d.name + '</td><td style="color:var(--text2)">' + d.specialty + '</td><td><span class="badge ' + statusClass + '">' + statusText + '</span></td><td><div class="flex gap-2"><button onclick="editDoctor(\'' + d.id + '\')" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button><button onclick="deleteDoctor(\'' + d.id + '\')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></div></td></tr>';
+    }).join('') : '<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا يوجد أطباء</td></tr>';
   });
 }
-async function approveDoctor(id){await getDB().ref('doctors/'+id+'/status').set('approved');showToast('تم قبول الطبيب!','success');loadAdminDoctors();}
-async function rejectDoctor(id){await getDB().ref('doctors/'+id+'/status').set('rejected');showToast('تم رفض الطبيب','info');loadAdminDoctors();}
-async function deleteDoctor(id){if(!confirm('حذف هذا الطبيب؟'))return;await getDB().ref('doctors/'+id).remove();showToast('تم الحذف','info');loadAdminDoctors();}
-function showAddDoctorModal(){showModal('إضافة طبيب جديد',`<div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocName" class="input" placeholder="الاسم"><input type="text" id="addDocSpecialty" class="input" placeholder="التخصص"></div><div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocExp" class="input" placeholder="الخبرة"><input type="text" id="addDocQual" class="input" placeholder="المؤهلات"></div><div class="mb-3"><textarea id="addDocBio" class="input" placeholder="نبذة"></textarea></div><div class="mb-4"><div class="file-upload" onclick="document.getElementById('addDocPhoto').click()"><i class="fas fa-cloud-upload-alt text-xl mb-1" style="color:var(--text3)"></i><p class="text-xs" style="color:var(--text3)">رفع الصورة</p><input type="file" id="addDocPhoto" accept="image/*" class="hidden" onchange="previewFile(this,'addDocPhotoPreview')"><img id="addDocPhotoPreview" class="hidden"></div></div><button onclick="addDoctor()" class="btn w-full justify-center"><i class="fas fa-plus"></i> إضافة</button>`);}
-async function addDoctor(){const n=document.getElementById('addDocName').value.trim(),s=document.getElementById('addDocSpecialty').value.trim(),e=document.getElementById('addDocExp').value.trim(),q=document.getElementById('addDocQual').value.trim(),b=document.getElementById('addDocBio').value.trim();if(!n||!s){showToast('الاسم والتخصص مطلوبان','error');return;}const d={name:n,specialty:s,experience:e,qualifications:q,bio:b,photo:'',status:'approved',rating:4.5,createdAt:new Date().toISOString()};await getDB().ref('doctors').push(d);closeModal();showToast('تمت الإضافة!','success');loadAdminDoctors();}
-function editDoctor(id){const doc=allDoctors.find(d=>d.id===id);if(!doc)return;showModal('تعديل طبيب',`<div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="editDocName" class="input" value="${doc.name}"><input type="text" id="editDocSpecialty" class="input" value="${doc.specialty}"></div><div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="editDocExp" class="input" value="${doc.experience||''}"><input type="text" id="editDocQual" class="input" value="${doc.qualifications||''}"></div><div class="mb-3"><textarea id="editDocBio" class="input">${doc.bio||''}</textarea></div><button onclick="saveEditDoctor('${id}')" class="btn w-full justify-center"><i class="fas fa-save"></i> حفظ</button>`);}
-async function saveEditDoctor(id){const u={name:document.getElementById('editDocName').value.trim(),specialty:document.getElementById('editDocSpecialty').value.trim(),experience:document.getElementById('editDocExp').value.trim(),qualifications:document.getElementById('editDocQual').value.trim(),bio:document.getElementById('editDocBio').value.trim()};await getDB().ref('doctors/'+id).update(u);closeModal();showToast('تم التحديث!','success');loadAdminDoctors();}
-function loadAdminUsers(){getDB().ref('users').once('value').then(snap=>{const d=snap.val()||{};allUsers=Object.entries(d).map(([id,u])=>({id,...u}));document.getElementById('adminUsersTable').innerHTML=allUsers.length?allUsers.map(u=>`<tr><td style="color:var(--text)">${u.name||'-'}</td><td style="color:var(--text2)">${u.email||'-'}</td><td><span class="badge ${u.role==='admin'?'badge-red':u.role==='doctor'?'badge-blue':'badge-green'}">${u.role==='admin'?'مشرف':u.role==='doctor'?'طبيب':'مريض'}</span></td><td style="color:var(--text3)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-EG'):'-'}</td></tr>`).join(''):'<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">لا يوجد مستخدمون</td></tr>';});}
-function loadAdminConsultations(){getDB().ref('consultations').once('value').then(snap=>{const d=snap.val()||{};allConsultations=Object.entries(d).map(([id,c])=>({id,...c}));document.getElementById('adminConsultTable').innerHTML=allConsultations.length?allConsultations.map(c=>`<tr><td style="color:var(--text)">${c.patientName||'-'}</td><td style="color:var(--text2)">${c.doctorName||'-'}</td><td style="color:var(--text3)">${c.date||'-'}</td><td><span class="badge ${c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red'}">${c.status==='pending'?'معلق':c.status==='approved'?'مقبول':'مرفوض'}</span></td><td>${c.status==='pending'?`<div class="flex gap-2"><button onclick="updateConsultStatus('${c.id}','approved')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button><button onclick="updateConsultStatus('${c.id}','rejected')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div>`:'<span class="text-xs" style="color:var(--text3)">تمت</span>'}</td></tr>`).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا توجد طلبات</td></tr>';});}
-async function updateConsultStatus(id,status){await getDB().ref('consultations/'+id+'/status').set(status);showToast(`تم ${status==='approved'?'قبول':'رفض'} الاستشارة!`,'success');loadAdminConsultations();}
-function loadAdminMessages(){getDB().ref('messages').once('value').then(snap=>{const d=snap.val()||{};allMessages=Object.entries(d).map(([id,m])=>({id,...m})).reverse();document.getElementById('adminMessagesList').innerHTML=allMessages.length?allMessages.map(m=>`<div class="card p-4 mb-3"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style="background:var(--accent)">${(m.name||'م').charAt(0)}</div><div><p class="text-sm font-medium" style="color:var(--text)">${m.name||'-'}</p><p class="text-xs" style="color:var(--text3)">${m.email||''}</p></div></div>${m.subject?`<span class="badge badge-blue text-xs">${m.subject}</span>`:''}</div><p class="text-sm" style="color:var(--text2)">${m.message||''}</p></div>`).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد رسائل</p>';});}
+async function approveDoctor(id) { await getDB().ref('doctors/' + id + '/status').set('approved'); showToast('تم قبول الطبيب!', 'success'); loadAdminDoctors(); }
+async function rejectDoctor(id) { await getDB().ref('doctors/' + id + '/status').set('rejected'); showToast('تم رفض الطبيب', 'info'); loadAdminDoctors(); }
+async function deleteDoctor(id) { if(!confirm('حذف هذا الطبيب؟'))return; await getDB().ref('doctors/' + id).remove(); showToast('تم الحذف', 'info'); loadAdminDoctors(); }
+
+function showAddDoctorModal() {
+  showModal('إضافة طبيب جديد', '<div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocName" class="input" placeholder="الاسم"><input type="text" id="addDocSpecialty" class="input" placeholder="التخصص"></div><div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocExp" class="input" placeholder="الخبرة"><input type="text" id="addDocQual" class="input" placeholder="المؤهلات"></div><div class="mb-3"><textarea id="addDocBio" class="input" placeholder="نبذة"></textarea></div><div class="mb-4"><div class="file-upload" onclick="document.getElementById(\'addDocPhoto\').click()"><i class="fas fa-cloud-upload-alt text-xl mb-1" style="color:var(--text3)"></i><p class="text-xs" style="color:var(--text3)">رفع الصورة</p><input type="file" id="addDocPhoto" accept="image/*" class="hidden" onchange="previewFile(this,\'addDocPhotoPreview\')"><img id="addDocPhotoPreview" class="hidden"></div></div><button onclick="addDoctor()" class="btn w-full justify-center"><i class="fas fa-plus"></i> إضافة</button>');
+}
+async function addDoctor() {
+  var n = document.getElementById('addDocName').value.trim();
+  var s = document.getElementById('addDocSpecialty').value.trim();
+  var e = document.getElementById('addDocExp').value.trim();
+  var q = document.getElementById('addDocQual').value.trim();
+  var b = document.getElementById('addDocBio').value.trim();
+  if (!n || !s) { showToast('الاسم والتخصص مطلوبان', 'error'); return; }
+  await getDB().ref('doctors').push({ name: n, specialty: s, experience: e, qualifications: q, bio: b, photo: '', status: 'approved', rating: 4.5, createdAt: new Date().toISOString() });
+  closeModal(); showToast('تمت الإضافة!', 'success'); loadAdminDoctors();
+}
+function editDoctor(id) {
+  var doc = allDoctors.find(function(d) { return d.id === id; });
+  if (!doc) return;
+  showModal('تعديل طبيب', '<div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="editDocName" class="input" value="' + doc.name + '"><input type="text" id="editDocSpecialty" class="input" value="' + doc.specialty + '"></div><div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="editDocExp" class="input" value="' + (doc.experience || '') + '"><input type="text" id="editDocQual" class="input" value="' + (doc.qualifications || '') + '"></div><div class="mb-3"><textarea id="editDocBio" class="input">' + (doc.bio || '') + '</textarea></div><button onclick="saveEditDoctor(\'' + id + '\')" class="btn w-full justify-center"><i class="fas fa-save"></i> حفظ</button>');
+}
+async function saveEditDoctor(id) {
+  await getDB().ref('doctors/' + id).update({
+    name: document.getElementById('editDocName').value.trim(),
+    specialty: document.getElementById('editDocSpecialty').value.trim(),
+    experience: document.getElementById('editDocExp').value.trim(),
+    qualifications: document.getElementById('editDocQual').value.trim(),
+    bio: document.getElementById('editDocBio').value.trim()
+  });
+  closeModal(); showToast('تم التحديث!', 'success'); loadAdminDoctors();
+}
+
+function loadAdminUsers() {
+  getDB().ref('users').once('value').then(function(snap) {
+    var d = snap.val() || {};
+    allUsers = Object.entries(d).map(function(entry) { return Object.assign({id: entry[0]}, entry[1]); });
+    document.getElementById('adminUsersTable').innerHTML = allUsers.length ? allUsers.map(function(u) {
+      var roleClass = u.role === 'admin' ? 'badge-red' : u.role === 'doctor' ? 'badge-blue' : 'badge-green';
+      var roleText = u.role === 'admin' ? 'مشرف' : u.role === 'doctor' ? 'طبيب' : 'مريض';
+      return '<tr><td style="color:var(--text)">' + (u.name || '-') + '</td><td style="color:var(--text2)">' + (u.email || '-') + '</td><td><span class="badge ' + roleClass + '">' + roleText + '</span></td><td style="color:var(--text3)">' + (u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-EG') : '-') + '</td></tr>';
+    }).join('') : '<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">لا يوجد مستخدمون</td></tr>';
+  });
+}
+
+function loadAdminConsultations() {
+  getDB().ref('consultations').once('value').then(function(snap) {
+    var d = snap.val() || {};
+    allConsultations = Object.entries(d).map(function(entry) { return Object.assign({id: entry[0]}, entry[1]); });
+    document.getElementById('adminConsultTable').innerHTML = allConsultations.length ? allConsultations.map(function(c) {
+      var sc = c.status === 'pending' ? 'badge-yellow' : c.status === 'approved' ? 'badge-green' : 'badge-red';
+      var st = c.status === 'pending' ? 'معلق' : c.status === 'approved' ? 'مقبول' : 'مرفوض';
+      var actions = c.status === 'pending' ? '<div class="flex gap-2"><button onclick="updateConsultStatus(\'' + c.id + '\',\'approved\')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button><button onclick="updateConsultStatus(\'' + c.id + '\',\'rejected\')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div>' : '<span class="text-xs" style="color:var(--text3)">تمت</span>';
+      return '<tr><td style="color:var(--text)">' + (c.patientName || '-') + '</td><td style="color:var(--text2)">' + (c.doctorName || '-') + '</td><td style="color:var(--text3)">' + (c.date || '-') + '</td><td><span class="badge ' + sc + '">' + st + '</span></td><td>' + actions + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا توجد طلبات</td></tr>';
+  });
+}
+async function updateConsultStatus(id, status) {
+  await getDB().ref('consultations/' + id + '/status').set(status);
+  showToast('تم ' + (status === 'approved' ? 'قبول' : 'رفض') + ' الاستشارة!', 'success');
+  loadAdminConsultations();
+}
+
+function loadAdminMessages() {
+  getDB().ref('messages').once('value').then(function(snap) {
+    var d = snap.val() || {};
+    allMessages = Object.entries(d).map(function(entry) { return Object.assign({id: entry[0]}, entry[1]); }).reverse();
+    document.getElementById('adminMessagesList').innerHTML = allMessages.length ? allMessages.map(function(m) {
+      return '<div class="card p-4 mb-3"><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style="background:var(--accent)">' + (m.name || 'م').charAt(0) + '</div><div><p class="text-sm font-medium" style="color:var(--text)">' + (m.name || '-') + '</p><p class="text-xs" style="color:var(--text3)">' + (m.email || '') + '</p></div></div>' + (m.subject ? '<span class="badge badge-blue text-xs">' + m.subject + '</span>' : '') + '</div><p class="text-sm" style="color:var(--text2)">' + (m.message || '') + '</p></div>';
+    }).join('') : '<p class="text-sm" style="color:var(--text3)">لا توجد رسائل</p>';
+  });
+}
 
 /* ==================== إدارة الدردشات (المشرف) ==================== */
 function loadAdminChats() {
-  getDB().ref('chatUsers').once('value').then(snap => {
-    const data = snap.val() || {};
-    const users = Object.entries(data).map(([uid, info]) => ({ uid, ...info })).sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime));
-    const list = document.getElementById('chatUsersList');
-    if (!users.length) { list.innerHTML = '<p class="text-sm" style="color:var(--text3)">لا توجد محادثات نشطة</p>'; return; }
-    list.innerHTML = users.map(u => `
-      <div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition mb-1" style="${selectedChatUser===u.uid?'background:var(--bg3)':''};border:1px solid var(--border)" onclick="openAdminChat('${u.uid}','${u.name||u.email||''}')">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style="background:var(--accent)">${(u.name||'م').charAt(0)}</div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium truncate" style="color:var(--text)">${u.name||u.email||'مستخدم'}</p>
-          <p class="text-xs truncate" style="color:var(--text3)">${u.lastMessage||''}</p>
-        </div>
-        ${u.unread ? `<span class="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0" style="background:#EF4444">${u.unread}</span>` : ''}
-      </div>
-    `).join('');
-  });
-}
-function openAdminChat(uid, name) {
-  selectedChatUser = uid;
-  document.getElementById('adminChatHeader').innerHTML = `
-    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:var(--accent)">${name.charAt(0)}</div>
-    <div><p class="text-sm font-medium" style="color:var(--text)">${name}</p><p class="text-xs" style="color:var(--text3)">مباشر</p></div>
-  `;
-  loadAdminChatMessages(uid);
-  getDB().ref('chatUsers/' + uid + '/unread').set(0);
-  loadAdminChats();
-}
-function loadAdminChatMessages(uid) {
-  const chatId = 'chat_' + uid;
-  getDB().ref('chats/' + chatId + '/messages').once('value').then(snap => {
-    const data = snap.val();
-    const container = document.getElementById('adminChatMessages');
-    container.innerHTML = '';
-    if (!data) { container.innerHTML = '<p class="text-sm text-center m-auto" style="color:var(--text3)">لا توجد رسائل بعد</p>'; return; }
-    Object.values(data).forEach(msg => {
-      const div = document.createElement('div');
-      div.className = `chat-msg ${msg.from === 'admin' ? 'admin' : 'user'}`;
-      div.innerHTML = `<span>${msg.text}</span><span class="time">${msg.time ? new Date(msg.time).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : ''}</span>`;
-      container.appendChild(div);
-    });
-    container.scrollTop = container.scrollHeight;
-  });
-}
-function sendAdminChatReply() {
-  if (!selectedChatUser) { showToast('اختر محادثة أولاً', 'info'); return; }
-  const input = document.getElementById('adminChatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const chatId = 'chat_' + selectedChatUser;
-  const msg = { from: 'admin', text, time: new Date().toISOString() };
-  getDB().ref('chats/' + chatId + '/messages').push(msg).then(() => {
-    input.value = '';
-    loadAdminChatMessages(selectedChatUser);
-  });
-}
-
-function loadAdminMgmt(){getDB().ref('admins').once('value').then(snap=>{const d=snap.val()||{};allAdmins=Object.entries(d).map(([id,a])=>({id,...a}));document.getElementById('adminMgmtTable').innerHTML=allAdmins.length?allAdmins.map(a=>`<tr><td style="color:var(--text)">${a.email||'-'}</td><td><span class="badge badge-blue">${a.level==='Super'?'كامل':'قياسي'}</span></td><td style="color:var(--text3)">${a.createdAt?new Date(a.createdAt).toLocaleDateString('ar-EG'):'-'}</td><td><button onclick="deleteAdmin('${a.id}')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td></tr>`).join(''):'<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">لا يوجد مشرفون إضافيون</td></tr>';});}
-function showAddAdminModal(){showModal('إضافة مشرف',`<div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد</label><input type="email" id="newAdminEmail" class="input" placeholder="admin@example.com"></div><div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">كلمة المرور</label><input type="password" id="newAdminPass" class="input" placeholder="6 أحرف على الأقل"></div><div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الصلاحية</label><select id="newAdminLevel" class="input"><option value="Standard">قياسي</option><option value="Super">كامل</option></select></div><button onclick="addAdmin()" class="btn w-full justify-center"><i class="fas fa-user-shield"></i> إضافة</button>`);}
-async function addAdmin(){const e=document.getElementById('newAdminEmail').value.trim(),p=document.getElementById('newAdminPass').value,l=document.getElementById('newAdminLevel').value;if(!e||!p){showToast('املأ جميع الحقول','error');return;}if(p.length<6){showToast('كلمة المرور قصيرة','error');return;}try{let cred;if(firebaseReady){cred=await auth.createUserWithEmailAndPassword(e,p);}else{cred=await getAuth().createUserWithEmailAndPassword(e,p);}await getDB().ref('users/'+cred.user.uid).set({name:e.split('@')[0],email:e,role:'admin',phone:'',createdAt:new Date().toISOString()});await getDB().ref('admins/'+cred.user.uid).set({email:e,level:l,createdAt:new Date().toISOString()});closeModal();showToast('تمت الإضافة!','success');loadAdminMgmt();}catch(err){showToast(err.message||'خطأ','error');}}
-async function deleteAdmin(id){if(!confirm('إزالة هذا المشرف؟'))return;await getDB().ref('admins/'+id).remove();showToast('تمت الإزالة','info');loadAdminMgmt();}
-function loadSettings(){getDB().ref('settings').once('value').then(snap=>{const d=snap.val()||{};allSettings=d;if(d.name)document.getElementById('settName').value=d.name;if(d.email)document.getElementById('settEmail').value=d.email;if(d.phone)document.getElementById('settPhone').value=d.phone;if(d.description)document.getElementById('settDesc').value=d.description;if(d.logo){const p=document.getElementById('settLogoPreview');p.src=d.logo;p.classList.remove('hidden');}});}
-async function saveSettings(){const s={name:document.getElementById('settName').value.trim(),email:document.getElementById('settEmail').value.trim(),phone:document.getElementById('settPhone').value.trim(),description:document.getElementById('settDesc').value.trim(),logo:allSettings.logo||''};const l=document.getElementById('settLogo');if(l.files[0]&&firebaseReady){try{const snap=await getStorage().ref('settings/logo').put(l.files[0]);s.logo=await snap.ref.getDownloadURL();}catch(e){}}await getDB().ref('settings').set(s);allSettings=s;showToast('تم حفظ الإعدادات!','success');}
-
-/* ==================== الملف الشخصي ==================== */
-function loadUserProfile() {
-  if (!currentUser) return;
-  const name = currentUser.displayName||currentUser.email||'مستخدم';
-  document.getElementById('profileName').textContent = name;
-  document.getElementById('profileEmail').textContent = currentUser.email||'';
-  document.getElementById('profileAvatar').textContent = name.charAt(0);
-  document.getElementById('profileRole').textContent = currentUser.role==='doctor'?'طبيب':currentUser.role==='admin'?'مشرف':'مريض';
-  getDB().ref('users/'+currentUser.uid).once('value').then(snap=>{const d=snap.val()||{};document.getElementById('profName').value=d.name||currentUser.displayName||'';document.getElementById('profPhone').value=d.phone||'';});
-  getDB().ref('consultations').orderByChild('patientId').equalTo(currentUser.uid).once('value').then(snap=>{const d=snap.val()||{};const c=Object.entries(d).map(([id,v])=>({id,...v})).reverse();document.getElementById('userConsultList').innerHTML=c.length?c.map(v=>`<div class="flex items-center gap-4 py-3" style="border-bottom:1px solid var(--border)"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:var(--bg3)"><i class="fas fa-user-doctor" style="color:var(--accent)"></i></div><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">${v.doctorName}</p><p class="text-xs" style="color:var(--text3)">${v.date} ${v.time}</p></div><span class="badge ${v.status==='pending'?'badge-yellow':v.status==='approved'?'badge-green':'badge-red'}">${v.status==='pending'?'معلق':v.status==='approved'?'مقبول':'مرفوض'}</span></div>`).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد طلبات.</p>';});
-  loadUserMessages();
-}
-function loadUserMessages(){if(!currentUser)return;getDB().ref('userMessages/'+currentUser.uid).once('value').then(snap=>{const d=snap.val()||{};const m=Object.entries(d).map(([id,v])=>({id,...v}));const c=document.getElementById('userMsgList');c.innerHTML=m.length?m.map(v=>`<div class="py-2" style="border-bottom:1px solid var(--border)"><span class="text-xs font-medium" style="color:${v.from==='user'?'var(--accent)':'var(--text)'}">${v.from==='user'?'أنت':'الإدارة'}</span><p class="text-sm" style="color:var(--text2)">${v.text}</p></div>`).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد رسائل.</p>';});}
-function sendUserMsg(){if(!currentUser)return;const i=document.getElementById('userMsgInput');const t=i.value.trim();if(!t)return;getDB().ref('userMessages/'+currentUser.uid).push({from:'user',text:t,time:new Date().toISOString()}).then(()=>{i.value='';loadUserMessages();});}
-async function updateProfile(){const n=document.getElementById('profName').value.trim(),p=document.getElementById('profPhone').value.trim();if(!n){showToast('الاسم مطلوب','error');return;}await getDB().ref('users/'+currentUser.uid).update({name:n,phone:p});if(currentUser.displayName!==n&&currentUser.updateProfile)await currentUser.updateProfile({displayName:n});document.getElementById('profileName').textContent=n;document.getElementById('profileAvatar').textContent=n.charAt(0);document.getElementById('userName').textContent=n;showToast('تم التحديث!','success');}
-</script>
-</body>
-</html>
+  getDB().ref('chatUsers').once('value').then(function(snap) {
+    var data = snap.val() || {};
+    var users = Object.entries(data).map(function(entry) { return Object.assign({uid: entry[0]}, entry[1]); }).sort(function(a, b) { return new Date(b.lastTime) - new Date(a.lastTime); });
+    var list = document.getElementById('chatUsersList');
+    if (!users.length) { list.innerHTML = '<p class="text-sm" style="color:var(--text3)">لا توجد محادثات نشطة</p>'; return
