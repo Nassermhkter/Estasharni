@@ -11,36 +11,30 @@
 <title>استشيرني</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script>
-tailwind.config={theme:{extend:{fontFamily:{cairo:['Cairo','sans-serif']},colors:{sky:{50:'#f0f9ff',100:'#e0f2fe',200:'#bae6fd',300:'#7dd3fc',400:'#38bdf8',500:'#0ea5e9',600:'#0284c7',700:'#0369a1',800:'#075985',900:'#0c4a6e'}}}}}
+tailwind.config={theme:{extend:{fontFamily:{cairo:['Cairo','sans-serif']}}}}
 </script>
 <style>
-:root{--bg:#ffffff;--bg2:#f0f9ff;--text:#0f172a;--text2:#475569;--card:#ffffff;--border:#bae6fd;--accent:#38bdf8;--accent2:#0ea5e9;--nav:#ffffff;--input:#f8fafc;--shadow:0 4px 24px rgba(56,189,248,0.08)}
+:root{--bg:#fff;--bg2:#f0f9ff;--text:#0f172a;--text2:#475569;--card:#fff;--border:#bae6fd;--accent:#38bdf8;--accent2:#0ea5e9;--nav:#fff;--input:#f8fafc;--shadow:0 4px 24px rgba(56,189,248,0.08)}
 [data-theme="dark"]{--bg:#0c1929;--bg2:#0f2240;--text:#e2e8f0;--text2:#94a3b8;--card:#132d4f;--border:#1e4976;--accent:#38bdf8;--accent2:#0ea5e9;--nav:#0f2240;--input:#132d4f;--shadow:0 4px 24px rgba(0,0,0,0.3)}
-*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+*{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden;min-height:100dvh}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px}
 .page{display:none;animation:fadeUp .4s ease}.page.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(56,189,248,0.3)}50%{box-shadow:0 0 40px rgba(56,189,248,0.6)}}
-@keyframes spin-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 @keyframes slideIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-@keyframes bounceIn{0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.05)}70%{transform:scale(0.9)}100%{transform:scale(1);opacity:1}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes bounceIn{0%{transform:scale(.3);opacity:0}50%{transform:scale(1.05)}70%{transform:scale(.9)}100%{transform:scale(1);opacity:1}}
 .float-anim{animation:float 4s ease-in-out infinite}
 .pulse-glow{animation:pulse-glow 2s ease-in-out infinite}
 .slide-in{animation:slideIn .4s ease}
 .bounce-in{animation:bounceIn .5s ease}
 .btn-primary{background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;border:none;padding:12px 28px;border-radius:12px;font-family:'Cairo';font-weight:700;font-size:15px;cursor:pointer;transition:all .3s;box-shadow:0 4px 16px rgba(56,189,248,0.3)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(56,189,248,0.4)}
-.btn-primary:active{transform:translateY(0)}
 .btn-outline{background:transparent;color:var(--accent);border:2px solid var(--accent);padding:10px 24px;border-radius:12px;font-family:'Cairo';font-weight:600;font-size:14px;cursor:pointer;transition:all .3s}
 .btn-outline:hover{background:var(--accent);color:#fff}
+.btn-ghost{background:transparent;color:var(--text2);border:none;padding:8px 16px;border-radius:10px;font-family:'Cairo';font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost:hover{background:rgba(56,189,248,0.08);color:var(--accent)}
 .input-field{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:12px;background:var(--input);color:var(--text);font-family:'Cairo';font-size:15px;transition:all .3s;outline:none}
 .input-field:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(56,189,248,0.15)}
 .input-field::placeholder{color:var(--text2)}
@@ -49,23 +43,22 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);trans
 .nav-bar{position:fixed;bottom:0;left:0;right:0;background:var(--nav);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0;z-index:50;backdrop-filter:blur(20px)}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 12px;border-radius:12px;transition:all .3s;color:var(--text2);font-size:11px;font-weight:600}
 .nav-item.active,.nav-item:hover{color:var(--accent)}
-.nav-item i{font-size:20px;transition:all .3s}
-.nav-item.active i{transform:scale(1.15)}
+.nav-item svg{width:22px;height:22px;transition:all .3s}.nav-item.active svg{transform:scale(1.15)}
 .badge{position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;font-size:9px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:14px 28px;border-radius:12px;color:#fff;font-family:'Cairo';font-weight:600;font-size:14px;z-index:9999;animation:bounceIn .5s ease;max-width:90vw;text-align:center}
 .toast.success{background:linear-gradient(135deg,#22c55e,#16a34a)}.toast.error{background:linear-gradient(135deg,#ef4444,#dc2626)}.toast.info{background:linear-gradient(135deg,#38bdf8,#0ea5e9)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeUp .2s}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-content{background:var(--card);border-radius:20px;padding:28px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;animation:bounceIn .4s ease}
 .chat-btn{position:fixed;bottom:80px;left:20px;width:56px;height:56px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;cursor:pointer;z-index:40;box-shadow:0 4px 20px rgba(56,189,248,0.4);transition:all .3s}
-.chat-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(56,189,248,0.5)}
-.hero-bg{background:linear-gradient(160deg,#e0f2fe 0%,#f0f9ff 40%,#ffffff 100%)}
+.chat-btn:hover{transform:scale(1.1)}
+.hero-bg{background:linear-gradient(160deg,#e0f2fe 0%,#f0f9ff 40%,#fff 100%)}
 [data-theme="dark"] .hero-bg{background:linear-gradient(160deg,#0c1929 0%,#0f2240 40%,#132d4f 100%)}
 .hero-circle{position:absolute;border-radius:50%;background:rgba(56,189,248,0.08);filter:blur(40px)}
 [data-theme="dark"] .hero-circle{background:rgba(56,189,248,0.05)}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;transition:all .3s}
 .stat-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.admin-sidebar{width:260px;min-height:100vh;background:var(--card);border-left:1px solid var(--border);padding:20px;position:fixed;right:0;top:0;z-index:60;transition:transform .3s}
-.admin-sidebar .menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;transition:all .2s;color:var(--text2);font-weight:600;font-size:14px;margin-bottom:4px}
+.admin-sidebar{width:260px;min-height:100vh;background:var(--card);border-left:1px solid var(--border);padding:20px;position:fixed;right:0;top:0;z-index:60;transition:transform .3s;overflow-y:auto}
+.admin-sidebar .menu-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;transition:all .2s;color:var(--text2);font-weight:600;font-size:14px;margin-bottom:4px;position:relative}
 .admin-sidebar .menu-item:hover,.admin-sidebar .menu-item.active{background:rgba(56,189,248,0.1);color:var(--accent)}
 .doctor-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .3s}
 .doctor-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(56,189,248,0.12)}
@@ -76,1796 +69,396 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);trans
 .data-table{width:100%;border-collapse:collapse}
 .data-table th{padding:12px;text-align:right;font-weight:700;font-size:13px;color:var(--text2);border-bottom:2px solid var(--border)}
 .data-table td{padding:12px;border-bottom:1px solid var(--border);font-size:14px}
-.data-table tr:hover td{background:rgba(56,189,248,0.04)}
-.shimmer{background:linear-gradient(90deg,var(--input) 25%,var(--border) 50%,var(--input) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
 .switch{position:relative;width:48px;height:26px;cursor:pointer}
 .switch input{opacity:0;width:0;height:0}
 .switch .slider{position:absolute;inset:0;background:var(--border);border-radius:26px;transition:.3s}
 .switch .slider:before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;bottom:3px;right:3px;transition:.3s}
 .switch input:checked+.slider{background:var(--accent)}
 .switch input:checked+.slider:before{transform:translateX(-22px)}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--text2);font-size:13px;font-weight:600}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.secret-hint{position:fixed;bottom:0;left:0;right:0;height:4px;cursor:default;z-index:0;opacity:0;transition:opacity .3s}
+.secret-hint:hover{opacity:1}
+.doc-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--border)}
+.doc-avatar-ph{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fee-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;background:rgba(56,189,248,0.1);color:var(--accent);font-size:13px;font-weight:700}
+.icon{display:inline-block;width:18px;height:18px;vertical-align:middle;fill:currentColor}
+.icon-sm{width:14px;height:14px}
+.icon-lg{width:22px;height:22px}
+.icon-xl{width:28px;height:28px}
 @media(max-width:768px){.admin-sidebar{transform:translateX(100%)}.admin-sidebar.open{transform:translateX(0)}.admin-content{margin-right:0!important}}
-.skeleton{border-radius:8px}.skeleton-text{height:16px;margin-bottom:8px}.skeleton-title{height:24px;margin-bottom:12px;width:60%}.skeleton-avatar{width:60px;height:60px;border-radius:50%}
 </style>
 </head>
 <body>
 
-<!-- توست الإشعارات -->
+<!-- أيقونات SVG مضمنة - تظهر فوراً بدون إنترنت -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<symbol id="i-stethoscope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 105.1 2H6a2 2 0 012 2v5a6 6 0 0012 0V4a2 2 0 012-2h.9a.3.3 0 10.3.3"/><path d="M8 15v1a6 6 0 006 6 6 6 0 006-6v-4"/><circle cx="20" cy="10" r="2"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-user-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.5a2.5 2.5 0 010 5"/></symbol>
+<symbol id="i-envelope" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></symbol>
+<symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+<symbol id="i-star-empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+<symbol id="i-comments" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></symbol>
+<symbol id="i-comment-medical" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="12" y1="7" x2="12" y2="13"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+<symbol id="i-sign-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></symbol>
+<symbol id="i-user-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></symbol>
+<symbol id="i-paper-plane" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+<symbol id="i-chart-pie" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 118 2.83"/><path d="M22 12A10 10 0 0012 2v10z"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></symbol>
+<symbol id="i-tags" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></symbol>
+<symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></symbol>
+<symbol id="i-user-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M12 11l-4 4 4 4"/><path d="M12 11l4 4-4 4"/></symbol>
+<symbol id="i-user-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/><circle cx="19" cy="11" r="2"/><path d="M19 8v6"/><path d="M22 11h-6"/></symbol>
+<symbol id="i-sign-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-times" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+<symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></symbol>
+<symbol id="i-reply" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 00-4-4H4"/></symbol>
+<symbol id="i-coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1110.34 18"/><path d="M7 6h1v4"/><path d="M16.71 13.88l.35.35"/><path d="M14.05 16.54l.35.35"/></symbol>
+<symbol id="i-headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></symbol>
+<symbol id="i-bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+<symbol id="i-exclamation" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+<symbol id="i-save" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+<symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2"/><circle cx="17.5" cy="10.5" r="2"/><circle cx="8.5" cy="7.5" r="2"/><circle cx="6.5" cy="12.5" r="2"/><path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c.55 0 1-.45 1-1v-.09c0-.27-.11-.52-.29-.71a7.03 7.03 0 01-.71-9.12 1 1 0 011.41-1.41c.7.28 1.49.43 2.29.43A5.01 5.01 0 0021 5.56 10.04 10.04 0 0012 2z"/></symbol>
+<symbol id="i-address-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H6a2 2 0 00-2 2v12a2 2 0 002 2h14"/><path d="M4 2h2v20H4z"/><path d="M14 10h4"/><path d="M14 14h4"/><circle cx="10" cy="12" r="2"/></symbol>
+</svg>
+
 <div id="toast-container"></div>
 
-<!-- ========== شاشة البداية ========== -->
+<!-- شاشة البداية -->
 <div id="splash-screen" style="position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#e0f2fe,#f0f9ff,#fff)">
-  <div class="float-anim" style="margin-bottom:32px">
-    <div style="width:120px;height:120px;border-radius:30px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(56,189,248,0.3)">
-      <i class="fas fa-stethoscope" style="font-size:52px;color:#fff"></i>
-    </div>
-  </div>
+  <div class="float-anim" style="margin-bottom:32px"><div style="width:120px;height:120px;border-radius:30px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(56,189,248,0.3)"><svg class="icon" style="width:52px;height:52px;color:#fff"><use href="#i-stethoscope"/></svg></div></div>
   <h1 style="font-size:36px;font-weight:900;color:#0c4a6e;margin-bottom:8px">استشيرني</h1>
   <p style="font-size:15px;color:#64748b;font-weight:600">منصتك الطبية الموثوقة</p>
-  <div style="margin-top:40px;display:flex;gap:6px">
-    <div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:pulse-glow 1s ease infinite"></div>
-    <div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:pulse-glow 1s ease infinite .2s"></div>
-    <div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:pulse-glow 1s ease infinite .4s"></div>
-  </div>
+  <div style="margin-top:40px;display:flex;gap:6px"><div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:pulse-glow 1s ease infinite"></div><div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:pulse-glow 1s ease infinite .2s"></div><div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;animation:pulse-glow 1s ease infinite .4s"></div></div>
 </div>
 
-<!-- ========== صفحة تسجيل الدخول ========== -->
+<!-- صفحة تسجيل الدخول -->
 <div id="page-auth" class="page">
   <div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);position:relative;overflow:hidden">
     <div class="hero-circle" style="width:300px;height:300px;top:-100px;left:-100px"></div>
     <div class="hero-circle" style="width:250px;height:250px;bottom:-80px;right:-80px"></div>
+    <button onclick="navigateTo('home')" class="btn-ghost" style="position:absolute;top:20px;right:20px;z-index:5"><svg class="icon"><use href="#i-arrow-right"/></svg><span>العودة للمنصة</span></button>
     <div style="max-width:420px;width:100%;position:relative;z-index:2">
-      <div style="text-align:center;margin-bottom:36px">
-        <div style="width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(56,189,248,0.3);margin-bottom:16px">
-          <i class="fas fa-stethoscope" style="font-size:36px;color:#fff"></i>
-        </div>
-        <h1 style="font-size:28px;font-weight:900;color:var(--text)">استشيرني</h1>
-        <p style="font-size:14px;color:var(--text2);margin-top:4px">منصتك الطبية الموثوقة</p>
-      </div>
+      <div style="text-align:center;margin-bottom:36px"><div style="width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:inline-flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(56,189,248,0.3);margin-bottom:16px"><svg class="icon" style="width:36px;height:36px;color:#fff"><use href="#i-stethoscope"/></svg></div><h1 style="font-size:28px;font-weight:900;color:var(--text)">استشيرني</h1><p style="font-size:14px;color:var(--text2);margin-top:4px">منصتك الطبية الموثوقة</p></div>
       <div class="card">
-        <div style="display:flex;gap:8px;margin-bottom:24px">
-          <button class="tab-btn active" onclick="switchAuthTab('login')" id="tab-login">تسجيل الدخول</button>
-          <button class="tab-btn" onclick="switchAuthTab('register')" id="tab-register">إنشاء حساب</button>
-        </div>
-        <!-- تسجيل الدخول -->
+        <div style="display:flex;gap:8px;margin-bottom:24px"><button class="tab-btn active" onclick="switchAuthTab('login')" id="tab-login">تسجيل الدخول</button><button class="tab-btn" onclick="switchAuthTab('register')" id="tab-register">إنشاء حساب</button></div>
         <div id="form-login">
-          <div style="margin-bottom:16px">
-            <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label>
-            <input type="email" id="login-email" class="input-field" placeholder="example@email.com" dir="ltr">
-          </div>
-          <div style="margin-bottom:16px">
-            <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label>
-            <input type="password" id="login-password" class="input-field" placeholder="ادخل كلمة المرور">
-          </div>
-          <button class="btn-primary" style="width:100%;margin-top:8px" onclick="handleLogin()">
-            <i class="fas fa-sign-in-alt" style="margin-left:8px"></i>تسجيل الدخول
-          </button>
+          <div style="margin-bottom:16px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label><input type="email" id="login-email" class="input-field" placeholder="example@email.com" dir="ltr"></div>
+          <div style="margin-bottom:16px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label><input type="password" id="login-password" class="input-field" placeholder="ادخل كلمة المرور"></div>
+          <button class="btn-primary" style="width:100%;margin-top:8px" onclick="handleLogin()"><svg class="icon" style="margin-left:8px"><use href="#i-sign-in"/></svg>تسجيل الدخول</button>
         </div>
-        <!-- إنشاء حساب -->
         <div id="form-register" style="display:none">
-          <div style="margin-bottom:14px">
-            <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الاسم الكامل</label>
-            <input type="text" id="reg-name" class="input-field" placeholder="ادخل اسمك الكامل">
-          </div>
-          <div style="margin-bottom:14px">
-            <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رقم الهاتف</label>
-            <input type="tel" id="reg-phone" class="input-field" placeholder="7XXXXXXXX" dir="ltr" maxlength="9" oninput="validatePhone(this)">
-          </div>
-          <div style="margin-bottom:14px">
-            <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label>
-            <input type="email" id="reg-email" class="input-field" placeholder="example@email.com" dir="ltr">
-          </div>
-          <div style="margin-bottom:16px">
-            <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label>
-            <input type="password" id="reg-password" class="input-field" placeholder="ادخل كلمة مرور قوية">
-          </div>
-          <button class="btn-primary" style="width:100%;margin-top:8px" onclick="handleRegister()">
-            <i class="fas fa-user-plus" style="margin-left:8px"></i>إنشاء حساب
-          </button>
+          <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الاسم الكامل</label><input type="text" id="reg-name" class="input-field" placeholder="ادخل اسمك الكامل"></div>
+          <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رقم الهاتف</label><input type="tel" id="reg-phone" class="input-field" placeholder="7XXXXXXXX" dir="ltr" maxlength="9" oninput="validatePhone(this)"></div>
+          <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label><input type="email" id="reg-email" class="input-field" placeholder="example@email.com" dir="ltr"></div>
+          <div style="margin-bottom:16px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label><input type="password" id="reg-password" class="input-field" placeholder="ادخل كلمة مرور قوية"></div>
+          <button class="btn-primary" style="width:100%;margin-top:8px" onclick="handleRegister()"><svg class="icon" style="margin-left:8px"><use href="#i-user-plus"/></svg>إنشاء حساب</button>
         </div>
       </div>
-      <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--text2)">
-        هل أنت طبيب؟ <a href="#" onclick="switchAuthTab('doctor-reg')" style="color:var(--accent);font-weight:700;text-decoration:none">سجل كطبيب</a>
-      </p>
-      <!-- تسجيل طبيب -->
+      <div class="divider">أو</div>
+      <button onclick="switchAuthTab('doctor-reg')" style="width:100%;padding:14px;border-radius:12px;border:2px dashed var(--border);background:transparent;color:var(--accent);font-family:'Cairo';font-weight:700;font-size:15px;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:10px" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><svg class="icon"><use href="#i-user-md"/></svg>دخول الأطباء - إنشاء حساب طبيب</button>
       <div id="form-doctor-reg" class="card" style="display:none;margin-top:16px">
-        <h3 style="font-size:18px;font-weight:800;margin-bottom:16px;color:var(--accent)"><i class="fas fa-user-md" style="margin-left:8px"></i>تسجيل حساب طبيب</h3>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الاسم الكامل</label>
-          <input type="text" id="doc-reg-name" class="input-field" placeholder="د. ...">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">اللقب الطبي</label>
-          <input type="text" id="doc-reg-title" class="input-field" placeholder="اختصاصي قلب وأوعية">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رقم الهاتف</label>
-          <input type="tel" id="doc-reg-phone" class="input-field" placeholder="7XXXXXXXX" dir="ltr" maxlength="9">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الموقع</label>
-          <input type="text" id="doc-reg-location" class="input-field" placeholder="المدينة - العنوان">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label>
-          <input type="email" id="doc-reg-email" class="input-field" placeholder="doctor@email.com" dir="ltr">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label>
-          <input type="password" id="doc-reg-password" class="input-field" placeholder="كلمة مرور قوية">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الشهادات (صور)</label>
-          <input type="file" id="doc-reg-certs" class="input-field" accept="image/*" multiple>
-        </div>
-        <button class="btn-primary" style="width:100%" onclick="handleDoctorRegister()">
-          <i class="fas fa-paper-plane" style="margin-left:8px"></i>إرسال طلب التسجيل
-        </button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"><h3 style="font-size:18px;font-weight:800;color:var(--accent)"><svg class="icon" style="margin-left:8px"><use href="#i-user-md"/></svg>حساب طبيب جديد</h3><button onclick="switchAuthTab('login')" style="background:none;border:none;color:var(--text2);cursor:pointer"><svg class="icon icon-lg"><use href="#i-times"/></svg></button></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">اسم المستخدم</label><input type="text" id="doc-reg-username" class="input-field" placeholder="اختر اسم مستخدم" dir="ltr"></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الاسم الكامل</label><input type="text" id="doc-reg-name" class="input-field" placeholder="د. ..."></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">اللقب الطبي</label><input type="text" id="doc-reg-title" class="input-field" placeholder="اختصاصي قلب وأوعية"></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label><input type="email" id="doc-reg-email" class="input-field" placeholder="doctor@email.com" dir="ltr"></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رقم الهاتف</label><input type="tel" id="doc-reg-phone" class="input-field" placeholder="7XXXXXXXX" dir="ltr" maxlength="9" oninput="validatePhone(this)"></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label><input type="password" id="doc-reg-password" class="input-field" placeholder="كلمة مرور قوية"></div>
+        <div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الموقع</label><input type="text" id="doc-reg-location" class="input-field" placeholder="المدينة - العنوان"></div>
+        <div style="margin-bottom:16px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الشهادات (صور)</label><input type="file" id="doc-reg-certs" class="input-field" accept="image/*" multiple></div>
+        <button class="btn-primary" style="width:100%" onclick="handleDoctorRegister()"><svg class="icon" style="margin-left:8px"><use href="#i-paper-plane"/></svg>إرسال طلب التسجيل</button>
         <p style="text-align:center;margin-top:12px;font-size:12px;color:var(--text2)">سيتم مراجعة طلبك من قبل الإدارة</p>
       </div>
     </div>
   </div>
+  <div class="secret-hint" ondblclick="showAdminEntry()"></div>
 </div>
 
-<!-- ========== الواجهة الرئيسية (الزائر) ========== -->
+<!-- الصفحة الرئيسية -->
 <div id="page-home" class="page">
   <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:12px">
-        <img id="header-logo" src="" style="width:40px;height:40px;border-radius:10px;display:none;object-fit:cover">
-        <div id="header-logo-fallback" style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center">
-          <i class="fas fa-stethoscope" style="color:#fff;font-size:18px"></i>
-        </div>
-        <span style="font-weight:800;font-size:20px;color:var(--text)" id="header-site-name">استشيرني</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="toggleTheme()" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s" title="الوضع الليلي">
-          <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
-        <button class="btn-primary" style="padding:8px 20px;font-size:13px" onclick="navigateTo('auth')">
-          <i class="fas fa-sign-in-alt" style="margin-left:6px"></i>دخول
-        </button>
-      </div>
+      <div style="display:flex;align-items:center;gap:12px"><img id="header-logo" src="" style="width:40px;height:40px;border-radius:10px;display:none;object-fit:cover"><div id="header-logo-fallback" style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center"><svg class="icon" style="color:#fff"><use href="#i-stethoscope"/></svg></div><span style="font-weight:800;font-size:20px;color:var(--text)" id="header-site-name">استشيرني</span></div>
+      <div style="display:flex;align-items:center;gap:12px"><button onclick="toggleTheme()" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg class="icon" id="theme-icon"><use href="#i-moon"/></svg></button><button class="btn-primary" style="padding:8px 20px;font-size:13px" onclick="navigateTo('auth')"><svg class="icon" style="margin-left:6px"><use href="#i-sign-in"/></svg>دخول</button></div>
     </div>
   </header>
-
   <main>
-    <!-- القسم البطولي -->
     <section class="hero-bg" style="padding:60px 20px 50px;position:relative;overflow:hidden">
       <div class="hero-circle" style="width:400px;height:400px;top:-150px;left:-100px"></div>
       <div class="hero-circle" style="width:300px;height:300px;bottom:-100px;right:-50px"></div>
       <div style="max-width:800px;margin:0 auto;text-align:center;position:relative;z-index:2">
-        <div style="display:inline-block;padding:6px 18px;border-radius:20px;background:rgba(56,189,248,0.1);color:var(--accent);font-size:13px;font-weight:700;margin-bottom:20px">
-          <i class="fas fa-shield-alt" style="margin-left:6px"></i>منصة طبية معتمدة
-        </div>
-        <h1 style="font-size:clamp(28px,5vw,42px);font-weight:900;line-height:1.4;margin-bottom:16px">
-          استشر أفضل الأطباء<br><span style="color:var(--accent)">من أي مكان</span>
-        </h1>
-        <p style="font-size:16px;color:var(--text2);max-width:550px;margin:0 auto 32px;line-height:1.8">
-          منصة استشيرني تربطك بأمهر الأطباء المتخصصين لتقديم استشارات طبية موثوقة ومتاحة على مدار الساعة
-        </p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-          <button class="btn-primary" style="padding:14px 32px;font-size:16px" onclick="navigateTo('doctors')">
-            <i class="fas fa-search" style="margin-left:8px"></i>استكشف الأطباء
-          </button>
-          <button class="btn-outline" style="padding:12px 28px;font-size:15px" onclick="navigateTo('contact')">
-            <i class="fas fa-phone" style="margin-left:8px"></i>تواصل معنا
-          </button>
-        </div>
+        <div style="display:inline-block;padding:6px 18px;border-radius:20px;background:rgba(56,189,248,0.1);color:var(--accent);font-size:13px;font-weight:700;margin-bottom:20px"><svg class="icon" style="margin-left:6px"><use href="#i-shield"/></svg>منصة طبية معتمدة</div>
+        <h1 style="font-size:clamp(28px,5vw,42px);font-weight:900;line-height:1.4;margin-bottom:16px">استشر أفضل الأطباء<br><span style="color:var(--accent)">من أي مكان</span></h1>
+        <p style="font-size:16px;color:var(--text2);max-width:550px;margin:0 auto 32px;line-height:1.8">منصة استشيرني تربطك بأمهر الأطباء المتخصصين لتقديم استشارات طبية موثوقة</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button class="btn-primary" style="padding:14px 32px;font-size:16px" onclick="navigateTo('doctors')"><svg class="icon" style="margin-left:8px"><use href="#i-search"/></svg>استكشف الأطباء</button><button class="btn-outline" style="padding:12px 28px;font-size:15px" onclick="navigateTo('contact')"><svg class="icon" style="margin-left:8px"><use href="#i-phone"/></svg>تواصل معنا</button></div>
       </div>
     </section>
-
-    <!-- الإحصائيات -->
-    <section style="padding:40px 20px;max-width:900px;margin:0 auto">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px">
-        <div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)" id="stat-doctors">0</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">طبيب معتمد</div></div>
-        <div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)" id="stat-cats">0</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">تخصص طبي</div></div>
-        <div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)" id="stat-users">0</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">مستخدم مسجل</div></div>
-        <div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)">24/7</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">دعم متواصل</div></div>
-      </div>
-    </section>
-
-    <!-- التخصصات -->
-    <section style="padding:20px 20px 50px;max-width:1100px;margin:0 auto">
-      <h2 style="font-size:24px;font-weight:900;margin-bottom:24px;text-align:center">التخصصات الطبية</h2>
-      <div id="home-categories" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;justify-content:center;flex-wrap:wrap"></div>
-    </section>
-
-    <!-- أطباء مميزون -->
-    <section style="padding:20px 20px 60px;max-width:1100px;margin:0 auto">
-      <h2 style="font-size:24px;font-weight:900;margin-bottom:24px;text-align:center">أطباء مميزون</h2>
-      <div id="home-doctors" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px"></div>
-    </section>
+    <section style="padding:40px 20px;max-width:900px;margin:0 auto"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px"><div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)" id="stat-doctors">0</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">طبيب معتمد</div></div><div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)" id="stat-cats">0</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">تخصص طبي</div></div><div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)" id="stat-users">0</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">مستخدم مسجل</div></div><div class="stat-card"><div style="font-size:32px;font-weight:900;color:var(--accent)">24/7</div><div style="font-size:13px;color:var(--text2);font-weight:600;margin-top:4px">دعم متواصل</div></div></div></section>
+    <section style="padding:20px 20px 50px;max-width:1100px;margin:0 auto"><h2 style="font-size:24px;font-weight:900;margin-bottom:24px;text-align:center">التخصصات الطبية</h2><div id="home-categories" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:12px;justify-content:center;flex-wrap:wrap"></div></section>
+    <section style="padding:20px 20px 60px;max-width:1100px;margin:0 auto"><h2 style="font-size:24px;font-weight:900;margin-bottom:24px;text-align:center">أطباء مميزون</h2><div id="home-doctors" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px"></div></section>
   </main>
-
-  <!-- زر الدردشة -->
-  <div class="chat-btn pulse-glow" onclick="openChat()" title="دردشة مباشرة"><i class="fas fa-comments"></i></div>
-
-  <!-- شريط التنقل السفلي -->
-  <nav class="nav-bar">
-    <div class="nav-item active" onclick="switchTab(this,'home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item" onclick="switchTab(this,'doctors')"><i class="fas fa-user-md"></i><span>الأطباء</span></div>
-    <div class="nav-item" onclick="switchTab(this,'contact')"><i class="fas fa-envelope"></i><span>تواصل</span></div>
-    <div class="nav-item" onclick="switchTab(this,'auth')"><i class="fas fa-user"></i><span>حسابي</span></div>
-  </nav>
+  <div class="chat-btn pulse-glow" onclick="openChat()" title="دردشة مباشرة"><svg class="icon" style="width:24px;height:24px;color:#fff"><use href="#i-comments"/></svg></div>
+  <nav class="nav-bar"><div class="nav-item active" onclick="switchTab(this,'home')"><svg class="icon"><use href="#i-home"/></svg><span>الرئيسية</span></div><div class="nav-item" onclick="switchTab(this,'doctors')"><svg class="icon"><use href="#i-user-md"/></svg><span>الأطباء</span></div><div class="nav-item" onclick="switchTab(this,'contact')"><svg class="icon"><use href="#i-envelope"/></svg><span>تواصل</span></div><div class="nav-item" onclick="switchTab(this,'auth')"><svg class="icon"><use href="#i-user"/></svg><span>حسابي</span></div></nav>
 </div>
 
-<!-- ========== صفحة الأطباء ========== -->
+<!-- صفحة الأطباء -->
 <div id="page-doctors" class="page">
-  <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="navigateTo('home')" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-arrow-right"></i></button>
-        <h2 style="font-weight:800;font-size:18px">الأطباء</h2>
-      </div>
-      <button onclick="toggleTheme()" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-moon" id="theme-icon2"></i></button>
-    </div>
-  </header>
-  <main style="padding:20px;max-width:1100px;margin:0 auto;padding-bottom:80px">
-    <div style="margin-bottom:20px;position:relative">
-      <i class="fas fa-search" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text2)"></i>
-      <input type="text" class="input-field" style="padding-right:42px" placeholder="ابحث عن طبيب..." id="doctor-search" oninput="filterDoctors()">
-    </div>
-    <div id="doctors-categories" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:20px"></div>
-    <div id="doctors-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px"></div>
-    <div id="no-doctors" style="display:none;text-align:center;padding:60px 20px;color:var(--text2)">
-      <i class="fas fa-user-md" style="font-size:48px;margin-bottom:16px;opacity:0.3"></i>
-      <p style="font-size:16px;font-weight:600">لا يوجد أطباء في هذا التخصص حالياً</p>
-    </div>
-  </main>
-  <nav class="nav-bar">
-    <div class="nav-item" onclick="switchTab(this,'home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item active" onclick="switchTab(this,'doctors')"><i class="fas fa-user-md"></i><span>الأطباء</span></div>
-    <div class="nav-item" onclick="switchTab(this,'contact')"><i class="fas fa-envelope"></i><span>تواصل</span></div>
-    <div class="nav-item" onclick="switchTab(this,'auth')"><i class="fas fa-user"></i><span>حسابي</span></div>
-  </nav>
+  <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px"><div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><button onclick="navigateTo('home')" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg class="icon"><use href="#i-arrow-right"/></svg></button><h2 style="font-weight:800;font-size:18px">الأطباء</h2></div><button onclick="toggleTheme()" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg class="icon" id="theme-icon2"><use href="#i-moon"/></svg></button></div></header>
+  <main style="padding:20px;max-width:1100px;margin:0 auto;padding-bottom:80px"><div style="margin-bottom:20px;position:relative"><svg class="icon" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text2)"><use href="#i-search"/></svg><input type="text" class="input-field" style="padding-right:42px" placeholder="ابحث عن طبيب..." id="doctor-search" oninput="filterDoctors()"></div><div id="doctors-categories" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;margin-bottom:20px"></div><div id="doctors-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px"></div><div id="no-doctors" style="display:none;text-align:center;padding:60px 20px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:16px;opacity:.3"><use href="#i-user-md"/></svg><p style="font-size:16px;font-weight:600">لا يوجد أطباء في هذا التخصص حالياً</p></div></main>
+  <nav class="nav-bar"><div class="nav-item" onclick="switchTab(this,'home')"><svg class="icon"><use href="#i-home"/></svg><span>الرئيسية</span></div><div class="nav-item active" onclick="switchTab(this,'doctors')"><svg class="icon"><use href="#i-user-md"/></svg><span>الأطباء</span></div><div class="nav-item" onclick="switchTab(this,'contact')"><svg class="icon"><use href="#i-envelope"/></svg><span>تواصل</span></div><div class="nav-item" onclick="switchTab(this,'auth')"><svg class="icon"><use href="#i-user"/></svg><span>حسابي</span></div></nav>
 </div>
 
-<!-- ========== صفحة اتصل بنا ========== -->
+<!-- صفحة اتصل بنا -->
 <div id="page-contact" class="page">
-  <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px">
-    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="navigateTo('home')" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-arrow-right"></i></button>
-        <h2 style="font-weight:800;font-size:18px">تواصل معنا</h2>
-      </div>
-      <button onclick="toggleTheme()" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-moon" id="theme-icon3"></i></button>
-    </div>
-  </header>
-  <main style="padding:20px;max-width:700px;margin:0 auto;padding-bottom:80px">
-    <div id="contact-info-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px"></div>
-    <div id="contact-social" style="display:flex;gap:12px;justify-content:center;margin-bottom:30px"></div>
-    <div class="card">
-      <h3 style="font-size:18px;font-weight:800;margin-bottom:20px"><i class="fas fa-paper-plane" style="margin-left:8px;color:var(--accent)"></i>أرسل رسالة</h3>
-      <div style="margin-bottom:14px"><input type="text" id="contact-name" class="input-field" placeholder="اسمك الكامل"></div>
-      <div style="margin-bottom:14px"><input type="email" id="contact-email" class="input-field" placeholder="بريدك الإلكتروني" dir="ltr"></div>
-      <div style="margin-bottom:14px"><textarea id="contact-msg" class="input-field" rows="5" placeholder="موضوع الرسالة..." style="resize:vertical"></textarea></div>
-      <button class="btn-primary" style="width:100%" onclick="sendContactMessage()"><i class="fas fa-paper-plane" style="margin-left:8px"></i>إرسال</button>
-    </div>
-  </main>
-  <nav class="nav-bar">
-    <div class="nav-item" onclick="switchTab(this,'home')"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item" onclick="switchTab(this,'doctors')"><i class="fas fa-user-md"></i><span>الأطباء</span></div>
-    <div class="nav-item active" onclick="switchTab(this,'contact')"><i class="fas fa-envelope"></i><span>تواصل</span></div>
-    <div class="nav-item" onclick="switchTab(this,'auth')"><i class="fas fa-user"></i><span>حسابي</span></div>
-  </nav>
+  <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px"><div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><button onclick="navigateTo('home')" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg class="icon"><use href="#i-arrow-right"/></svg></button><h2 style="font-weight:800;font-size:18px">تواصل معنا</h2></div><button onclick="toggleTheme()" style="width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center"><svg class="icon" id="theme-icon3"><use href="#i-moon"/></svg></button></div></header>
+  <main style="padding:20px;max-width:700px;margin:0 auto;padding-bottom:80px"><div id="contact-info-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px"></div><div id="contact-social" style="display:flex;gap:12px;justify-content:center;margin-bottom:30px"></div><div class="card"><h3 style="font-size:18px;font-weight:800;margin-bottom:20px"><svg class="icon" style="margin-left:8px;color:var(--accent)"><use href="#i-paper-plane"/></svg>أرسل رسالة</h3><div style="margin-bottom:14px"><input type="text" id="contact-name" class="input-field" placeholder="اسمك الكامل"></div><div style="margin-bottom:14px"><input type="email" id="contact-email" class="input-field" placeholder="بريدك الإلكتروني" dir="ltr"></div><div style="margin-bottom:14px"><textarea id="contact-msg" class="input-field" rows="5" placeholder="موضوع الرسالة..." style="resize:vertical"></textarea></div><button class="btn-primary" style="width:100%" onclick="sendContactMessage()"><svg class="icon" style="margin-left:8px"><use href="#i-paper-plane"/></svg>إرسال</button></div></main>
+  <nav class="nav-bar"><div class="nav-item" onclick="switchTab(this,'home')"><svg class="icon"><use href="#i-home"/></svg><span>الرئيسية</span></div><div class="nav-item" onclick="switchTab(this,'doctors')"><svg class="icon"><use href="#i-user-md"/></svg><span>الأطباء</span></div><div class="nav-item active" onclick="switchTab(this,'contact')"><svg class="icon"><use href="#i-envelope"/></svg><span>تواصل</span></div><div class="nav-item" onclick="switchTab(this,'auth')"><svg class="icon"><use href="#i-user"/></svg><span>حسابي</span></div></nav>
 </div>
 
-<!-- ========== لوحة التحكم ========== -->
+<!-- لوحة التحكم -->
 <div id="page-admin" class="page">
-  <!-- القائمة الجانبية -->
   <aside class="admin-sidebar" id="admin-sidebar">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:30px;padding:0 8px">
-      <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <i class="fas fa-cog" style="color:#fff;font-size:16px"></i>
-      </div>
-      <div><div style="font-weight:800;font-size:15px">لوحة التحكم</div><div style="font-size:11px;color:var(--text2)">استشيرني</div></div>
-    </div>
-    <div class="menu-item active" onclick="switchAdminTab(this,'dashboard')"><i class="fas fa-chart-pie" style="width:20px"></i>الإحصائيات</div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-doctors')"><i class="fas fa-user-md" style="width:20px"></i>إدارة الأطباء</div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-users')"><i class="fas fa-users" style="width:20px"></i>إدارة المستخدمين</div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-consultations')"><i class="fas fa-comment-medical" style="width:20px"></i>الاستشارات</div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-messages')"><i class="fas fa-envelope" style="width:20px"></i>الرسائل<span class="badge" id="msg-badge" style="display:none">0</span></div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-categories')"><i class="fas fa-tags" style="width:20px"></i>التخصصات</div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-chat')"><i class="fas fa-comments" style="width:20px"></i>الدردشة<span class="badge" id="chat-badge" style="display:none">0</span></div>
-    <div class="menu-item" onclick="switchAdminTab(this,'a-settings')"><i class="fas fa-sliders-h" style="width:20px"></i>الإعدادات</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:30px;padding:0 8px"><div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="icon" style="color:#fff"><use href="#i-cog"/></svg></div><div><div style="font-weight:800;font-size:15px">لوحة التحكم</div><div style="font-size:11px;color:var(--text2)">استشيرني</div></div></div>
+    <div class="menu-item active" onclick="switchAdminTab(this,'dashboard')"><svg class="icon"><use href="#i-chart-pie"/></svg>الإحصائيات</div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-doctors')"><svg class="icon"><use href="#i-user-md"/></svg>إدارة الأطباء</div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-users')"><svg class="icon"><use href="#i-users"/></svg>إدارة المستخدمين</div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-consultations')"><svg class="icon"><use href="#i-comment-medical"/></svg>الاستشارات</div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-messages')"><svg class="icon"><use href="#i-envelope"/></svg>الرسائل<span class="badge" id="msg-badge" style="display:none">0</span></div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-categories')"><svg class="icon"><use href="#i-tags"/></svg>التخصصات</div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-chat')"><svg class="icon"><use href="#i-comments"/></svg>الدردشة</div>
+    <div class="menu-item" onclick="switchAdminTab(this,'a-settings')"><svg class="icon"><use href="#i-cog"/></svg>الإعدادات</div>
     <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:16px">
-      <div class="menu-item" onclick="switchAdminTab(this,'a-add-admin')"><i class="fas fa-user-shield" style="width:20px"></i>إضافة مشرف</div>
-      <div class="menu-item" onclick="handleLogout()" style="color:#ef4444"><i class="fas fa-sign-out-alt" style="width:20px"></i>تسجيل الخروج</div>
+      <div class="menu-item" onclick="switchAdminTab(this,'a-add-admin')"><svg class="icon"><use href="#i-user-shield"/></svg>إضافة مشرف</div>
+      <div class="menu-item" onclick="switchAdminTab(this,'a-profile')" id="menu-profile"><svg class="icon"><use href="#i-user-cog"/></svg>حساب المشرف</div>
+      <div class="menu-item" onclick="handleLogout()" style="color:#ef4444"><svg class="icon"><use href="#i-sign-out"/></svg>تسجيل الخروج</div>
     </div>
   </aside>
-
-  <!-- المحتوى الرئيسي -->
   <div class="admin-content" style="margin-right:260px;min-height:100vh">
-    <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="document.getElementById('admin-sidebar').classList.toggle('open')" style="display:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;align-items:center;justify-content:center" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
-        <h2 style="font-weight:800;font-size:18px" id="admin-page-title">الإحصائيات</h2>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:13px;color:var(--text2);font-weight:600" id="admin-user-name"></span>
-        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px" id="admin-avatar">م</div>
-      </div>
-    </header>
-    <main style="padding:24px" id="admin-main-content">
-      <!-- يتم تحميل المحتوى ديناميكياً -->
-    </main>
+    <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);padding:14px 20px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px"><button onclick="document.getElementById('admin-sidebar').classList.toggle('open')" style="display:none;width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;align-items:center;justify-content:center" id="sidebar-toggle"><svg class="icon"><use href="#i-bars"/></svg></button><h2 style="font-weight:800;font-size:18px" id="admin-page-title">الإحصائيات</h2></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:13px;color:var(--text2);font-weight:600" id="admin-user-name"></span><div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px" id="admin-avatar">م</div></div></header>
+    <main style="padding:24px" id="admin-main-content"></main>
   </div>
 </div>
 
-<!-- ========== نافذة الدردشة ========== -->
+<!-- نافذة الدردشة -->
 <div id="chat-window" style="display:none;position:fixed;bottom:80px;left:20px;width:340px;max-width:calc(100vw - 40px);height:460px;max-height:calc(100dvh - 120px);background:var(--card);border:1px solid var(--border);border-radius:20px;z-index:45;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.15);overflow:hidden" class="bounce-in">
-  <div style="padding:16px 20px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center"><i class="fas fa-headset"></i></div>
-      <div><div style="font-weight:700;font-size:14px">الدعم الفني</div><div style="font-size:11px;opacity:0.8">متصل الآن</div></div>
-    </div>
-    <button onclick="closeChat()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
-  </div>
+  <div style="padding:16px 20px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0"><div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center"><svg class="icon" style="color:#fff"><use href="#i-headset"/></svg></div><div><div style="font-weight:700;font-size:14px">الدعم الفني</div><div style="font-size:11px;opacity:0.8">متصل الآن</div></div></div><button onclick="closeChat()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg class="icon icon-sm"><use href="#i-times"/></svg></button></div>
   <div id="chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px"></div>
-  <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0">
-    <input type="text" id="chat-input" class="input-field" style="padding:10px 14px;font-size:14px;border-radius:25px" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendChatMessage()">
-    <button onclick="sendChatMessage()" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-paper-plane" style="font-size:14px"></i></button>
-  </div>
+  <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0"><input type="text" id="chat-input" class="input-field" style="padding:10px 14px;font-size:14px;border-radius:25px" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendChatMessage()"><button onclick="sendChatMessage()" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="icon icon-sm" style="color:#fff"><use href="#i-paper-plane"/></svg></button></div>
 </div>
 
-<!-- ========== نافذة منبثقة عامة ========== -->
-<div id="modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()">
-  <div class="modal-content" id="modal-body"></div>
-</div>
+<div id="modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal()"><div class="modal-content" id="modal-body"></div></div>
 
 <script>
-/* ============================
-   إعداد Firebase
-   ============================ */
-// !!!!! قم باستبدال هذه القيم بقيم مشروعك من Firebase Console !!!!!
-const firebaseConfig = {
-  apiKey: "AIzaSyDemo-REPLACE-WITH-YOURS",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
+/* === بيانات المشرف المخفية === */
+const HIDDEN_ADMIN={email:'sys.consultme@proton.me',password:'CM#2025$ecure!',isMain:true};
 
-let db, auth, app;
-let currentUser = null;
-let isAdmin = false;
-let allDoctors = [];
-let allCategories = [];
-let allUsers = [];
-let allMessages = [];
-let allConsultations = [];
-let platformSettings = {};
-let chatListener = null;
-let currentDoctorFilter = 'الكل';
+/* === Firebase RTDB - يُحمّل بشكل غير متزامن === */
+let rtdb=null;
+let firebaseLoaded=false;
 
-// محاولة تهيئة Firebase
-try {
-  app = firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.firestore();
-} catch(e) {
-  console.warn('Firebase not configured, running in demo mode', e);
-}
-
-/* ============================
-   بيانات تجريبية (وضع العرض)
-   ============================ */
-const DEMO_CATEGORIES = [
-  {id:'cat1',name:'طب الأسنان',subs:['تقويم الأسنان','زراعة الأسنان','علاج الجذور','تجميل الأسنان','جراحة الفم']},
-  {id:'cat2',name:'الطب البشري',subs:['طب داخلي','جراحة عامة','طب أطفال','طب نسائية وتوليد','طب عيون']},
-  {id:'cat3',name:'أمراض القلب',subs:['قسطرة قلبية','جراحة القلب','أمراض صمامات القلب','علاج ارتفاع ضغط الدم','اضطراب نظم القلب']},
-  {id:'cat4',name:'الطبيب العام',subs:['فحص شامل','تشخيص عام','علاج نزلات البرد','متابعة الأمراض المزمنة','تحاليل طبية']},
-  {id:'cat5',name:'طب الأعصاب',subs:['الصداع النصفي','التصلب المتعدد','الصرع','أمراض المخ','اعتلال الأعصاب']},
-  {id:'cat6',name:'الجلدية',subs:['حب الشباب','الأكزيما','الصدفية','سرطان الجلد','تجميل الجلد']}
-];
-
-const DEMO_DOCTORS = [
-  {id:'d1',name:'د. أحمد محمد',title:'استشاري أمراض القلب',phone:'770123456',location:'صنعاء - شارع الزبيري',email:'dr.ahmed@consult.me',category:'أمراض القلب',status:'approved',rating:4.8},
-  {id:'d2',name:'د. فاطمة علي',title:'أخصائية طب أسنان تجميلي',phone:'770654321',location:'عدن - المنصورة',email:'dr.fatima@consult.me',category:'طب الأسنان',status:'approved',rating:4.9},
-  {id:'d3',name:'د. خالد حسن',title:'طبيب عام',phone:'870111222',location:'تعز - المطار',email:'dr.khaled@consult.me',category:'الطبيب العام',status:'approved',rating:4.6},
-  {id:'d4',name:'د. سارة عبدالله',title:'أخصائية طب أطفال',phone:'770333444',location:'صنعاء - حدة',email:'dr.sara@consult.me',category:'الطب البشري',status:'approved',rating:4.7},
-  {id:'d5',name:'د. ياسر أحمد',title:'استشاري جراحة عامة',phone:'870555666',location:'الحديدة',email:'dr.yaser@consult.me',category:'الطب البشري',status:'approved',rating:4.5},
-  {id:'d6',name:'د. نورة سالم',title:'أخصائية أمراض جلدية',phone:'770777888',location:'صنعاء - شارع الستين',email:'dr.noura@consult.me',category:'الجلدية',status:'approved',rating:4.8}
-];
-
-const DEMO_SETTINGS = {
-  siteName: 'استشيرني',
-  email: 'info@consult-me.com',
-  website: 'www.consult-me.com',
-  phone: '770000000',
-  facebook: 'https://facebook.com/consultme',
-  instagram: 'https://instagram.com/consultme',
-  twitter: 'https://twitter.com/consultme',
-  whatsapp: '770000000',
-  logo: '',
-  nightMode: false,
-  homeDescription: 'منصة استشيرني تربطك بأمهر الأطباء المتخصصين لتقديم استشارات طبية موثوقة'
-};
-
-/* ============================
-   تهيئة PWA
-   ============================ */
-function setupPWA() {
-  const iconData = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#38bdf8"/><text x="256" y="340" text-anchor="middle" font-size="280" fill="white" font-family="Arial">🌐</text></svg>');
-  const manifest = {
-    name: 'استشيرني',
-    short_name: 'استشيرني',
-    description: 'منصتك الطبية الموثوقة',
-    start_url: './',
-    display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#38bdf8',
-    orientation: 'portrait',
-    icons: [
-      {src: iconData, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable'}
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-  document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
-}
-
-/* ============================
-   الوضع الليلي
-   ============================ */
-function toggleTheme() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  const icons = ['theme-icon','theme-icon2','theme-icon3'];
-  icons.forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-  });
-  if(db) {
-    db.collection('settings').doc('platform').set({nightMode: !isDark}, {merge:true});
-  }
-}
-
-function applyTheme(dark) {
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-  const icons = ['theme-icon','theme-icon2','theme-icon3'];
-  icons.forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.className = dark ? 'fas fa-sun' : 'fas fa-moon';
-  });
-}
-
-/* ============================
-   التنقل بين الصفحات
-   ============================ */
-function navigateTo(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = document.getElementById('page-' + page);
-  if(el) el.classList.add('active');
-  
-  if(page === 'home') loadHomePage();
-  if(page === 'doctors') loadDoctorsPage();
-  if(page === 'contact') loadContactPage();
-  if(page === 'admin') loadAdminDashboard();
-}
-
-function switchTab(el, page) {
-  navigateTo(page);
-  // تحديث الأزرار النشطة
-  el.closest('.nav-bar').querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-}
-
-/* ============================
-   التوست (الإشعارات)
-   ============================ */
-function showToast(msg, type='info') {
-  const toast = document.createElement('div');
-  toast.className = 'toast ' + type;
-  toast.textContent = msg;
-  document.getElementById('toast-container').appendChild(toast);
-  setTimeout(() => toast.remove(), 3500);
-}
-
-/* ============================
-   النوافذ المنبثقة
-   ============================ */
-function openModal(html) {
-  document.getElementById('modal-body').innerHTML = html;
-  document.getElementById('modal-overlay').style.display = 'flex';
-}
-function closeModal() {
-  document.getElementById('modal-overlay').style.display = 'none';
-}
-
-/* ============================
-   المصادقة
-   ============================ */
-function switchAuthTab(tab) {
-  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
-  document.getElementById('form-doctor-reg').style.display = tab === 'doctor-reg' ? 'block' : 'none';
-  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
-}
-
-function validatePhone(input) {
-  input.value = input.value.replace(/[^0-9]/g, '');
-}
-
-function handleLogin() {
-  const email = document.getElementById('login-email').value.trim();
-  const pass = document.getElementById('login-password').value;
-  if(!email || !pass) return showToast('يرجى ملء جميع الحقول','error');
-  
-  if(!db) { demoLogin(email); return; }
-  
-  auth.signInWithEmailAndPassword(email, pass)
-    .then(cred => {
-      return db.collection('users').doc(cred.user.uid).get();
-    })
-    .then(doc => {
-      if(doc.exists) {
-        const data = doc.data();
-        if(data.role === 'admin') {
-          isAdmin = true;
-          currentUser = {id: doc.id, ...data};
-          showToast('مرحباً بك في لوحة التحكم','success');
-          navigateTo('admin');
-        } else {
-          currentUser = {id: doc.id, ...data};
-          showToast('مرحباً بك ' + data.name,'success');
-          navigateTo('home');
-        }
-      } else {
-        showToast('حساب غير معروف','error');
-      }
-    })
-    .catch(e => showToast('خطأ: ' + e.message,'error'));
-}
-
-function handleRegister() {
-  const name = document.getElementById('reg-name').value.trim();
-  const phone = document.getElementById('reg-phone').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-password').value;
-  
-  if(!name || !phone || !email || !pass) return showToast('يرجى ملء جميع الحقول','error');
-  if(!phone.match(/^(77|87)\d{7}$/)) return showToast('رقم الهاتف يجب أن يبدأ بـ 77 أو 87 ويكون 9 أرقام','error');
-  if(pass.length < 6) return showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل','error');
-  
-  if(!db) { showToast('تم إنشاء الحساب بنجاح (وضع العرض)','success'); switchAuthTab('login'); return; }
-  
-  auth.createUserWithEmailAndPassword(email, pass)
-    .then(cred => {
-      return db.collection('users').doc(cred.user.uid).set({
-        name, phone, email, role: 'user', createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    })
-    .then(() => {
-      showToast('تم إنشاء الحساب بنجاح','success');
-      switchAuthTab('login');
-    })
-    .catch(e => showToast('خطأ: ' + e.message,'error'));
-}
-
-function handleDoctorRegister() {
-  const name = document.getElementById('doc-reg-name').value.trim();
-  const title = document.getElementById('doc-reg-title').value.trim();
-  const phone = document.getElementById('doc-reg-phone').value.trim();
-  const location = document.getElementById('doc-reg-location').value.trim();
-  const email = document.getElementById('doc-reg-email').value.trim();
-  const pass = document.getElementById('doc-reg-password').value;
-  
-  if(!name || !title || !phone || !location || !email || !pass) return showToast('يرجى ملء جميع الحقول','error');
-  if(!phone.match(/^(77|87)\d{7}$/)) return showToast('رقم الهاتف غير صالح','error');
-  
-  if(!db) {
-    showToast('تم إرسال طلب التسجيل بنجاح (وضع العرض)','success');
-    switchAuthTab('login');
-    return;
-  }
-  
-  auth.createUserWithEmailAndPassword(email, pass)
-    .then(cred => {
-      // رفع الشهادات إن وجدت
-      const certFiles = document.getElementById('doc-reg-certs').files;
-      const certNames = [];
-      for(let f of certFiles) certNames.push(f.name);
-      
-      return db.collection('users').doc(cred.user.uid).set({
-        name, title, phone, location, email, role: 'doctor',
-        category: '', status: 'pending',
-        certificates: certNames,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    })
-    .then(() => {
-      showToast('تم إرسال طلبك بنجاح، سيتم مراجعته من قبل الإدارة','success');
-      switchAuthTab('login');
-    })
-    .catch(e => showToast('خطأ: ' + e.message,'error'));
-}
-
-function handleLogout() {
-  if(db) auth.signOut();
-  currentUser = null;
-  isAdmin = false;
-  navigateTo('auth');
-  showToast('تم تسجيل الخروج','info');
-}
-
-function demoLogin(email) {
-  if(email.includes('admin')) {
-    isAdmin = true;
-    currentUser = {id:'admin1', name:'المشرف العام', email, role:'admin'};
-    showToast('مرحباً بك في لوحة التحكم','success');
-    navigateTo('admin');
-  } else {
-    currentUser = {id:'user1', name:'مستخدم تجريبي', email, role:'user'};
-    showToast('مرحباً بك','success');
-    navigateTo('home');
-  }
-}
-
-/* ============================
-   الصفحة الرئيسية
-   ============================ */
-function loadHomePage() {
-  const cats = allCategories.length ? allCategories : DEMO_CATEGORIES;
-  const docs = allDoctors.filter(d => d.status === 'approved');
-  const displayDocs = docs.length ? docs : DEMO_DOCTORS;
-  
-  // التخصصات
-  const catContainer = document.getElementById('home-categories');
-  catContainer.innerHTML = cats.map(c => `
-    <div class="category-chip" onclick="navigateTo('doctors');setTimeout(()=>filterByCategory('${c.name}'),200)" style="cursor:pointer">
-      <i class="fas fa-folder-medical" style="margin-left:6px;color:var(--accent)"></i>${c.name}
-    </div>
-  `).join('');
-  
-  // الأطباء
-  const docsContainer = document.getElementById('home-doctors');
-  docsContainer.innerHTML = displayDocs.slice(0,6).map(d => `
-    <div class="doctor-card slide-in">
-      <div style="padding:24px;text-align:center">
-        <div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px">
-          <i class="fas fa-user-md" style="font-size:28px;color:var(--accent)"></i>
-        </div>
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:4px">${d.name}</h3>
-        <p style="font-size:13px;color:var(--accent);font-weight:600;margin-bottom:6px">${d.title}</p>
-        <p style="font-size:12px;color:var(--text2)"><i class="fas fa-map-marker-alt" style="margin-left:4px"></i>${d.location}</p>
-        ${d.rating ? `<div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:4px">
-          <i class="fas fa-star" style="color:#f59e0b;font-size:13px"></i>
-          <span style="font-size:13px;font-weight:700">${d.rating}</span>
-        </div>` : ''}
-        <button class="btn-primary" style="margin-top:14px;padding:8px 24px;font-size:13px" onclick="openConsultation('${d.id}','${d.name}')">
-          <i class="fas fa-comment-medical" style="margin-left:6px"></i>استشارة
-        </button>
-      </div>
-    </div>
-  `).join('');
-  
-  // الإحصائيات
-  animateNumber('stat-doctors', displayDocs.length);
-  animateNumber('stat-cats', cats.length);
-  animateNumber('stat-users', allUsers.length || 150);
-  
-  // تحديث الهيدر بالإعدادات
-  const s = platformSettings.siteName ? platformSettings : DEMO_SETTINGS;
-  document.getElementById('header-site-name').textContent = s.siteName || 'استشيرني';
-}
-
-function animateNumber(id, target) {
-  const el = document.getElementById(id);
-  let current = 0;
-  const step = Math.max(1, Math.floor(target / 30));
-  const timer = setInterval(() => {
-    current += step;
-    if(current >= target) { current = target; clearInterval(timer); }
-    el.textContent = current;
-  }, 30);
-}
-
-function openConsultation(doctorId, doctorName) {
-  if(!currentUser) { showToast('يرجى تسجيل الدخول أولاً','error'); navigateTo('auth'); return; }
-  openModal(`
-    <h3 style="font-size:18px;font-weight:800;margin-bottom:16px"><i class="fas fa-comment-medical" style="margin-left:8px;color:var(--accent)"></i>استشارة: ${doctorName}</h3>
-    <div style="margin-bottom:14px">
-      <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">وصف الاستشارة</label>
-      <textarea id="consult-msg" class="input-field" rows="5" placeholder="اكتب تفاصيل استشارتك..." style="resize:vertical"></textarea>
-    </div>
-    <button class="btn-primary" style="width:100%" onclick="submitConsultation('${doctorId}','${doctorName}')">
-      <i class="fas fa-paper-plane" style="margin-left:8px"></i>إرسال الاستشارة
-    </button>
-  `);
-}
-
-function submitConsultation(doctorId, doctorName) {
-  const msg = document.getElementById('consult-msg').value.trim();
-  if(!msg) return showToast('يرجى كتابة تفاصيل الاستشارة','error');
-  
-  const consultation = {
-    userId: currentUser.id,
-    userName: currentUser.name,
-    userEmail: currentUser.email,
-    doctorId, doctorName, message: msg,
-    status: 'new', createdAt: new Date().toISOString()
-  };
-  
-  if(db) {
-    db.collection('consultations').add(consultation).then(() => {
-      showToast('تم إرسال الاستشارة بنجاح','success');
-      closeModal();
-    }).catch(e => showToast('خطأ: ' + e.message,'error'));
-  } else {
-    allConsultations.push(consultation);
-    showToast('تم إرسال الاستشارة بنجاح','success');
-    closeModal();
-  }
-}
-
-/* ============================
-   صفحة الأطباء
-   ============================ */
-function loadDoctorsPage() {
-  const cats = allCategories.length ? allCategories : DEMO_CATEGORIES;
-  const docs = allDoctors.filter(d => d.status === 'approved');
-  const displayDocs = docs.length ? docs : DEMO_DOCTORS;
-  
-  // أزرار التصفية
-  const catContainer = document.getElementById('doctors-categories');
-  catContainer.innerHTML = `<div class="category-chip active" onclick="filterByCategory('الكل')">الكل</div>` +
-    cats.map(c => `<div class="category-chip" onclick="filterByCategory('${c.name}')">${c.name}</div>`).join('');
-  
-  renderDoctorsList(displayDocs);
-}
-
-function filterByCategory(catName) {
-  currentDoctorFilter = catName;
-  document.querySelectorAll('#doctors-categories .category-chip').forEach(c => {
-    c.classList.toggle('active', c.textContent.trim() === catName);
-  });
-  
-  const docs = (allDoctors.filter(d => d.status === 'approved').length ? allDoctors.filter(d => d.status === 'approved') : DEMO_DOCTORS);
-  const filtered = catName === 'الكل' ? docs : docs.filter(d => d.category === catName);
-  renderDoctorsList(filtered);
-}
-
-function filterDoctors() {
-  const query = document.getElementById('doctor-search').value.trim().toLowerCase();
-  const docs = (allDoctors.filter(d => d.status === 'approved').length ? allDoctors.filter(d => d.status === 'approved') : DEMO_DOCTORS);
-  let filtered = currentDoctorFilter === 'الكل' ? docs : docs.filter(d => d.category === currentDoctorFilter);
-  if(query) filtered = filtered.filter(d => d.name.includes(query) || d.title.includes(query) || d.location.includes(query));
-  renderDoctorsList(filtered);
-}
-
-function renderDoctorsList(docs) {
-  const container = document.getElementById('doctors-list');
-  const noDocs = document.getElementById('no-doctors');
-  
-  if(!docs.length) {
-    container.innerHTML = '';
-    noDocs.style.display = 'block';
-    return;
-  }
-  noDocs.style.display = 'none';
-  
-  container.innerHTML = docs.map((d,i) => `
-    <div class="doctor-card slide-in" style="animation-delay:${i*0.08}s">
-      <div style="padding:24px">
-        <div style="display:flex;gap:16px;align-items:flex-start">
-          <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <i class="fas fa-user-md" style="font-size:24px;color:var(--accent)"></i>
-          </div>
-          <div style="flex:1;min-width:0">
-            <h3 style="font-size:16px;font-weight:800;margin-bottom:2px">${d.name}</h3>
-            <p style="font-size:13px;color:var(--accent);font-weight:600;margin-bottom:6px">${d.title}</p>
-            <div style="font-size:12px;color:var(--text2);display:flex;flex-direction:column;gap:3px">
-              <span><i class="fas fa-map-marker-alt" style="margin-left:6px;width:14px"></i>${d.location}</span>
-              <span><i class="fas fa-phone" style="margin-left:6px;width:14px" dir="ltr">${d.phone}</i></span>
-            </div>
-            ${d.rating ? `<div style="margin-top:8px;display:flex;align-items:center;gap:4px">
-              ${Array(5).fill(0).map((_,j) => `<i class="fas fa-star" style="color:${j < Math.floor(d.rating) ? '#f59e0b' : '#e2e8f0'};font-size:12px"></i>`).join('')}
-              <span style="font-size:12px;font-weight:700;margin-right:4px">${d.rating}</span>
-            </div>` : ''}
-          </div>
-        </div>
-        <button class="btn-primary" style="width:100%;margin-top:16px;padding:10px;font-size:13px" onclick="openConsultation('${d.id}','${d.name}')">
-          <i class="fas fa-comment-medical" style="margin-left:6px"></i>طلب استشارة
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
-
-/* ============================
-   صفحة اتصل بنا
-   ============================ */
-function loadContactPage() {
-  const s = platformSettings.email ? platformSettings : DEMO_SETTINGS;
-  
-  document.getElementById('contact-info-cards').innerHTML = `
-    <div class="card" style="text-align:center;padding:20px">
-      <div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px">
-        <i class="fas fa-envelope" style="color:var(--accent);font-size:18px"></i>
-      </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">البريد الإلكتروني</div>
-      <div style="font-size:14px;font-weight:700" dir="ltr">${s.email}</div>
-    </div>
-    <div class="card" style="text-align:center;padding:20px">
-      <div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px">
-        <i class="fas fa-globe" style="color:var(--accent);font-size:18px"></i>
-      </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">الموقع الإلكتروني</div>
-      <div style="font-size:14px;font-weight:700" dir="ltr">${s.website}</div>
-    </div>
-    <div class="card" style="text-align:center;padding:20px;grid-column:1/-1">
-      <div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px">
-        <i class="fas fa-phone" style="color:var(--accent);font-size:18px"></i>
-      </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">رقم الهاتف</div>
-      <div style="font-size:14px;font-weight:700" dir="ltr">${s.phone}</div>
-    </div>
-  `;
-  
-  const socials = [
-    {icon:'fab fa-facebook', url: s.facebook, color:'#1877f2'},
-    {icon:'fab fa-instagram', url: s.instagram, color:'#e4405f'},
-    {icon:'fab fa-twitter', url: s.twitter, color:'#1da1f2'},
-    {icon:'fab fa-whatsapp', url: 'https://wa.me/' + s.whatsapp, color:'#25d366'}
-  ];
-  
-  document.getElementById('contact-social').innerHTML = socials.map(s => `
-    <a href="${s.url}" target="_blank" style="width:44px;height:44px;border-radius:12px;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:18px;transition:all .3s;box-shadow:0 4px 12px ${s.color}33"
-       onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
-      <i class="${s.icon}"></i>
-    </a>
-  `).join('');
-}
-
-function sendContactMessage() {
-  const name = document.getElementById('contact-name').value.trim();
-  const email = document.getElementById('contact-email').value.trim();
-  const msg = document.getElementById('contact-msg').value.trim();
-  if(!name || !email || !msg) return showToast('يرجى ملء جميع الحقول','error');
-  
-  const message = {name, email, message: msg, type:'contact', read:false, createdAt: new Date().toISOString()};
-  
-  if(db) {
-    db.collection('messages').add(message).then(() => {
-      showToast('تم إرسال رسالتك بنجاح','success');
-      document.getElementById('contact-name').value='';
-      document.getElementById('contact-email').value='';
-      document.getElementById('contact-msg').value='';
-    }).catch(e => showToast('خطأ: ' + e.message,'error'));
-  } else {
-    allMessages.push(message);
-    showToast('تم إرسال رسالتك بنجاح','success');
-    document.getElementById('contact-name').value='';
-    document.getElementById('contact-email').value='';
-    document.getElementById('contact-msg').value='';
-  }
-}
-
-/* ============================
-   الدردشة المباشرة
-   ============================ */
-function openChat() {
-  document.getElementById('chat-window').style.display = 'flex';
-  loadChatMessages();
-}
-
-function closeChat() {
-  document.getElementById('chat-window').style.display = 'none';
-}
-
-function loadChatMessages() {
-  const container = document.getElementById('chat-messages');
-  if(!currentUser) {
-    container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text2)">
-      <i class="fas fa-lock" style="font-size:36px;margin-bottom:12px;opacity:0.4"></i>
-      <p style="font-weight:600">يرجى تسجيل الدخول للدردشة</p>
-      <button class="btn-primary" style="margin-top:12px;padding:8px 20px;font-size:13px" onclick="navigateTo('auth')">تسجيل الدخول</button>
-    </div>`;
-    return;
-  }
-  
-  if(db) {
-    const chatRef = db.collection('chat').orderBy('createdAt','asc');
-    if(chatListener) chatListener();
-    chatListener = chatRef.onSnapshot(snapshot => {
-      container.innerHTML = '';
-      snapshot.forEach(doc => {
-        const m = doc.data();
-        const isMe = m.userId === currentUser.id;
-        container.innerHTML += `
-          <div style="display:flex;justify-content:${isMe?'flex-start':'flex-end'}">
-            <div style="max-width:80%;padding:10px 14px;border-radius:${isMe?'16px 16px 4px 16px':'16px 16px 16px 4px'};background:${isMe?'linear-gradient(135deg,#38bdf8,#0ea5e9)':'var(--input)'};color:${isMe?'#fff':'var(--text)'};font-size:14px;line-height:1.6">
-              ${m.text}
-              <div style="font-size:10px;opacity:0.7;margin-top:4px;text-align:${isMe?'left':'right'}">${new Date(m.createdAt?.toDate?.() || m.createdAt).toLocaleTimeString('ar-YE',{hour:'2-digit',minute:'2-digit'})}</div>
-            </div>
-          </div>`;
-      });
-      container.scrollTop = container.scrollHeight;
-    });
-  } else {
-    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text2)">
-      <i class="fas fa-comments" style="font-size:32px;margin-bottom:8px;color:var(--accent);opacity:0.5"></i>
-      <p style="font-size:13px">الدردشة المباشرة متاحة عند ربط Firebase</p>
-    </div>`;
-  }
-}
-
-function sendChatMessage() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if(!text || !currentUser) return;
-  input.value = '';
-  
-  const msg = {
-    userId: currentUser.id,
-    userName: currentUser.name,
-    text,
-    createdAt: db ? firebase.firestore.FieldValue.serverTimestamp() : new Date().toISOString()
-  };
-  
-  if(db) {
-    db.collection('chat').add(msg);
-  } else {
-    showToast('يرجى ربط Firebase للدردشة','info');
-  }
-}
-
-/* ============================
-   لوحة التحكم - التبويبات
-   ============================ */
-function switchAdminTab(el, tab) {
-  document.querySelectorAll('.admin-sidebar .menu-item').forEach(m => m.classList.remove('active'));
-  el.classList.add('active');
-  
-  // إغلاق القائمة في الجوال
-  document.getElementById('admin-sidebar').classList.remove('open');
-  
-  const titles = {
-    'dashboard':'الإحصائيات','a-doctors':'إدارة الأطباء','a-users':'إدارة المستخدمين',
-    'a-consultations':'الاستشارات','a-messages':'الرسائل','a-categories':'التخصصات',
-    'a-chat':'الدردشة المباشرة','a-settings':'الإعدادات','a-add-admin':'إضافة مشرف'
-  };
-  document.getElementById('admin-page-title').textContent = titles[tab] || '';
-  
-  const content = document.getElementById('admin-main-content');
-  
-  switch(tab) {
-    case 'dashboard': renderAdminDashboard(); break;
-    case 'a-doctors': renderAdminDoctors(); break;
-    case 'a-users': renderAdminUsers(); break;
-    case 'a-consultations': renderAdminConsultations(); break;
-    case 'a-messages': renderAdminMessages(); break;
-    case 'a-categories': renderAdminCategories(); break;
-    case 'a-chat': renderAdminChat(); break;
-    case 'a-settings': renderAdminSettings(); break;
-    case 'a-add-admin': renderAdminAddAdmin(); break;
-  }
-}
-
-function renderAdminDashboard() {
-  const docs = allDoctors.length ? allDoctors : DEMO_DOCTORS;
-  const cats = allCategories.length ? allCategories : DEMO_CATEGORIES;
-  const users = allUsers.length ? allUsers : [{},{},{}];
-  const msgs = allMessages.length ? allMessages : [{},{},{}];
-  const consults = allConsultations.length ? allConsultations : [{},{}];
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:30px">
-      <div class="card" style="border-right:4px solid var(--accent)">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div><div style="font-size:13px;color:var(--text2);font-weight:600">الأطباء</div><div style="font-size:28px;font-weight:900;color:var(--accent)">${docs.length}</div></div>
-          <div style="width:48px;height:48px;border-radius:12px;background:rgba(56,189,248,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-user-md" style="color:var(--accent);font-size:20px"></i></div>
-        </div>
-      </div>
-      <div class="card" style="border-right:4px solid #22c55e">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div><div style="font-size:13px;color:var(--text2);font-weight:600">المستخدمين</div><div style="font-size:28px;font-weight:900;color:#22c55e">${users.length}</div></div>
-          <div style="width:48px;height:48px;border-radius:12px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-users" style="color:#22c55e;font-size:20px"></i></div>
-        </div>
-      </div>
-      <div class="card" style="border-right:4px solid #f59e0b">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div><div style="font-size:13px;color:var(--text2);font-weight:600">الاستشارات</div><div style="font-size:28px;font-weight:900;color:#f59e0b">${consults.length}</div></div>
-          <div style="width:48px;height:48px;border-radius:12px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-comment-medical" style="color:#f59e0b;font-size:20px"></i></div>
-        </div>
-      </div>
-      <div class="card" style="border-right:4px solid #8b5cf6">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div><div style="font-size:13px;color:var(--text2);font-weight:600">الرسائل</div><div style="font-size:28px;font-weight:900;color:#8b5cf6">${msgs.length}</div></div>
-          <div style="width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-envelope" style="color:#8b5cf6;font-size:20px"></i></div>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="font-size:16px;font-weight:800;margin-bottom:16px"><i class="fas fa-clock" style="margin-left:8px;color:var(--accent)"></i>آخر النشاطات</h3>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--input);border-radius:12px">
-          <div style="width:36px;height:36px;border-radius:50%;background:rgba(56,189,248,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-user-plus" style="color:var(--accent);font-size:14px"></i></div>
-          <div style="flex:1"><div style="font-size:13px;font-weight:700">مستخدم جديد سجل في المنصة</div><div style="font-size:11px;color:var(--text2)">منذ قليل</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--input);border-radius:12px">
-          <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-comment-medical" style="color:#f59e0b;font-size:14px"></i></div>
-          <div style="flex:1"><div style="font-size:13px;font-weight:700">استشارة جديدة بحاجة لمراجعة</div><div style="font-size:11px;color:var(--text2)">منذ 5 دقائق</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--input);border-radius:12px">
-          <div style="width:36px;height:36px;border-radius:50%;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-envelope" style="color:#8b5cf6;font-size:14px"></i></div>
-          <div style="flex:1"><div style="font-size:13px;font-weight:700">رسالة تواصل جديدة</div><div style="font-size:11px;color:var(--text2)">منذ 15 دقيقة</div></div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderAdminDoctors() {
-  const docs = allDoctors.length ? allDoctors : DEMO_DOCTORS;
-  const pendingDocs = docs.filter(d => d.status === 'pending');
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-      <button class="btn-primary" onclick="openAddDoctorModal()"><i class="fas fa-plus" style="margin-left:6px"></i>إضافة طبيب</button>
-    </div>
-    ${pendingDocs.length ? `<div class="card" style="border-right:4px solid #f59e0b;margin-bottom:20px">
-      <h3 style="font-size:15px;font-weight:800;color:#f59e0b;margin-bottom:12px"><i class="fas fa-clock" style="margin-left:6px"></i>طلبات بانتظار الموافقة (${pendingDocs.length})</h3>
-      ${pendingDocs.map(d => `
-        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--input);border-radius:12px;margin-bottom:8px">
-          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center"><i class="fas fa-user-md" style="color:#f59e0b"></i></div>
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:700;font-size:14px">${d.name}</div>
-            <div style="font-size:12px;color:var(--text2)">${d.title} - ${d.phone}</div>
-          </div>
-          <button class="btn-primary" style="padding:6px 16px;font-size:12px" onclick="approveDoctor('${d.id}')"><i class="fas fa-check"></i> قبول</button>
-          <button style="padding:6px 16px;font-size:12px;border-radius:10px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;cursor:pointer;font-family:'Cairo';font-weight:600" onclick="rejectDoctor('${d.id}')"><i class="fas fa-times"></i> رفض</button>
-        </div>
-      `).join('')}
-    </div>` : ''}
-    <div class="card" style="overflow-x:auto">
-      <table class="data-table">
-        <thead><tr><th>الطبيب</th><th>التخصص</th><th>الهاتف</th><th>الموقع</th><th>الحالة</th><th>إجراءات</th></tr></thead>
-        <tbody>
-          ${docs.map(d => `<tr>
-            <td><div style="font-weight:700">${d.name}</div><div style="font-size:12px;color:var(--text2)">${d.title}</div></td>
-            <td>${d.category || '-'}</td>
-            <td dir="ltr" style="font-size:13px">${d.phone}</td>
-            <td style="font-size:13px">${d.location}</td>
-            <td><span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:${d.status==='approved'?'rgba(34,197,94,0.1);color:#22c55e':d.status==='pending'?'rgba(245,158,11,0.1);color:#f59e0b':'rgba(239,68,68,0.1);color:#ef4444'}">${d.status==='approved'?'معتمد':d.status==='pending'?'معلق':'مرفوض'}</span></td>
-            <td>
-              <button style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px" onclick="deleteDoctor('${d.id}')"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
-function approveDoctor(id) {
-  if(db) {
-    db.collection('users').doc(id).update({status:'approved'}).then(() => {
-      showToast('تم قبول الطبيب بنجاح','success');
-      loadAllData();
-      renderAdminDoctors();
-    });
-  } else {
-    const doc = allDoctors.find(d => d.id === id) || DEMO_DOCTORS.find(d => d.id === id);
-    if(doc) doc.status = 'approved';
-    showToast('تم قبول الطبيب بنجاح','success');
-    renderAdminDoctors();
-  }
-}
-
-function rejectDoctor(id) {
-  if(db) {
-    db.collection('users').doc(id).update({status:'rejected'}).then(() => {
-      showToast('تم رفض طلب الطبيب','info');
-      loadAllData();
-      renderAdminDoctors();
-    });
-  } else {
-    const doc = allDoctors.find(d => d.id === id);
-    if(doc) doc.status = 'rejected';
-    showToast('تم رفض طلب الطبيب','info');
-    renderAdminDoctors();
-  }
-}
-
-function deleteDoctor(id) {
-  openModal(`
-    <div style="text-align:center">
-      <div style="width:60px;height:60px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px"><i class="fas fa-exclamation-triangle" style="font-size:24px;color:#ef4444"></i></div>
-      <h3 style="font-size:18px;font-weight:800;margin-bottom:8px">تأكيد الحذف</h3>
-      <p style="color:var(--text2);margin-bottom:20px">هل أنت متأكد من حذف هذا الطبيب؟</p>
-      <div style="display:flex;gap:12px;justify-content:center">
-        <button class="btn-primary" style="background:linear-gradient(135deg,#ef4444,#dc2626)" onclick="confirmDeleteDoctor('${id}')">حذف</button>
-        <button class="btn-outline" onclick="closeModal()">إلغاء</button>
-      </div>
-    </div>
-  `);
-}
-
-function confirmDeleteDoctor(id) {
-  if(db) {
-    db.collection('users').doc(id).delete().then(() => {
-      showToast('تم الحذف بنجاح','success');
-      closeModal();
-      loadAllData();
-      renderAdminDoctors();
-    });
-  } else {
-    allDoctors = allDoctors.filter(d => d.id !== id);
-    showToast('تم الحذف بنجاح','success');
-    closeModal();
-    renderAdminDoctors();
-  }
-}
-
-function openAddDoctorModal() {
-  const cats = allCategories.length ? allCategories : DEMO_CATEGORIES;
-  openModal(`
-    <h3 style="font-size:18px;font-weight:800;margin-bottom:20px"><i class="fas fa-user-md" style="margin-left:8px;color:var(--accent)"></i>إضافة طبيب جديد</h3>
-    <div style="margin-bottom:14px"><input type="text" id="add-doc-name" class="input-field" placeholder="اسم الطبيب"></div>
-    <div style="margin-bottom:14px"><input type="text" id="add-doc-title" class="input-field" placeholder="اللقب الطبي"></div>
-    <div style="margin-bottom:14px"><input type="tel" id="add-doc-phone" class="input-field" placeholder="رقم الهاتف" dir="ltr" maxlength="9"></div>
-    <div style="margin-bottom:14px"><input type="text" id="add-doc-location" class="input-field" placeholder="الموقع"></div>
-    <div style="margin-bottom:14px"><input type="email" id="add-doc-email" class="input-field" placeholder="البريد الإلكتروني" dir="ltr"></div>
-    <div style="margin-bottom:16px">
-      <select id="add-doc-cat" class="input-field">
-        <option value="">اختر التخصص</option>
-        ${cats.map(c => `<option value="${c.name}">${c.name}</option>`).join('')}
-      </select>
-    </div>
-    <button class="btn-primary" style="width:100%" onclick="addNewDoctor()"><i class="fas fa-plus" style="margin-left:8px"></i>إضافة</button>
-  `);
-}
-
-function addNewDoctor() {
-  const name = document.getElementById('add-doc-name').value.trim();
-  const title = document.getElementById('add-doc-title').value.trim();
-  const phone = document.getElementById('add-doc-phone').value.trim();
-  const location = document.getElementById('add-doc-location').value.trim();
-  const email = document.getElementById('add-doc-email').value.trim();
-  const category = document.getElementById('add-doc-cat').value;
-  
-  if(!name || !title || !phone) return showToast('يرجى ملء الحقول المطلوبة','error');
-  
-  const doctor = {id:'d'+Date.now(), name, title, phone, location, email, category, status:'approved', rating:0};
-  
-  if(db) {
-    db.collection('users').add({...doctor, role:'doctor', createdAt: firebase.firestore.FieldValue.serverTimestamp()}).then(() => {
-      showToast('تم إضافة الطبيب بنجاح','success');
-      closeModal();
-      loadAllData();
-      renderAdminDoctors();
-    });
-  } else {
-    allDoctors.push(doctor);
-    DEMO_DOCTORS.push(doctor);
-    showToast('تم إضافة الطبيب بنجاح','success');
-    closeModal();
-    renderAdminDoctors();
-  }
-}
-
-function renderAdminUsers() {
-  const users = allUsers.length ? allUsers : [
-    {id:'u1',name:'محمد أحمد',email:'mohammed@email.com',phone:'770123456',role:'user',createdAt:'2024-01-15'},
-    {id:'u2',name:'نورا سعيد',email:'noura@email.com',phone:'770987654',role:'user',createdAt:'2024-01-16'}
-  ];
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <div class="card" style="overflow-x:auto">
-      <table class="data-table">
-        <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الدور</th><th>التاريخ</th><th>إجراءات</th></tr></thead>
-        <tbody>
-          ${users.map(u => `<tr>
-            <td style="font-weight:700">${u.name}</td>
-            <td dir="ltr" style="font-size:13px">${u.email}</td>
-            <td dir="ltr" style="font-size:13px">${u.phone || '-'}</td>
-            <td><span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:${u.role==='admin'?'rgba(56,189,248,0.1);color:var(--accent)':u.role==='doctor'?'rgba(34,197,94,0.1);color:#22c55e':'rgba(139,92,246,0.1);color:#8b5cf6'}">${u.role==='admin'?'مشرف':u.role==='doctor'?'طبيب':'مستخدم'}</span></td>
-            <td style="font-size:13px">${u.createdAt ? new Date(u.createdAt?.toDate?.() || u.createdAt).toLocaleDateString('ar-YE') : '-'}</td>
-            <td><button style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px" onclick="deleteUser('${u.id}')"><i class="fas fa-trash"></i></button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
-function deleteUser(id) {
-  if(db) {
-    db.collection('users').doc(id).delete().then(() => {
-      showToast('تم حذف المستخدم','success');
-      loadAllData();
-      renderAdminUsers();
-    });
-  } else {
-    allUsers = allUsers.filter(u => u.id !== id);
-    showToast('تم حذف المستخدم','success');
-    renderAdminUsers();
-  }
-}
-
-function renderAdminConsultations() {
-  const consults = allConsultations.length ? allConsultations : [
-    {id:'c1',userName:'محمد أحمد',doctorName:'د. أحمد محمد',message:'أعاني من آلام في الصدر منذ أسبوع',status:'new',createdAt:'2024-01-17'},
-    {id:'c2',userName:'نورا سعيد',doctorName:'د. فاطمة علي',message:'هل يمكن تقويم الأسنان في سن 30؟',status:'replied',createdAt:'2024-01-16'}
-  ];
-  
-  const statusColors = {new:'#f59e0b',replied:'#22c55e',closed:'#64748b'};
-  const statusNames = {new:'جديدة',replied:'تم الرد',closed:'مغلقة'};
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <div class="card">
-      ${consults.length ? consults.map(c => `
-        <div style="padding:16px;border-bottom:1px solid var(--border);${c.status==='new'?'background:rgba(245,158,11,0.03)':''}">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="font-weight:700;font-size:14px">${c.userName}</span>
-              <i class="fas fa-arrow-left" style="font-size:10px;color:var(--text2)"></i>
-              <span style="font-size:13px;color:var(--accent);font-weight:600">${c.doctorName}</span>
-            </div>
-            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${statusColors[c.status]}15;color:${statusColors[c.status]}">${statusNames[c.status]}</span>
-          </div>
-          <p style="font-size:14px;color:var(--text2);margin-bottom:10px;line-height:1.7">${c.message}</p>
-          <div style="display:flex;gap:8px">
-            <button class="btn-primary" style="padding:6px 16px;font-size:12px" onclick="replyConsultation('${c.id}')"><i class="fas fa-reply" style="margin-left:4px"></i>رد</button>
-            ${c.status !== 'closed' ? `<button class="btn-outline" style="padding:5px 14px;font-size:12px" onclick="closeConsultation('${c.id}')">إغلاق</button>` : ''}
-          </div>
-        </div>
-      `).join('') : '<div style="text-align:center;padding:40px;color:var(--text2)"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;opacity:0.3"></i><p>لا توجد استشارات حالياً</p></div>'}
-    </div>
-  `;
-}
-
-function replyConsultation(id) {
-  openModal(`
-    <h3 style="font-size:18px;font-weight:800;margin-bottom:16px"><i class="fas fa-reply" style="margin-left:8px;color:var(--accent)"></i>الرد على الاستشارة</h3>
-    <textarea id="consult-reply" class="input-field" rows="5" placeholder="اكتب ردك هنا..." style="resize:vertical"></textarea>
-    <button class="btn-primary" style="width:100%;margin-top:14px" onclick="submitReply('${id}')">إرسال الرد</button>
-  `);
-}
-
-function submitReply(id) {
-  const reply = document.getElementById('consult-reply').value.trim();
-  if(!reply) return showToast('يرجى كتابة الرد','error');
-  
-  if(db) {
-    db.collection('consultations').doc(id).update({reply, status:'replied', repliedAt: firebase.firestore.FieldValue.serverTimestamp()}).then(() => {
-      showToast('تم إرسال الرد','success');
-      closeModal();
-      loadAllData();
-      renderAdminConsultations();
-    });
-  } else {
-    const c = allConsultations.find(c => c.id === id);
-    if(c) { c.reply = reply; c.status = 'replied'; }
-    showToast('تم إرسال الرد','success');
-    closeModal();
-    renderAdminConsultations();
-  }
-}
-
-function closeConsultation(id) {
-  if(db) {
-    db.collection('consultations').doc(id).update({status:'closed'}).then(() => {
-      loadAllData();
-      renderAdminConsultations();
-    });
-  } else {
-    const c = allConsultations.find(c => c.id === id);
-    if(c) c.status = 'closed';
-    renderAdminConsultations();
-  }
-}
-
-function renderAdminMessages() {
-  const msgs = allMessages.length ? allMessages : [
-    {id:'m1',name:'خالد يوسف',email:'khaled@email.com',message:'أريد الاستفسار عن مواعيد العمل',type:'contact',createdAt:'2024-01-17',read:false},
-    {id:'m2',name:'سارة علي',email:'sara@email.com',message:'شكراً على المنصة الممتازة',type:'contact',createdAt:'2024-01-16',read:true}
-  ];
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <div class="card">
-      ${msgs.length ? msgs.map(m => `
-        <div style="padding:16px;border-bottom:1px solid var(--border);${!m.read?'background:rgba(56,189,248,0.03);border-right:3px solid var(--accent)':''}">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-            <div>
-              <span style="font-weight:700;font-size:14px">${m.name}</span>
-              ${!m.read?'<span style="margin-right:8px;padding:2px 8px;border-radius:10px;background:var(--accent);color:#fff;font-size:10px;font-weight:700">جديدة</span>':''}
-            </div>
-            <span style="font-size:12px;color:var(--text2)">${m.createdAt ? new Date(m.createdAt?.toDate?.() || m.createdAt).toLocaleDateString('ar-YE') : '-'}</span>
-          </div>
-          <div style="font-size:12px;color:var(--text2);margin-bottom:6px" dir="ltr">${m.email}</div>
-          <p style="font-size:14px;line-height:1.7">${m.message}</p>
-          ${!m.read ? `<button class="btn-outline" style="margin-top:10px;padding:4px 14px;font-size:12px" onclick="markMessageRead('${m.id}')">تحديد كمقروءة</button>` : ''}
-        </div>
-      `).join('') : '<div style="text-align:center;padding:40px;color:var(--text2)"><i class="fas fa-inbox" style="font-size:36px;margin-bottom:12px;opacity:0.3"></i><p>لا توجد رسائل</p></div>'}
-    </div>
-  `;
-}
-
-function markMessageRead(id) {
-  if(db) {
-    db.collection('messages').doc(id).update({read:true}).then(() => {
-      loadAllData();
-      renderAdminMessages();
-    });
-  } else {
-    const m = allMessages.find(m => m.id === id);
-    if(m) m.read = true;
-    renderAdminMessages();
-  }
-}
-
-function renderAdminCategories() {
-  const cats = allCategories.length ? allCategories : DEMO_CATEGORIES;
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <button class="btn-primary" style="margin-bottom:20px" onclick="openAddCategoryModal()"><i class="fas fa-plus" style="margin-left:6px"></i>إضافة تخصص</button>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
-      ${cats.map(c => `
-        <div class="card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <h3 style="font-size:16px;font-weight:800;color:var(--accent)"><i class="fas fa-folder-medical" style="margin-left:8px"></i>${c.name}</h3>
-            <button style="background:none;border:none;color:#ef4444;cursor:pointer" onclick="deleteCategory('${c.id}')"><i class="fas fa-trash"></i></button>
-          </div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px">
-            ${c.subs.map(s => `<span style="padding:4px 12px;border-radius:20px;background:var(--input);font-size:12px;font-weight:600;color:var(--text2)">${s}</span>`).join('')}
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function openAddCategoryModal() {
-  openModal(`
-    <h3 style="font-size:18px;font-weight:800;margin-bottom:20px"><i class="fas fa-tags" style="margin-left:8px;color:var(--accent)"></i>إضافة تخصص جديد</h3>
-    <div style="margin-bottom:14px"><input type="text" id="add-cat-name" class="input-field" placeholder="اسم التخصص (مثال: طب الأسنان)"></div>
-    <div style="margin-bottom:14px">
-      <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">التخصصات الفرعية (واحد في كل سطر)</label>
-      <textarea id="add-cat-subs" class="input-field" rows="5" placeholder="تقويم الأسنان&#10;زراعة الأسنان&#10;علاج الجذور" style="resize:vertical"></textarea>
-    </div>
-    <button class="btn-primary" style="width:100%" onclick="addNewCategory()"><i class="fas fa-plus" style="margin-left:8px"></i>إضافة</button>
-  `);
-}
-
-function addNewCategory() {
-  const name = document.getElementById('add-cat-name').value.trim();
-  const subsText = document.getElementById('add-cat-subs').value.trim();
-  if(!name) return showToast('يرجى إدخال اسم التخصص','error');
-  
-  const subs = subsText ? subsText.split('\n').map(s => s.trim()).filter(s => s) : [];
-  const cat = {id:'cat'+Date.now(), name, subs};
-  
-  if(db) {
-    db.collection('categories').add(cat).then(() => {
-      showToast('تم إضافة التخصص','success');
-      closeModal();
-      loadAllData();
-      renderAdminCategories();
-    });
-  } else {
-    allCategories.push(cat);
-    DEMO_CATEGORIES.push(cat);
-    showToast('تم إضافة التخصص','success');
-    closeModal();
-    renderAdminCategories();
-  }
-}
-
-function deleteCategory(id) {
-  if(db) {
-    db.collection('categories').doc(id).delete().then(() => {
-      loadAllData();
-      renderAdminCategories();
-    });
-  } else {
-    allCategories = allCategories.filter(c => c.id !== id);
-    renderAdminCategories();
-  }
-}
-
-function renderAdminChat() {
-  document.getElementById('admin-main-content').innerHTML = `
-    <div class="card" style="padding:0;overflow:hidden;height:calc(100vh - 180px);display:flex;flex-direction:column">
-      <div style="padding:16px 20px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;font-weight:700">
-        <i class="fas fa-comments" style="margin-left:8px"></i>الدردشة المباشرة مع المستخدمين
-      </div>
-      <div id="admin-chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px"></div>
-      <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px">
-        <input type="text" id="admin-chat-input" class="input-field" style="padding:10px 14px;font-size:14px;border-radius:25px" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendAdminChat()">
-        <button onclick="sendAdminChat()" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-paper-plane" style="font-size:14px"></i></button>
-      </div>
-    </div>
-  `;
-  
-  if(db) {
-    db.collection('chat').orderBy('createdAt','asc').onSnapshot(snapshot => {
-      const container = document.getElementById('admin-chat-messages');
-      if(!container) return;
-      container.innerHTML = '';
-      snapshot.forEach(doc => {
-        const m = doc.data();
-        const isAdminMsg = m.isAdmin === true;
-        container.innerHTML += `
-          <div style="display:flex;justify-content:${isAdminMsg?'flex-start':'flex-end'}">
-            <div style="max-width:75%;padding:10px 14px;border-radius:${isAdminMsg?'16px 16px 4px 16px':'16px 16px 16px 4px'};background:${isAdminMsg?'linear-gradient(135deg,#38bdf8,#0ea5e9)':'var(--input)'};color:${isAdminMsg?'#fff':'var(--text)'};font-size:14px;line-height:1.6">
-              ${!isAdminMsg ? `<div style="font-size:11px;font-weight:700;margin-bottom:4px;opacity:0.8">${m.userName || 'مستخدم'}</div>` : ''}
-              ${m.text}
-              <div style="font-size:10px;opacity:0.7;margin-top:4px;text-align:${isAdminMsg?'left':'right'}">${new Date(m.createdAt?.toDate?.() || m.createdAt).toLocaleTimeString('ar-YE',{hour:'2-digit',minute:'2-digit'})}</div>
-            </div>
-          </div>`;
-      });
-      container.scrollTop = container.scrollHeight;
-    });
-  } else {
-    document.getElementById('admin-chat-messages').innerHTML = '<div style="text-align:center;padding:40px;color:var(--text2)">الدردشة متاحة عند ربط Firebase</div>';
-  }
-}
-
-function sendAdminChat() {
-  const input = document.getElementById('admin-chat-input');
-  const text = input.value.trim();
-  if(!text) return;
-  input.value = '';
-  
-  if(db) {
-    db.collection('chat').add({
-      userId: 'admin',
-      userName: 'الإدارة',
-      isAdmin: true,
-      text,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-}
-
-function renderAdminSettings() {
-  const s = platformSettings.siteName ? platformSettings : DEMO_SETTINGS;
-  
-  document.getElementById('admin-main-content').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px">
-      <!-- إعدادات الموقع -->
-      <div class="card">
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:20px"><i class="fas fa-globe" style="margin-left:8px;color:var(--accent)"></i>إعدادات الموقع</h3>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">اسم المنصة</label>
-          <input type="text" id="set-sitename" class="input-field" value="${s.siteName || ''}">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الوصف</label>
-          <textarea id="set-description" class="input-field" rows="3" style="resize:vertical">${s.homeDescription || ''}</textarea>
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رابط الموقع</label>
-          <input type="text" id="set-website" class="input-field" value="${s.website || ''}" dir="ltr">
-        </div>
-      </div>
-      
-      <!-- إعدادات التواصل -->
-      <div class="card">
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:20px"><i class="fas fa-address-book" style="margin-left:8px;color:var(--accent)"></i>معلومات التواصل</h3>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label>
-          <input type="email" id="set-email" class="input-field" value="${s.email || ''}" dir="ltr">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رقم الهاتف</label>
-          <input type="tel" id="set-phone" class="input-field" value="${s.phone || ''}" dir="ltr">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">واتساب</label>
-          <input type="tel" id="set-whatsapp" class="input-field" value="${s.whatsapp || ''}" dir="ltr">
-        </div>
-      </div>
-      
-      <!-- وسائل التواصل الاجتماعي -->
-      <div class="card">
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:20px"><i class="fas fa-share-alt" style="margin-left:8px;color:var(--accent)"></i>وسائل التواصل</h3>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px"><i class="fab fa-facebook" style="margin-left:6px;color:#1877f2"></i>فيسبوك</label>
-          <input type="text" id="set-facebook" class="input-field" value="${s.facebook || ''}" dir="ltr">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px"><i class="fab fa-instagram" style="margin-left:6px;color:#e4405f"></i>انستغرام</label>
-          <input type="text" id="set-instagram" class="input-field" value="${s.instagram || ''}" dir="ltr">
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px"><i class="fab fa-twitter" style="margin-left:6px;color:#1da1f2"></i>تويتر</label>
-          <input type="text" id="set-twitter" class="input-field" value="${s.twitter || ''}" dir="ltr">
-        </div>
-      </div>
-      
-      <!-- الشعار والوضع الليلي -->
-      <div class="card">
-        <h3 style="font-size:16px;font-weight:800;margin-bottom:20px"><i class="fas fa-palette" style="margin-left:8px;color:var(--accent)"></i>المظهر والشعار</h3>
-        <div style="margin-bottom:14px">
-          <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">شعار المنصة</label>
-          <input type="file" id="set-logo" class="input-field" accept="image/*" onchange="previewLogo(this)">
-          <div id="logo-preview" style="margin-top:10px">${s.logo ? `<img src="${s.logo}" style="width:80px;height:80px;border-radius:12px;object-fit:cover">` : ''}</div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--input);border-radius:12px">
-          <div>
-            <div style="font-weight:700;font-size:14px">الوضع الليلي الافتراضي</div>
-            <div style="font-size:12px;color:var(--text2)">تفعيل الوضع الليلي للزوار</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="set-nightmode" ${s.nightMode ? 'checked' : ''}>
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-    </div>
-    
-    <button class="btn-primary" style="margin-top:24px;padding:14px 40px;font-size:16px" onclick="saveSettings()">
-      <i class="fas fa-save" style="margin-left:8px"></i>حفظ الإعدادات
-    </button>
-  `;
-}
-
-function previewLogo(input) {
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('logo-preview').innerHTML = `<img src="${e.target.result}" style="width:80px;height:80px;border-radius:12px;object-fit:cover">`;
-  };
-  reader.readAsDataURL(file);
-}
-
-function saveSettings() {
-  const data = {
-    siteName: document.getElementById('set-sitename').value.trim(),
-    homeDescription: document.getElementById('set-description').value.trim(),
-    website: document.getElementById('set-website').value.trim(),
-    email: document.getElementById('set-email').value.trim(),
-    phone: document.getElementById('set-phone').value.trim(),
-    whatsapp: document.getElementById('set-whatsapp').value.trim(),
-    facebook: document.getElementById('set-facebook').value.trim(),
-    instagram: document.getElementById('set-instagram').value.trim(),
-    twitter: document.getElementById('set-twitter').value.trim(),
-    nightMode: document.getElementById('set-nightmode').checked
-  };
-  
-  const logoFile = document.getElementById('set-logo').files[0];
-  
-  if(logoFile) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      data.logo = e.target.result;
-      persistSettings(data);
+function initFirebase(){
+  const s=document.createElement('script');
+  s.src='https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js';
+  s.onload=function(){
+    const s2=document.createElement('script');
+    s2.src='https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js';
+    s2.onload=function(){
+      try{
+        firebase.initializeApp({apiKey:"AIzaSyDemo",authDomain:"gen-lang-client-0100583073-default-rtdb.firebaseapp.com",databaseURL:"https://gen-lang-client-0100583073-default-rtdb.firebaseio.com",projectId:"gen-lang-client-0100583073"});
+        rtdb=firebase.database();
+        firebaseLoaded=true;
+        loadAllData();
+        console.log('Firebase connected');
+      }catch(e){console.warn('Firebase init error:',e);}
     };
-    reader.readAsDataURL(logoFile);
-  } else {
-    data.logo = platformSettings.logo || '';
-    persistSettings(data);
-  }
-}
-
-function persistSettings(data) {
-  if(db) {
-    db.collection('settings').doc('platform').set(data, {merge:true}).then(() => {
-      platformSettings = data;
-      applySettings(data);
-      showToast('تم حفظ الإعدادات بنجاح','success');
-    });
-  } else {
-    platformSettings = data;
-    applySettings(data);
-    showToast('تم حفظ الإعدادات (وضع العرض)','success');
-  }
-}
-
-function applySettings(s) {
-  // تحديث اسم الموقع
-  document.getElementById('header-site-name').textContent = s.siteName || 'استشيرني';
-  document.title = s.siteName || 'استشيرني';
-  
-  // تحديث الشعار
-  if(s.logo) {
-    const img = document.getElementById('header-logo');
-    img.src = s.logo;
-    img.style.display = 'block';
-    document.getElementById('header-logo-fallback').style.display = 'none';
-    // تحديث شاشة البداية
-    const splashIcon = document.querySelector('#splash-screen .float-anim div');
-    if(splashIcon) splashIcon.innerHTML = `<img src="${s.logo}" style="width:60px;height:60px;border-radius:12px;object-fit:cover">`;
-  }
-  
-  // الوضع الليلي
-  applyTheme(s.nightMode);
-}
-
-function renderAdminAddAdmin() {
-  document.getElementById('admin-main-content').innerHTML = `
-    <div class="card" style="max-width:500px">
-      <h3 style="font-size:18px;font-weight:800;margin-bottom:20px"><i class="fas fa-user-shield" style="margin-left:8px;color:var(--accent)"></i>إضافة مشرف جديد</h3>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.7">يمكنك إضافة مشرف إضافي لإدارة المنصة في غيابك. سيتمتع بجميع صلاحياتك.</p>
-      <div style="margin-bottom:14px">
-        <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label>
-        <input type="email" id="new-admin-email" class="input-field" placeholder="admin@email.com" dir="ltr">
-      </div>
-      <div style="margin-bottom:16px">
-        <label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور</label>
-        <input type="password" id="new-admin-pass" class="input-field" placeholder="كلمة مرور قوية">
-      </div>
-      <button class="btn-primary" style="width:100%" onclick="addNewAdmin()">
-        <i class="fas fa-user-plus" style="margin-left:8px"></i>إضافة المشرف
-      </button>
-    </div>
-  `;
-}
-
-function addNewAdmin() {
-  const email = document.getElementById('new-admin-email').value.trim();
-  const pass = document.getElementById('new-admin-pass').value;
-  if(!email || !pass) return showToast('يرجى ملء جميع الحقول','error');
-  if(pass.length < 6) return showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل','error');
-  
-  if(db) {
-    auth.createUserWithEmailAndPassword(email, pass)
-      .then(cred => {
-        return db.collection('users').doc(cred.user.uid).set({
-          name: 'مشرف', email, role: 'admin',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      })
-      .then(() => {
-        showToast('تم إضافة المشرف بنجاح','success');
-        document.getElementById('new-admin-email').value = '';
-        document.getElementById('new-admin-pass').value = '';
-      })
-      .catch(e => showToast('خطأ: ' + e.message,'error'));
-  } else {
-    showToast('تم إضافة المشرف بنجاح (وضع العرض)','success');
-    allUsers.push({id:'admin'+Date.now(),name:'مشرف',email,role:'admin'});
-  }
-}
-
-/* ============================
-   تحميل البيانات
-   ============================ */
-function loadAllData() {
-  if(!db) return;
-  
-  // تحميل الإعدادات
-  db.collection('settings').doc('platform').get().then(doc => {
-    if(doc.exists) {
-      platformSettings = doc.data();
-      applySettings(platformSettings);
-    }
-  });
-  
-  // تحميل التخصصات
-  db.collection('categories').get().then(snapshot => {
-    allCategories = [];
-    snapshot.forEach(doc => allCategories.push({id:doc.id, ...doc.data()}));
-  });
-  
-  // تحميل الأطباء
-  db.collection('users').where('role','==','doctor').get().then(snapshot => {
-    allDoctors = [];
-    snapshot.forEach(doc => allDoctors.push({id:doc.id, ...doc.data()}));
-  });
-  
-  // تحميل المستخدمين
-  db.collection('users').where('role','==','user').get().then(snapshot => {
-    allUsers = [];
-    snapshot.forEach(doc => allUsers.push({id:doc.id, ...doc.data()}));
-  });
-  
-  // تحميل الرسائل
-  db.collection('messages').orderBy('createdAt','desc').get().then(snapshot => {
-    allMessages = [];
-    snapshot.forEach(doc => allMessages.push({id:doc.id, ...doc.data()}));
-    const unread = allMessages.filter(m => !m.read).length;
-    const badge = document.getElementById('msg-badge');
-    if(badge) { badge.style.display = unread ? 'flex' : 'none'; badge.textContent = unread; }
-  });
-  
-  // تحميل الاستشارات
-  db.collection('consultations').orderBy('createdAt','desc').get().then(snapshot => {
-    allConsultations = [];
-    snapshot.forEach(doc => allConsultations.push({id:doc.id, ...doc.data()}));
-  });
-}
-
-// الاستماع للبيانات في الوقت الفعلي
-function setupRealtimeListeners() {
-  if(!db) return;
-  
-  db.collection('categories').onSnapshot(snapshot => {
-    allCategories = [];
-    snapshot.forEach(doc => allCategories.push({id:doc.id, ...doc.data()}));
-  });
-  
-  db.collection('users').onSnapshot(snapshot => {
-    allDoctors = []; allUsers = [];
-    snapshot.forEach(doc => {
-      const d = {id:doc.id, ...doc.data()};
-      if(d.role === 'doctor') allDoctors.push(d);
-      else if(d.role === 'user' || d.role === 'admin') allUsers.push(d);
-    });
-  });
-  
-  db.collection('messages').onSnapshot(snapshot => {
-    allMessages = [];
-    snapshot.forEach(doc => allMessages.push({id:doc.id, ...doc.data()}));
-    const unread = allMessages.filter(m => !m.read).length;
-    const badge = document.getElementById('msg-badge');
-    if(badge) { badge.style.display = unread ? 'flex' : 'none'; badge.textContent = unread; }
-  });
-  
-  db.collection('consultations').onSnapshot(snapshot => {
-    allConsultations = [];
-    snapshot.forEach(doc => allConsultations.push({id:doc.id, ...doc.data()}));
-  });
-}
-
-/* ============================
-   التهيئة
-   ============================ */
-function init() {
-  setupPWA();
-  
-  // التحقق من حالة المصادقة
-  if(db) {
-    auth.onAuthStateChanged(user => {
-      if(user) {
-        db.collection('users').doc(user.uid).get().then(doc => {
-          if(doc.exists) {
-            const data = doc.data();
-            currentUser = {id: doc.id, ...data};
-            if(data.role === 'admin') {
-              isAdmin = true;
-              navigateTo('admin');
-              document.getElementById('admin-user-name').textContent = data.name;
-              document.getElementById('admin-avatar').textContent = data.name.charAt(0);
-            } else {
-              navigateTo('home');
-            }
-          }
-        });
-      }
-      setupRealtimeListeners();
-      loadAllData();
-    });
-  }
-  
-  // زر القائمة الجانبية في الجوال
-  const checkMobile = () => {
-    const toggle = document.getElementById('sidebar-toggle');
-    if(toggle) toggle.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+    document.head.appendChild(s2);
   };
-  window.addEventListener('resize', checkMobile);
-  setTimeout(checkMobile, 100);
-  
-  // إغلاق القائمة عند النقر خارجها
-  document.addEventListener('click', (e) => {
-    const sidebar = document.getElementById('admin-sidebar');
-    const toggle = document.getElementById('sidebar-toggle');
-    if(sidebar && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle?.contains(e.target)) {
-      sidebar.classList.remove('open');
-    }
-  });
-  
-  // شاشة البداية
-  setTimeout(() => {
-    const splash = document.getElementById('splash-screen');
-    splash.style.transition = 'opacity 0.5s ease';
-    splash.style.opacity = '0';
-    setTimeout(() => {
-      splash.style.display = 'none';
-      navigateTo('home');
-    }, 500);
-  }, 2000);
+  document.head.appendChild(s);
 }
 
-// تشغيل التطبيق
-document.addEventListener('DOMContentLoaded', init);
+/* === المتغيرات === */
+let currentUser=null,isAdmin=false,isMainAdmin=false;
+let allDoctors=[],allCategories=[],allUsers=[],allMessages=[],allConsultations=[];
+let platformSettings={},chatListener=null,currentDoctorFilter='الكل';
+
+/* بيانات تجريبية */
+const DEMO_CATEGORIES=[{id:'cat1',name:'طب الأسنان',subs:['تقويم','زراعة','علاج الجذور','تجميل','جراحة الفم']},{id:'cat2',name:'الطب البشري',subs:['طب داخلي','جراحة','أطفال','نسائية','عيون']},{id:'cat3',name:'أمراض القلب',subs:['قسطرة','جراحة القلب','صمامات','ضغط الدم','نظم القلب']},{id:'cat4',name:'الطبيب العام',subs:['فحص شامل','تشخيص','نزلات برد','أمراض مزمنة','تحاليل']},{id:'cat5',name:'طب الأعصاب',subs:['صداع','تصلب','صرع','أمراض المخ','أعصاب']},{id:'cat6',name:'الجلدية',subs:['حب الشباب','أكزيما','صدفية','سرطان الجلد','تجميل']}];
+const DEMO_DOCTORS=[{id:'d1',name:'د. أحمد محمد',title:'استشاري أمراض القلب',phone:'770123456',location:'صنعاء - الزبيري',email:'dr.ahmed@consult.me',category:'أمراض القلب',status:'approved',rating:4.8,photo:'',fee:3000},{id:'d2',name:'د. فاطمة علي',title:'أخصائية تجميل أسنان',phone:'770654321',location:'عدن - المنصورة',email:'dr.fatima@consult.me',category:'طب الأسنان',status:'approved',rating:4.9,photo:'',fee:2500},{id:'d3',name:'د. خالد حسن',title:'طبيب عام',phone:'870111222',location:'تعز',email:'dr.khaled@consult.me',category:'الطبيب العام',status:'approved',rating:4.6,photo:'',fee:1000},{id:'d4',name:'د. سارة عبدالله',title:'أخصائية أطفال',phone:'770333444',location:'صنعاء - حدة',email:'dr.sara@consult.me',category:'الطب البشري',status:'approved',rating:4.7,photo:'',fee:2000},{id:'d5',name:'د. ياسر أحمد',title:'استشاري جراحة',phone:'870555666',location:'الحديدة',email:'dr.yaser@consult.me',category:'الطب البشري',status:'approved',rating:4.5,photo:'',fee:5000},{id:'d6',name:'د. نورة سالم',title:'أخصائية جلدية',phone:'770777888',location:'صنعاء',email:'dr.noura@consult.me',category:'الجلدية',status:'approved',rating:4.8,photo:'',fee:1500}];
+const DEMO_SETTINGS={siteName:'استشيرني',email:'info@consult-me.com',website:'www.consult-me.com',phone:'770000000',facebook:'https://facebook.com/consultme',instagram:'https://instagram.com/consultme',twitter:'https://twitter.com/consultme',whatsapp:'770000000',logo:'',nightMode:false,homeDescription:'منصة استشيرني تربطك بأمهر الأطباء المتخصصين'};
+
+/* === PWA === */
+function setupPWA(){const d='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#38bdf8"/><text x="256" y="340" text-anchor="middle" font-size="280" fill="white">+</text></svg>');document.getElementById('pwa-manifest').href=URL.createObjectURL(new Blob([JSON.stringify({name:'استشيرني',short_name:'استشيرني',start_url:'./',display:'standalone',background_color:'#fff',theme_color:'#38bdf8',orientation:'portrait',icons:[{src:d,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}]})],{type:'application/json'}));}
+
+/* === الوضع الليلي === */
+function toggleTheme(){const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');['theme-icon','theme-icon2','theme-icon3'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=d?'<use href="#i-moon"/>':'<use href="#i-sun"/>';});if(rtdb)rtdb.ref('settings/platform').update({nightMode:!d});}
+function applyTheme(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');['theme-icon','theme-icon2','theme-icon3'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=dark?'<use href="#i-sun"/>':'<use href="#i-moon"/>';});}
+
+/* === التنقل === */
+function navigateTo(page){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const el=document.getElementById('page-'+page);if(el)el.classList.add('active');if(page==='home')loadHomePage();if(page==='doctors')loadDoctorsPage();if(page==='contact')loadContactPage();if(page==='admin')loadAdminDashboard();}
+function switchTab(el,page){navigateTo(page);el.closest('.nav-bar').querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+
+/* === أدوات === */
+function showToast(msg,type='info'){const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;document.getElementById('toast-container').appendChild(t);setTimeout(()=>t.remove(),3500);}
+function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').style.display='flex';}
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+function validatePhone(input){input.value=input.value.replace(/[^0-9]/g,'');}
+
+/* === دخول المشرف السري === */
+function showAdminEntry(){openModal(`<div style="text-align:center"><div style="width:60px;height:60px;border-radius:50%;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px"><svg class="icon icon-xl" style="color:var(--accent)"><use href="#i-user-shield"/></svg></div><h3 style="font-size:18px;font-weight:800;margin-bottom:16px">لوحة التحكم</h3><div style="margin-bottom:14px"><input type="email" id="secret-admin-email" class="input-field" placeholder="البريد" dir="ltr"></div><div style="margin-bottom:16px"><input type="password" id="secret-admin-pass" class="input-field" placeholder="كلمة المرور"></div><button class="btn-primary" style="width:100%" onclick="attemptSecretLogin()">دخول</button><button class="btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="closeModal()">إلغاء</button></div>`);}
+function attemptSecretLogin(){const e=document.getElementById('secret-admin-email').value.trim(),p=document.getElementById('secret-admin-pass').value;if(e===HIDDEN_ADMIN.email&&p===HIDDEN_ADMIN.password){isAdmin=true;isMainAdmin=true;currentUser={id:'hidden-admin',name:'المشرف العام',email:HIDDEN_ADMIN.email,role:'admin',isMain:true};closeModal();enterAdmin();return;}showToast('بيانات غير صحيحة','error');}
+function enterAdmin(){document.getElementById('admin-user-name').textContent=currentUser.name;document.getElementById('admin-avatar').textContent='م';showToast('مرحباً بك في لوحة التحكم','success');navigateTo('admin');}
+
+/* === المصادقة === */
+function switchAuthTab(tab){document.getElementById('form-login').style.display=tab==='login'?'block':'none';document.getElementById('form-register').style.display=tab==='register'?'block':'none';document.getElementById('form-doctor-reg').style.display=tab==='doctor-reg'?'block':'none';document.getElementById('tab-login').classList.toggle('active',tab==='login');document.getElementById('tab-register').classList.toggle('active',tab==='register');}
+
+function handleLogin(){
+  const email=document.getElementById('login-email').value.trim(),pass=document.getElementById('login-password').value;
+  if(!email||!pass)return showToast('يرجى ملء جميع الحقول','error');
+  if(email===HIDDEN_ADMIN.email&&pass===HIDDEN_ADMIN.password){isAdmin=true;isMainAdmin=true;currentUser={id:'hidden-admin',name:'المشرف العام',email:HIDDEN_ADMIN.email,role:'admin',isMain:true};enterAdmin();return;}
+  showToast('بيانات غير صحيحة','error');
+}
+
+function handleRegister(){
+  const name=document.getElementById('reg-name').value.trim(),phone=document.getElementById('reg-phone').value.trim(),email=document.getElementById('reg-email').value.trim(),pass=document.getElementById('reg-password').value;
+  if(!name||!phone||!email||!pass)return showToast('يرجى ملء جميع الحقول','error');
+  if(!phone.match(/^(77|87)\d{7}$/))return showToast('رقم الهاتف يجب أن يبدأ بـ 77 أو 87 ويكون 9 أرقام','error');
+  if(pass.length<6)return showToast('كلمة المرور 6 أحرف على الأقل','error');
+  const userData={name,phone,email,role:'user',createdAt:Date.now()};
+  if(rtdb){rtdb.ref('users').push(userData).then(()=>{showToast('تم إنشاء الحساب بنجاح','success');switchAuthTab('login');}).catch(e=>showToast('خطأ','error'));}
+  else{allUsers.push({id:'u'+Date.now(),...userData});showToast('تم إنشاء الحساب بنجاح','success');switchAuthTab('login');}
+}
+
+function handleDoctorRegister(){
+  const username=document.getElementById('doc-reg-username').value.trim(),name=document.getElementById('doc-reg-name').value.trim(),title=document.getElementById('doc-reg-title').value.trim(),email=document.getElementById('doc-reg-email').value.trim(),phone=document.getElementById('doc-reg-phone').value.trim(),pass=document.getElementById('doc-reg-password').value,location=document.getElementById('doc-reg-location').value.trim();
+  if(!username||!name||!title||!email||!phone||!pass)return showToast('يرجى ملء جميع الحقول','error');
+  if(!phone.match(/^(77|87)\d{7}$/))return showToast('رقم الهاتف غير صالح','error');
+  const certs=[];for(let f of document.getElementById('doc-reg-certs').files)certs.push(f.name);
+  const data={username,name,title,email,phone,location,role:'doctor',category:'',status:'pending',certificates:certs,photo:'',fee:0,createdAt:Date.now()};
+  if(rtdb){rtdb.ref('doctors').push(data).then(()=>{showToast('تم إرسال الطلب بنجاح','success');switchAuthTab('login');}).catch(e=>showToast('خطأ','error'));}
+  else{allDoctors.push({id:'d'+Date.now(),...data});showToast('تم إرسال الطلب','success');switchAuthTab('login');}
+}
+
+function handleLogout(){currentUser=null;isAdmin=false;isMainAdmin=false;navigateTo('auth');showToast('تم تسجيل الخروج','info');}
+
+/* === الصفحة الرئيسية === */
+function loadHomePage(){
+  const cats=allCategories.length?allCategories:DEMO_CATEGORIES;const docs=allDoctors.filter(d=>d.status==='approved');const dd=docs.length?docs:DEMO_DOCTORS;
+  document.getElementById('home-categories').innerHTML=cats.map(c=>`<div class="category-chip" onclick="navigateTo('doctors');setTimeout(()=>filterByCategory('${c.name}'),200)" style="cursor:pointer"><svg class="icon icon-sm" style="margin-left:6px;color:var(--accent)"><use href="#i-folder"/></svg>${c.name}</div>`).join('');
+  document.getElementById('home-doctors').innerHTML=dd.slice(0,6).map(d=>buildDocCard(d)).join('');
+  animateNum('stat-doctors',dd.length);animateNum('stat-cats',cats.length);animateNum('stat-users',allUsers.length||150);
+  const s=platformSettings.siteName?platformSettings:DEMO_SETTINGS;document.getElementById('header-site-name').textContent=s.siteName||'استشيرني';
+}
+
+function buildDocCard(d){
+  const av=d.photo?`<img src="${d.photo}" class="doc-avatar">`:`<div class="doc-avatar-ph"><svg class="icon" style="color:var(--accent);width:24px;height:24px"><use href="#i-user-md"/></svg></div>`;
+  const fee=d.fee?`<div class="fee-badge" style="margin-top:10px"><svg class="icon icon-sm"><use href="#i-coins"/></svg>${Number(d.fee).toLocaleString('ar-YE')} ر.ي</div>`:'';
+  const stars=d.rating?`<div style="margin-top:8px;display:flex;align-items:center;justify-content:center;gap:3px"><svg class="icon icon-sm" style="color:#f59e0b"><use href="#i-star"/></svg><span style="font-size:13px;font-weight:700">${d.rating}</span></div>`:'';
+  return`<div class="doctor-card slide-in"><div style="padding:24px;text-align:center">${av}<h3 style="font-size:16px;font-weight:800;margin-top:12px;margin-bottom:4px">${d.name}</h3><p style="font-size:13px;color:var(--accent);font-weight:600;margin-bottom:6px">${d.title}</p><p style="font-size:12px;color:var(--text2)"><svg class="icon icon-sm" style="margin-left:4px"><use href="#i-map-pin"/></svg>${d.location}</p>${stars}${fee}<button class="btn-primary" style="margin-top:14px;padding:8px 24px;font-size:13px" onclick="openConsultation('${d.id}','${d.name}')"><svg class="icon icon-sm" style="margin-left:6px"><use href="#i-comment-medical"/></svg>استشارة</button></div></div>`;
+}
+
+function animateNum(id,target){const el=document.getElementById(id);let c=0;const s=Math.max(1,Math.floor(target/30));const t=setInterval(()=>{c+=s;if(c>=target){c=target;clearInterval(t);}el.textContent=c;},30);}
+
+function openConsultation(did,dname){if(!currentUser){showToast('يرجى تسجيل الدخول أولاً','error');navigateTo('auth');return;}openModal(`<h3 style="font-size:18px;font-weight:800;margin-bottom:16px"><svg class="icon" style="margin-left:8px;color:var(--accent)"><use href="#i-comment-medical"/></svg>استشارة: ${dname}</h3><div style="margin-bottom:14px"><textarea id="consult-msg" class="input-field" rows="5" placeholder="اكتب تفاصيل استشارتك..." style="resize:vertical"></textarea></div><button class="btn-primary" style="width:100%" onclick="submitConsultation('${did}','${dname}')"><svg class="icon" style="margin-left:8px"><use href="#i-paper-plane"/></svg>إرسال</button>`);}
+function submitConsultation(did,dname){const msg=document.getElementById('consult-msg').value.trim();if(!msg)return showToast('يرجى كتابة تفاصيل الاستشارة','error');const c={userId:currentUser.id,userName:currentUser.name,userEmail:currentUser.email||'',doctorId:did,doctorName:dname,message:msg,status:'new',createdAt:Date.now()};if(rtdb){rtdb.ref('consultations').push(c).then(()=>{showToast('تم الإرسال','success');closeModal();});}else{allConsultations.push({id:'c'+Date.now(),...c});showToast('تم الإرسال','success');closeModal();}}
+
+/* === صفحة الأطباء === */
+function loadDoctorsPage(){const cats=allCategories.length?allCategories:DEMO_CATEGORIES;const docs=allDoctors.filter(d=>d.status==='approved');const dd=docs.length?docs:DEMO_DOCTORS;document.getElementById('doctors-categories').innerHTML=`<div class="category-chip active" onclick="filterByCategory('الكل')">الكل</div>`+cats.map(c=>`<div class="category-chip" onclick="filterByCategory('${c.name}')">${c.name}</div>`).join('');renderDocsList(dd);}
+function filterByCategory(cn){currentDoctorFilter=cn;document.querySelectorAll('#doctors-categories .category-chip').forEach(c=>c.classList.toggle('active',c.textContent.trim()===cn));const docs=(allDoctors.filter(d=>d.status==='approved').length?allDoctors.filter(d=>d.status==='approved'):DEMO_DOCTORS);renderDocsList(cn==='الكل'?docs:docs.filter(d=>d.category===cn));}
+function filterDoctors(){const q=document.getElementById('doctor-search').value.trim().toLowerCase();const docs=(allDoctors.filter(d=>d.status==='approved').length?allDoctors.filter(d=>d.status==='approved'):DEMO_DOCTORS);let f=currentDoctorFilter==='الكل'?docs:docs.filter(d=>d.category===currentDoctorFilter);if(q)f=f.filter(d=>d.name.includes(q)||d.title.includes(q)||d.location.includes(q));renderDocsList(f);}
+function renderDocsList(docs){const c=document.getElementById('doctors-list');const n=document.getElementById('no-doctors');if(!docs.length){c.innerHTML='';n.style.display='block';return;}n.style.display='none';c.innerHTML=docs.map((d,i)=>{const av=d.photo?`<img src="${d.photo}" class="doc-avatar">`:`<div class="doc-avatar-ph"><svg class="icon" style="color:var(--accent);width:24px;height:24px"><use href="#i-user-md"/></svg></div>`;const fee=d.fee?`<div class="fee-badge"><svg class="icon icon-sm"><use href="#i-coins"/></svg>${Number(d.fee).toLocaleString('ar-YE')} ر.ي</div>`:'';const stars=d.rating?`<div style="margin-top:8px;display:flex;align-items:center;gap:3px"><svg class="icon icon-sm" style="color:#f59e0b"><use href="#i-star"/></svg><span style="font-size:12px;font-weight:700">${d.rating}</span></div>`:'';return`<div class="doctor-card slide-in" style="animation-delay:${i*.08}s"><div style="padding:24px"><div style="display:flex;gap:16px;align-items:flex-start">${av}<div style="flex:1;min-width:0"><h3 style="font-size:16px;font-weight:800;margin-bottom:2px">${d.name}</h3><p style="font-size:13px;color:var(--accent);font-weight:600;margin-bottom:6px">${d.title}</p><div style="font-size:12px;color:var(--text2)"><span style="display:flex;align-items:center;gap:4px;margin-bottom:2px"><svg class="icon icon-sm"><use href="#i-map-pin"/></svg>${d.location}</span><span style="display:flex;align-items:center;gap:4px" dir="ltr"><svg class="icon icon-sm"><use href="#i-phone"/></svg>${d.phone}</span></div>${stars}${fee}</div></div></div><button class="btn-primary" style="width:100%;margin-top:16px;padding:10px;font-size:13px" onclick="openConsultation('${d.id}','${d.name}')"><svg class="icon icon-sm" style="margin-left:6px"><use href="#i-comment-medical"/></svg>طلب استشارة</button></div></div>`;}).join('');}
+
+/* === اتصل بنا === */
+function loadContactPage(){const s=platformSettings.email?platformSettings:DEMO_SETTINGS;document.getElementById('contact-info-cards').innerHTML=`<div class="card" style="text-align:center;padding:20px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px"><svg class="icon" style="color:var(--accent)"><use href="#i-envelope"/></svg></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">البريد</div><div style="font-size:14px;font-weight:700" dir="ltr">${s.email}</div></div><div class="card" style="text-align:center;padding:20px"><div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px"><svg class="icon" style="color:var(--accent)"><use href="#i-globe"/></svg></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">الموقع</div><div style="font-size:14px;font-weight:700" dir="ltr">${s.website}</div></div><div class="card" style="text-align:center;padding:20px;grid-column:1/-1"><div style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.1);display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px"><svg class="icon" style="color:var(--accent)"><use href="#i-phone"/></svg></div><div style="font-size:12px;color:var(--text2);margin-bottom:4px">الهاتف</div><div style="font-size:14px;font-weight:700" dir="ltr">${s.phone}</div></div>`;document.getElementById('contact-social').innerHTML=[{c:'#1877f2',l:'f'},{c:'#e4405f',l:'in'},{c:'#1da1f2',l:'t'},{c:'#25d366',l:'w'}].map(x=>`<a href="#" style="width:44px;height:44px;border-radius:12px;background:${x.c};display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:16px;font-weight:900;transition:all .3s">${x.l.toUpperCase()}</a>`).join('');}
+function sendContactMessage(){const n=document.getElementById('contact-name').value.trim(),e=document.getElementById('contact-email').value.trim(),m=document.getElementById('contact-msg').value.trim();if(!n||!e||!m)return showToast('يرجى ملء جميع الحقول','error');const msg={name:n,email:e,message:m,type:'contact',read:false,createdAt:Date.now()};if(rtdb){rtdb.ref('messages').push(msg).then(()=>{showToast('تم الإرسال','success');document.getElementById('contact-name').value='';document.getElementById('contact-email').value='';document.getElementById('contact-msg').value='';});}else{allMessages.push({id:'m'+Date.now(),...msg});showToast('تم الإرسال','success');document.getElementById('contact-name').value='';document.getElementById('contact-email').value='';document.getElementById('contact-msg').value='';}}
+
+/* === الدردشة === */
+function openChat(){document.getElementById('chat-window').style.display='flex';loadChat();}
+function closeChat(){document.getElementById('chat-window').style.display='none';}
+function loadChat(){const c=document.getElementById('chat-messages');if(!currentUser){c.innerHTML=`<div style="text-align:center;padding:40px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:12px;opacity:.4"><use href="#i-lock"/></svg><p style="font-weight:600">يرجى تسجيل الدخول</p></div>`;return;}if(rtdb){if(chatListener)rtdb.ref('chat').off('value');chatListener=rtdb.ref('chat').orderByChild('createdAt').on('value',snap=>{c.innerHTML='';const d=snap.val()||{};Object.values(d).forEach(m=>{const me=m.userId===currentUser.id&&!m.isAdmin;c.innerHTML+=`<div style="display:flex;justify-content:${me?'flex-start':'flex-end'}"><div style="max-width:80%;padding:10px 14px;border-radius:${me?'16px 16px 4px 16px':'16px 16px 16px 4px'};background:${me?'linear-gradient(135deg,#38bdf8,#0ea5e9)':'var(--input)'};color:${me?'#fff':'var(--text)'};font-size:14px;line-height:1.6">${m.text}</div></div>`;});c.scrollTop=c.scrollHeight;});}else{c.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2)">الدردشة متاحة عند ربط Firebase</div>';}}
+function sendChatMessage(){const inp=document.getElementById('chat-input');const t=inp.value.trim();if(!t||!currentUser)return;inp.value='';if(rtdb)rtdb.ref('chat').push({userId:currentUser.id,userName:currentUser.name,text:t,createdAt:Date.now()});}
+
+/* === لوحة التحكم === */
+function switchAdminTab(el,tab){document.querySelectorAll('.admin-sidebar .menu-item').forEach(m=>m.classList.remove('active'));el.classList.add('active');document.getElementById('admin-sidebar').classList.remove('open');const t={'dashboard':'الإحصائيات','a-doctors':'إدارة الأطباء','a-users':'إدارة المستخدمين','a-consultations':'الاستشارات','a-messages':'الرسائل','a-categories':'التخصصات','a-chat':'الدردشة','a-settings':'الإعدادات','a-add-admin':'إضافة مشرف','a-profile':'حساب المشرف'};document.getElementById('admin-page-title').textContent=t[tab]||'';switch(tab){case'dashboard':renderDashboard();break;case'a-doctors':renderADoctors();break;case'a-users':renderAUsers();break;case'a-consultations':renderAConsult();break;case'a-messages':renderAMsgs();break;case'a-categories':renderACats();break;case'a-chat':renderAChat();break;case'a-settings':renderASettings();break;case'a-add-admin':renderAddAdmin();break;case'a-profile':renderProfile();break;}}
+
+function renderDashboard(){const d=allDoctors.length?allDoctors:DEMO_DOCTORS;const c=allCategories.length?allCategories:DEMO_CATEGORIES;document.getElementById('admin-main-content').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:30px"><div class="card" style="border-right:4px solid var(--accent)"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;color:var(--text2);font-weight:600">الأطباء</div><div style="font-size:28px;font-weight:900;color:var(--accent)">${d.length}</div></div><div style="width:48px;height:48px;border-radius:12px;background:rgba(56,189,248,0.1);display:flex;align-items:center;justify-content:center"><svg class="icon icon-lg" style="color:var(--accent)"><use href="#i-user-md"/></svg></div></div></div><div class="card" style="border-right:4px solid #22c55e"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;color:var(--text2);font-weight:600">المستخدمين</div><div style="font-size:28px;font-weight:900;color:#22c55e">${allUsers.length}</div></div><div style="width:48px;height:48px;border-radius:12px;background:rgba(34,197,94,0.1);display:flex;align-items:center;justify-content:center"><svg class="icon icon-lg" style="color:#22c55e"><use href="#i-users"/></svg></div></div></div><div class="card" style="border-right:4px solid #f59e0b"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;color:var(--text2);font-weight:600">الاستشارات</div><div style="font-size:28px;font-weight:900;color:#f59e0b">${allConsultations.length}</div></div><div style="width:48px;height:48px;border-radius:12px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center"><svg class="icon icon-lg" style="color:#f59e0b"><use href="#i-comment-medical"/></svg></div></div></div><div class="card" style="border-right:4px solid #8b5cf6"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;color:var(--text2);font-weight:600">الرسائل</div><div style="font-size:28px;font-weight:900;color:#8b5cf6">${allMessages.length}</div></div><div style="width:48px;height:48px;border-radius:12px;background:rgba(139,92,246,0.1);display:flex;align-items:center;justify-content:center"><svg class="icon icon-lg" style="color:#8b5cf6"><use href="#i-envelope"/></svg></div></div></div></div>`;}
+
+function renderADoctors(){const docs=allDoctors.length?allDoctors:DEMO_DOCTORS;const pending=docs.filter(d=>d.status==='pending');document.getElementById('admin-main-content').innerHTML=`<button class="btn-primary" style="margin-bottom:20px" onclick="openAddDocModal()"><svg class="icon" style="margin-left:6px"><use href="#i-plus"/></svg>إضافة طبيب</button>${pending.length?`<div class="card" style="border-right:4px solid #f59e0b;margin-bottom:20px"><h3 style="font-size:15px;font-weight:800;color:#f59e0b;margin-bottom:12px">طلبات بانتظار الموافقة (${pending.length})</h3>${pending.map(d=>`<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--input);border-radius:12px;margin-bottom:8px;flex-wrap:wrap"><div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="icon" style="color:#f59e0b"><use href="#i-user-md"/></svg></div><div style="flex:1;min-width:150px"><div style="font-weight:700;font-size:14px">${d.name}</div><div style="font-size:12px;color:var(--text2)">${d.title}</div></div><div style="display:flex;gap:8px"><button class="btn-primary" style="padding:6px 16px;font-size:12px" onclick="approveDoc('${d.id}')"><svg class="icon icon-sm"><use href="#i-check"/></svg> قبول</button><button style="padding:6px 16px;font-size:12px;border-radius:10px;background:#fef2f2;color:#ef4444;border:1px solid #fecaca;cursor:pointer;font-family:'Cairo';font-weight:600" onclick="rejectDoc('${d.id}')"><svg class="icon icon-sm"><use href="#i-times"/></svg> رفض</button></div></div>`).join('')}</div>`:''}<div class="card" style="overflow-x:auto"><table class="data-table"><thead><tr><th>الطبيب</th><th>التخصص</th><th>الرسوم</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>${docs.map(d=>`<tr><td><div style="display:flex;align-items:center;gap:10px">${d.photo?`<img src="${d.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover">`:`<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e0f2fe,#bae6fd);display:flex;align-items:center;justify-content:center"><svg class="icon icon-sm" style="color:var(--accent)"><use href="#i-user-md"/></svg></div>`}<div><div style="font-weight:700;font-size:13px">${d.name}</div><div style="font-size:11px;color:var(--text2)">${d.title}</div></div></div></td><td style="font-size:13px">${d.category||'-'}</td><td>${d.fee?`<span class="fee-badge"><svg class="icon icon-sm"><use href="#i-coins"/></svg>${Number(d.fee).toLocaleString('ar-YE')} ر.ي</span>`:'-'}</td><td><span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:${d.status==='approved'?'rgba(34,197,94,0.1);color:#22c55e':'rgba(245,158,11,0.1);color:#f59e0b'}">${d.status==='approved'?'معتمد':'معلق'}</span></td><td><button style="background:none;border:none;color:#ef4444;cursor:pointer" onclick="deleteDoc('${d.id}')"><svg class="icon"><use href="#i-trash"/></svg></button></td></tr>`).join('')}</tbody></table></div>`;}
+
+function openAddDocModal(){const cats=allCategories.length?allCategories:DEMO_CATEGORIES;openModal(`<h3 style="font-size:18px;font-weight:800;margin-bottom:20px">إضافة طبيب</h3><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">صورة الطبيب</label><input type="file" id="add-doc-photo" class="input-field" accept="image/*" onchange="previewDP(this)"><div id="dp-preview" style="margin-top:8px"></div></div><div style="margin-bottom:14px"><input type="text" id="add-doc-name" class="input-field" placeholder="اسم الطبيب"></div><div style="margin-bottom:14px"><input type="text" id="add-doc-title" class="input-field" placeholder="اللقب الطبي"></div><div style="margin-bottom:14px"><input type="tel" id="add-doc-phone" class="input-field" placeholder="رقم الهاتف" dir="ltr" maxlength="9"></div><div style="margin-bottom:14px"><input type="text" id="add-doc-location" class="input-field" placeholder="الموقع"></div><div style="margin-bottom:14px"><input type="email" id="add-doc-email" class="input-field" placeholder="البريد" dir="ltr"></div><div style="margin-bottom:14px"><select id="add-doc-cat" class="input-field"><option value="">اختر التخصص</option>${cats.map(c=>`<option value="${c.name}">${c.name}</option>`).join('')}</select></div><div style="margin-bottom:16px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رسوم الاستشارة (ريال يمني)</label><input type="number" id="add-doc-fee" class="input-field" placeholder="3000" dir="ltr" min="0"></div><button class="btn-primary" style="width:100%" onclick="addDoc()"><svg class="icon" style="margin-left:8px"><use href="#i-plus"/></svg>إضافة</button>`);}
+function previewDP(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){document.getElementById('dp-preview').innerHTML=`<img src="${e.target.result}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--accent)">`;};r.readAsDataURL(f);}
+function addDoc(){const n=document.getElementById('add-doc-name').value.trim(),t=document.getElementById('add-doc-title').value.trim(),p=document.getElementById('add-doc-phone').value.trim(),l=document.getElementById('add-doc-location').value.trim(),e=document.getElementById('add-doc-email').value.trim(),c=document.getElementById('add-doc-cat').value,f=parseInt(document.getElementById('add-doc-fee').value)||0;if(!n||!t||!p)return showToast('يرجى ملء الحقول','error');const ph=document.getElementById('dp-preview').querySelector('img');const photo=ph?ph.src:'';const doc={name:n,title:t,phone:p,location:l,email:e,category:c,photo,fee:f,status:'approved',rating:0,role:'doctor',createdAt:Date.now()};if(rtdb){rtdb.ref('doctors').push(doc).then(()=>{showToast('تم الإضافة','success');closeModal();});}else{allDoctors.push({id:'d'+Date.now(),...doc});showToast('تم الإضافة','success');closeModal();renderADoctors();}}
+function approveDoc(id){if(rtdb)rtdb.ref('doctors/'+id).update({status:'approved'}).then(()=>showToast('تم القبول','success'));else{const d=allDoctors.find(x=>x.id===id);if(d)d.status='approved';showToast('تم القبول','success');}}
+function rejectDoc(id){if(rtdb)rtdb.ref('doctors/'+id).update({status:'rejected'}).then(()=>showToast('تم الرفض','info'));else{const d=allDoctors.find(x=>x.id===id);if(d)d.status='rejected';showToast('تم الرفض','info');}}
+function deleteDoc(id){openModal(`<div style="text-align:center"><div style="width:60px;height:60px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px"><svg class="icon icon-xl" style="color:#ef4444"><use href="#i-exclamation"/></svg></div><h3 style="margin-bottom:8px">تأكيد الحذف</h3><div style="display:flex;gap:12px;justify-content:center;margin-top:16px"><button class="btn-primary" style="background:linear-gradient(135deg,#ef4444,#dc2626)" onclick="if(rtdb)rtdb.ref('doctors/${id}').remove().then(()=>{showToast('تم','success');closeModal()});else{allDoctors=allDoctors.filter(d=>d.id!==id);showToast('تم','success');closeModal();renderADoctors();}">حذف</button><button class="btn-outline" onclick="closeModal()">إلغاء</button></div></div>`);}
+
+function renderAUsers(){document.getElementById('admin-main-content').innerHTML=`<div class="card" style="overflow-x:auto"><table class="data-table"><thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>التاريخ</th></tr></thead><tbody>${allUsers.length?allUsers.map(u=>`<tr><td style="font-weight:700">${u.name}</td><td dir="ltr" style="font-size:13px">${u.email||'-'}</td><td dir="ltr" style="font-size:13px">${u.phone||'-'}</td><td style="font-size:12px;color:var(--text2)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-YE'):'-'}</td></tr>`).join(''):'<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--text2)">لا يوجد مستخدمين بعد</td></tr>'}</tbody></table></div>`;}
+
+function renderAConsult(){const cs=allConsultations;const sc={new:'#f59e0b',replied:'#22c55e',closed:'#64748b'};const sn={new:'جديدة',replied:'تم الرد',closed:'مغلقة'};document.getElementById('admin-main-content').innerHTML=`<div class="card">${cs.length?cs.map(c=>`<div style="padding:16px;border-bottom:1px solid var(--border);${c.status==='new'?'background:rgba(245,158,11,0.03)':''}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px"><div><span style="font-weight:700;font-size:14px">${c.userName}</span><span style="margin:0 6px;color:var(--text2)">→</span><span style="font-size:13px;color:var(--accent);font-weight:600">${c.doctorName}</span></div><span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${sc[c.status]||sc.new}15;color:${sc[c.status]||sc.new}">${sn[c.status]||c.status}</span></div><p style="font-size:14px;color:var(--text2);margin-bottom:10px;line-height:1.7">${c.message}</p>${c.reply?`<div style="padding:10px 14px;background:rgba(34,197,94,0.05);border-radius:10px;margin-bottom:10px;font-size:14px"><span style="font-weight:700;color:#22c55e;font-size:12px">الرد:</span> ${c.reply}</div>`:''}<div style="display:flex;gap:8px"><button class="btn-primary" style="padding:6px 16px;font-size:12px" onclick="replyC('${c.id}')"><svg class="icon icon-sm" style="margin-left:4px"><use href="#i-reply"/></svg>رد</button>${c.status!=='closed'?`<button class="btn-outline" style="padding:5px 14px;font-size:12px" onclick="if(rtdb)rtdb.ref('consultations/${c.id}').update({status:'closed'});else{const x=allConsultations.find(x=>x.id==='${c.id}');if(x)x.status='closed';renderAConsult();}">إغلاق</button>`:''}</div></div>`).join(''):'<div style="text-align:center;padding:40px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:12px;opacity:.3"><use href="#i-inbox"/></svg><p>لا توجد استشارات</p></div>'}</div>`;}
+function replyC(id){openModal(`<h3 style="margin-bottom:16px">الرد على الاستشارة</h3><textarea id="cr" class="input-field" rows="5" style="resize:vertical"></textarea><button class="btn-primary" style="width:100%;margin-top:14px" onclick="if(rtdb)rtdb.ref('consultations/${id}').update({reply:document.getElementById('cr').value.trim(),status:'replied'}).then(()=>{showToast('تم','success');closeModal()});else{const x=allConsultations.find(x=>x.id===id);if(x){x.reply=document.getElementById('cr').value.trim();x.status='replied';}showToast('تم','success');closeModal();renderAConsult();}">إرسال الرد</button>`);}
+
+function renderAMsgs(){document.getElementById('admin-main-content').innerHTML=`<div class="card">${allMessages.length?allMessages.map(m=>`<div style="padding:16px;border-bottom:1px solid var(--border);${!m.read?'background:rgba(56,189,248,0.03);border-right:3px solid var(--accent)':''}"><div style="margin-bottom:6px"><span style="font-weight:700;font-size:14px">${m.name}</span>${!m.read?'<span style="margin-right:8px;padding:2px 8px;border-radius:10px;background:var(--accent);color:#fff;font-size:10px;font-weight:700">جديدة</span>':''}</div><div style="font-size:12px;color:var(--text2);margin-bottom:6px" dir="ltr">${m.email}</div><p style="font-size:14px;line-height:1.7">${m.message}</p>${!m.read?`<button class="btn-outline" style="margin-top:10px;padding:4px 14px;font-size:12px" onclick="if(rtdb)rtdb.ref('messages/${m.id}').update({read:true});else{const x=allMessages.find(x=>x.id==='${m.id}');if(x)x.read=true;renderAMsgs();}">تحديد كمقروءة</button>`:''}</div>`).join(''):'<div style="text-align:center;padding:40px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:12px;opacity:.3"><use href="#i-inbox"/></svg><p>لا توجد رسائل</p></div>'}</div>`;}
+
+function renderACats(){const cats=allCategories.length?allCategories:DEMO_CATEGORIES;document.getElementById('admin-main-content').innerHTML=`<button class="btn-primary" style="margin-bottom:20px" onclick="openModal('<h3 style=margin-bottom:20px>إضافة تخصص</h3><div style=margin-bottom:14px><input type=text id=acn class=input-field placeholder=اسم التخصص></div><div style=margin-bottom:14px><label style=font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px>التخصصات الفرعية (سطر لكل واحد)</label><textarea id=acs class=input-field rows=5 style=resize:vertical></textarea></div><button class=btn-primary style=width:100% onclick=addCat()>إضافة</button>')"><svg class="icon" style="margin-left:6px"><use href="#i-plus"/></svg>إضافة تخصص</button><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">${cats.map(c=>`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><h3 style="font-size:16px;font-weight:800;color:var(--accent)"><svg class="icon" style="margin-left:8px"><use href="#i-folder"/></svg>${c.name}</h3><button style="background:none;border:none;color:#ef4444;cursor:pointer" onclick="if(rtdb)rtdb.ref('categories/${c.id}').remove();else{allCategories=allCategories.filter(x=>x.id!==c.id);renderACats();}"><svg class="icon"><use href="#i-trash"/></svg></button></div><div style="display:flex;flex-wrap:wrap;gap:6px">${(c.subs||[]).map(s=>`<span style="padding:4px 12px;border-radius:20px;background:var(--input);font-size:12px;font-weight:600;color:var(--text2)">${s}</span>`).join('')}</div></div>`).join('')}</div>`;}
+function addCat(){const n=document.getElementById('acn').value.trim(),st=document.getElementById('acs').value.trim();if(!n)return showToast('أدخل اسم التخصص','error');const subs=st?st.split('\n').map(s=>s.trim()).filter(s=>s):[];const cat={name:n,subs};if(rtdb)rtdb.ref('categories').push(cat).then(()=>{showToast('تم','success');closeModal();});else{allCategories.push({id:'cat'+Date.now(),...cat});showToast('تم','success');closeModal();renderACats();}}
+
+function renderAChat(){document.getElementById('admin-main-content').innerHTML=`<div class="card" style="padding:0;overflow:hidden;height:calc(100vh - 180px);display:flex;flex-direction:column"><div style="padding:16px 20px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;font-weight:700"><svg class="icon" style="margin-left:8px"><use href="#i-comments"/></svg>الدردشة المباشرة</div><div id="acm" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px"></div><div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px"><input type="text" id="aci" class="input-field" style="padding:10px 14px;font-size:14px;border-radius:25px" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendAC()"><button onclick="sendAC()" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="icon icon-sm" style="color:#fff"><use href="#i-paper-plane"/></svg></button></div></div>`;if(rtdb){rtdb.ref('chat').orderByChild('createdAt').on('value',snap=>{const c=document.getElementById('acm');if(!c)return;c.innerHTML='';const d=snap.val()||{};Object.values(d).forEach(m=>{const a=m.isAdmin===true;c.innerHTML+=`<div style="display:flex;justify-content:${a?'flex-start':'flex-end'}"><div style="max-width:75%;padding:10px 14px;border-radius:${a?'16px 16px 4px 16px':'16px 16px 16px 4px'};background:${a?'linear-gradient(135deg,#38bdf8,#0ea5e9)':'var(--input)'};color:${a?'#fff':'var(--text)'};font-size:14px">${!a?`<div style="font-size:11px;font-weight:700;margin-bottom:4px;opacity:.8">${m.userName||'مستخدم'}</div>`:''}${m.text}</div></div>`;});c.scrollTop=c.scrollHeight;});}else document.getElementById('acm').innerHTML='<div style="text-align:center;padding:40px;color:var(--text2)">الدردشة متاحة عند ربط Firebase</div>';}
+function sendAC(){const inp=document.getElementById('aci');const t=inp.value.trim();if(!t)return;inp.value='';if(rtdb)rtdb.ref('chat').push({userId:'admin',userName:'الإدارة',isAdmin:true,text:t,createdAt:Date.now()});}
+
+function renderASettings(){const s=platformSettings.siteName?platformSettings:DEMO_SETTINGS;document.getElementById('admin-main-content').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px"><div class="card"><h3 style="margin-bottom:20px">إعدادات الموقع</h3><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">اسم المنصة</label><input type="text" id="sn" class="input-field" value="${s.siteName||''}"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الوصف</label><textarea id="sd" class="input-field" rows="3" style="resize:vertical">${s.homeDescription||''}</textarea></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">رابط الموقع</label><input type="text" id="sw" class="input-field" value="${s.website||''}" dir="ltr"></div></div><div class="card"><h3 style="margin-bottom:20px">التواصل</h3><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد</label><input type="email" id="se" class="input-field" value="${s.email||''}" dir="ltr"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الهاتف</label><input type="tel" id="sp" class="input-field" value="${s.phone||''}" dir="ltr"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">واتساب</label><input type="tel" id="swh" class="input-field" value="${s.whatsapp||''}" dir="ltr"></div></div><div class="card"><h3 style="margin-bottom:20px">التواصل الاجتماعي</h3><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">فيسبوك</label><input type="text" id="sf" class="input-field" value="${s.facebook||''}" dir="ltr"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">انستغرام</label><input type="text" id="si" class="input-field" value="${s.instagram||''}" dir="ltr"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">تويتر</label><input type="text" id="st" class="input-field" value="${s.twitter||''}" dir="ltr"></div></div><div class="card"><h3 style="margin-bottom:20px">المظهر</h3><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">الشعار</label><input type="file" id="sl" class="input-field" accept="image/*" onchange="previewL(this)"><div id="lp" style="margin-top:10px">${s.logo?`<img src="${s.logo}" style="width:80px;height:80px;border-radius:12px;object-fit:cover">`:''}</div></div><div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--input);border-radius:12px"><div><div style="font-weight:700;font-size:14px">الوضع الليلي</div><div style="font-size:12px;color:var(--text2)">للزوار</div></div><label class="switch"><input type="checkbox" id="snm" ${s.nightMode?'checked':''}><span class="slider"></span></label></div></div></div><button class="btn-primary" style="margin-top:24px;padding:14px 40px;font-size:16px" onclick="saveSettings()"><svg class="icon" style="margin-left:8px"><use href="#i-save"/></svg>حفظ الإعدادات</button>`;}
+function previewL(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=function(e){document.getElementById('lp').innerHTML=`<img src="${e.target.result}" style="width:80px;height:80px;border-radius:12px;object-fit:cover">`;};r.readAsDataURL(f);}
+function saveSettings(){const data={siteName:document.getElementById('sn').value.trim(),homeDescription:document.getElementById('sd').value.trim(),website:document.getElementById('sw').value.trim(),email:document.getElementById('se').value.trim(),phone:document.getElementById('sp').value.trim(),whatsapp:document.getElementById('swh').value.trim(),facebook:document.getElementById('sf').value.trim(),instagram:document.getElementById('si').value.trim(),twitter:document.getElementById('st').value.trim(),nightMode:document.getElementById('snm').checked};const lf=document.getElementById('sl').files[0];if(lf){const r=new FileReader();r.onload=function(e){data.logo=e.target.result;persistS(data);};r.readAsDataURL(lf);}else{data.logo=platformSettings.logo||'';persistS(data);}}
+function persistS(data){if(rtdb){rtdb.ref('settings/platform').update(data).then(()=>{platformSettings=data;applyS(data);showToast('تم الحفظ','success');});}else{platformSettings=data;applyS(data);showToast('تم الحفظ','success');}}
+function applyS(s){document.getElementById('header-site-name').textContent=s.siteName||'استشيرني';document.title=s.siteName||'استشيرني';if(s.logo){const img=document.getElementById('header-logo');img.src=s.logo;img.style.display='block';document.getElementById('header-logo-fallback').style.display='none';}applyTheme(s.nightMode);}
+
+function renderAddAdmin(){document.getElementById('admin-main-content').innerHTML=`<div class="card" style="max-width:500px"><h3 style="margin-bottom:20px">إضافة مشرف</h3><p style="font-size:13px;color:var(--text2);margin-bottom:20px">المشرف الإضافي لا يستطيع تغيير بيانات المشرف الرئيسي.</p><div style="margin-bottom:14px"><input type="email" id="nae" class="input-field" placeholder="البريد" dir="ltr"></div><div style="margin-bottom:16px"><input type="password" id="nap" class="input-field" placeholder="كلمة المرور"></div><button class="btn-primary" style="width:100%" onclick="const e=document.getElementById('nae').value.trim(),p=document.getElementById('nap').value;if(!e||!p)return showToast('يرجى ملء الحقول','error');if(p.length<6)return showToast('كلمة المرور قصيرة','error');const d={name:'مشرف',email:e,password:p,role:'admin',isMain:false,createdAt:Date.now()};if(rtdb)rtdb.ref('admins').push(d).then(()=>{showToast('تم','success');document.getElementById('nae').value='';document.getElementById('nap').value='';});else showToast('تم (وضع عرض)','success');">إضافة المشرف</button></div>`;}
+
+function renderProfile(){if(!isMainAdmin){document.getElementById('admin-main-content').innerHTML=`<div class="card" style="text-align:center;max-width:500px;margin:40px auto"><div style="width:60px;height:60px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:16px"><svg class="icon icon-xl" style="color:#ef4444"><use href="#i-lock"/></svg></div><h3 style="margin-bottom:8px">صلاحيات محدودة</h3><p style="color:var(--text2);font-size:14px">هذا القسم متاح للمشرف الرئيسي فقط.</p></div>`;return;}document.getElementById('admin-main-content').innerHTML=`<div class="card" style="max-width:500px"><div style="text-align:center;margin-bottom:24px"><div style="width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#0ea5e9);display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg class="icon icon-xl" style="color:#fff"><use href="#i-user-shield"/></svg></div><h3>المشرف الرئيسي</h3></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">البريد الإلكتروني</label><input type="email" id="pe" class="input-field" value="${HIDDEN_ADMIN.email}" dir="ltr"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">كلمة المرور الجديدة</label><input type="password" id="pp" class="input-field" placeholder="اتركه فارغاً"></div><div style="margin-bottom:16px"><label style="font-weight:700;font-size:13px;color:var(--text2);display:block;margin-bottom:6px">تأكيد كلمة المرور</label><input type="password" id="ppc" class="input-field" placeholder="أعد كتابة كلمة المرور"></div><button class="btn-primary" style="width:100%" onclick="const e=document.getElementById('pe').value.trim(),p=document.getElementById('pp').value,pc=document.getElementById('ppc').value;if(!e)return showToast('أدخل البريد','error');if(p&&p!==pc)return showToast('كلمات المرور غير متطابقتين','error');if(p&&p.length<6)return showToast('كلمة المرور قصيرة','error');HIDDEN_ADMIN.email=e;if(p)HIDDEN_ADMIN.password=p;if(rtdb)rtdb.ref('settings/admin').update({email,password:p||HIDDEN_ADMIN.password});showToast('تم التحديث','success');renderProfile();">حفظ التغييرات</button></div>`;}
+
+function loadAdminDashboard(){if(currentUser){document.getElementById('admin-user-name').textContent=currentUser.name;document.getElementById('admin-avatar').textContent=currentUser.name.charAt(0);}renderDashboard();}
+
+/* === تحميل البيانات من Firebase === */
+function loadAllData(){
+  if(!rtdb)return;
+  rtdb.ref('settings/platform').on('value',snap=>{const d=snap.val();if(d){platformSettings=d;applyS(d);}});
+  rtdb.ref('categories').on('value',snap=>{allCategories=[];const d=snap.val()||{};Object.keys(d).forEach(k=>allCategories.push({id:k,...d[k]}));});
+  rtdb.ref('doctors').on('value',snap=>{allDoctors=[];const d=snap.val()||{};Object.keys(d).forEach(k=>allDoctors.push({id:k,...d[k]}));});
+  rtdb.ref('users').on('value',snap=>{allUsers=[];const d=snap.val()||{};Object.keys(d).forEach(k=>{if(d[k].role==='user')allUsers.push({id:k,...d[k]});});});
+  rtdb.ref('messages').on('value',snap=>{allMessages=[];const d=snap.val()||{};Object.keys(d).forEach(k=>allMessages.push({id:k,...d[k]}));const u=allMessages.filter(m=>!m.read).length;const b=document.getElementById('msg-badge');if(b){b.style.display=u?'flex':'none';b.textContent=u;}});
+  rtdb.ref('consultations').on('value',snap=>{allConsultations=[];const d=snap.val()||{};Object.keys(d).forEach(k=>allConsultations.push({id:k,...d[k]}));});
+}
+
+/* === التهيئة - يعرض الصفحة فوراً === */
+function init(){
+  setupPWA();
+  // تحميل Firebase في الخلفية - لا يمنع عرض الصفحة
+  initFirebase();
+  // الجوال
+  const checkMobile=()=>{const t=document.getElementById('sidebar-toggle');if(t)t.style.display=window.innerWidth<=768?'flex':'none';};
+  window.addEventListener('resize',checkMobile);setTimeout(checkMobile,100);
+  document.addEventListener('click',e=>{const s=document.getElementById('admin-sidebar'),t=document.getElementById('sidebar-toggle');if(s&&s.classList.contains('open')&&!s.contains(e.target)&&!t?.contains(e.target))s.classList.remove('open');});
+  // إخفاء شاشة البداية وعرض المحتوى فوراً
+  setTimeout(()=>{const sp=document.getElementById('splash-screen');sp.style.transition='opacity .5s';sp.style.opacity='0';setTimeout(()=>{sp.style.display='none';navigateTo('home');},500);},1800);
+}
+document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
 </html>
