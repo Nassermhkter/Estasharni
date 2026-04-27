@@ -8,26 +8,24 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script>
-tailwind.config={theme:{extend:{fontFamily:{display:['Outfit','Noto Sans Arabic','sans-serif'],body:['Noto Sans Arabic','sans-serif']}}}}
-</script>
 <style>
-:root{--bg:#F8FAFC;--bg2:#FFFFFF;--bg3:#F1F5F9;--text:#0F172A;--text2:#475569;--text3:#94A3B8;--border:#E2E8F0;--accent:#0EA5E9;--btn:#7DD3FC;--btnH:#38BDF8;--card:#FFFFFF;--shadow:0 1px 3px rgba(0,0,0,.08);--shadowL:0 10px 40px rgba(0,0,0,.08);--nav:rgba(255,255,255,.85);--overlay:rgba(0,0,0,.4);--chat-bg:#F0F9FF}
-.dark{--bg:#0B1120;--bg2:#151D30;--bg3:#1A2438;--text:#E2E8F0;--text2:#94A3B8;--text3:#64748B;--border:#1E293B;--accent:#38BDF8;--btn:#0EA5E9;--btnH:#7DD3FC;--card:#151D30;--shadow:0 1px 3px rgba(0,0,0,.3);--shadowL:0 10px 40px rgba(0,0,0,.3);--nav:rgba(11,17,32,.9);--overlay:rgba(0,0,0,.7);--chat-bg:#0F1A2E}
+:root{--bg:#F8FAFC;--bg2:#FFF;--bg3:#F1F5F9;--text:#0F172A;--text2:#475569;--text3:#94A3B8;--border:#E2E8F0;--accent:#0EA5E9;--btn:#7DD3FC;--btnH:#38BDF8;--card:#FFF;--shadow:0 1px 3px rgba(0,0,0,.08);--shadowL:0 10px 40px rgba(0,0,0,.08);--nav:rgba(255,255,255,.88);--overlay:rgba(0,0,0,.4);--chat-bg:#F0F9FF;--success:#22C55E;--danger:#EF4444;--warn:#F59E0B}
+.dark{--bg:#0B1120;--bg2:#151D30;--bg3:#1A2438;--text:#E2E8F0;--text2:#94A3B8;--text3:#64748B;--border:#1E293B;--accent:#38BDF8;--btn:#0EA5E9;--btnH:#7DD3FC;--card:#151D30;--shadow:0 1px 3px rgba(0,0,0,.3);--shadowL:0 10px 40px rgba(0,0,0,.3);--nav:rgba(11,17,32,.92);--overlay:rgba(0,0,0,.7);--chat-bg:#0F1A2E}
 *{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
 body{font-family:'Noto Sans Arabic',sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden}
 h1,h2,h3,h4,h5{font-family:'Outfit','Noto Sans Arabic',sans-serif}
 .page{display:none;min-height:100vh}.page.active{display:block}
 a{color:var(--accent);text-decoration:none}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:12px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;transition:all .25s;background:var(--btn);color:#0F172A;font-family:inherit}.btn:hover{background:var(--btnH);transform:translateY(-1px);box-shadow:0 4px 20px rgba(56,189,248,.3)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 24px;border-radius:12px;font-weight:600;font-size:.9rem;border:none;cursor:pointer;transition:all .25s;background:var(--btn);color:#0F172A;font-family:inherit}.btn:hover{background:var(--btnH);transform:translateY(-1px);box-shadow:0 4px 20px rgba(56,189,248,.3)}.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-outline{background:transparent;border:2px solid var(--btn);color:var(--btn)}.btn-outline:hover{background:var(--btn);color:#0F172A}
-.btn-danger{background:#EF4444;color:#fff}.btn-danger:hover{background:#DC2626}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#DC2626}
+.btn-success{background:var(--success);color:#fff}
 .btn-sm{padding:6px 16px;font-size:.8rem;border-radius:8px}
 .input{width:100%;padding:12px 16px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--text);font-size:.9rem;font-family:inherit;transition:border .2s}.input:focus{outline:none;border-color:var(--accent)}
-textarea.input{resize:vertical;min-height:100px}
+.input.err{border-color:var(--danger)}
+textarea.input{resize:vertical;min-height:90px}
 select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);transition:all .3s}.card:hover{box-shadow:var(--shadowL)}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:600}
@@ -35,51 +33,31 @@ select.input{cursor:pointer;appearance:none;background-image:url("data:image/svg
 .badge-yellow{background:#FEF9C3;color:#854D0E}.dark .badge-yellow{background:#422006;color:#FACC15}
 .badge-red{background:#FEE2E2;color:#991B1B}.dark .badge-red{background:#450A0A;color:#F87171}
 .badge-blue{background:#E0F2FE;color:#075985}.dark .badge-blue{background:#082F49;color:#38BDF8}
-.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:all .3s}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .sidebar{position:fixed;right:0;top:0;bottom:0;width:260px;background:var(--bg2);border-left:1px solid var(--border);z-index:1000;transition:transform .3s;overflow-y:auto}
 .sidebar-link{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--text2);font-weight:500;transition:all .2s;border-radius:10px;margin:2px 10px;cursor:pointer;font-size:.9rem}.sidebar-link:hover,.sidebar-link.active{background:var(--bg3);color:var(--accent)}
 .toast-container{position:fixed;top:80px;left:20px;z-index:9999;display:flex;flex-direction:column;gap:10px}
 .toast{padding:14px 20px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);box-shadow:var(--shadowL);display:flex;align-items:center;gap:10px;animation:slideIn .3s;min-width:280px;font-size:.9rem}
-.toast.error{border-right:4px solid #EF4444}.toast.success{border-right:4px solid #22C55E}.toast.info{border-right:4px solid var(--accent)}
+.toast.error{border-right:4px solid var(--danger)}.toast.success{border-right:4px solid var(--success)}.toast.info{border-right:4px solid var(--accent)}
 @keyframes slideIn{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes fadeUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
 @keyframes pulse-ring{0%{transform:scale(.8);opacity:.5}100%{transform:scale(1.4);opacity:0}}
 @keyframes chatBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
-.animate-up{animation:fadeUp .6s ease forwards}.animate-up-d1{animation:fadeUp .6s ease .1s forwards;opacity:0}.animate-up-d2{animation:fadeUp .6s ease .2s forwards;opacity:0}.animate-up-d3{animation:fadeUp .6s ease .3s forwards;opacity:0}.animate-up-d4{animation:fadeUp .6s ease .4s forwards;opacity:0}
+.animate-up{animation:fadeUp .6s ease forwards}.animate-up-d1{animation:fadeUp .6s ease .1s forwards;opacity:0}.animate-up-d2{animation:fadeUp .6s ease .2s forwards;opacity:0}.animate-up-d3{animation:fadeUp .6s ease .3s forwards;opacity:0}
 .hero-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;animation:float 8s ease-in-out infinite}
-.modal-overlay{position:fixed;inset:0;background:var(--overlay);z-index:2000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s}
-.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:30px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;animation:scaleIn .25s}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-overlay{position:fixed;inset:0;background:var(--overlay);z-index:2000;display:flex;align-items:center;justify-content:center}.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:30px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;animation:scaleIn .25s}
 @keyframes scaleIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.file-upload{border:2px dashed var(--border);border-radius:12px;padding:30px;text-align:center;cursor:pointer;transition:all .2s}.file-upload:hover{border-color:var(--accent);background:var(--bg3)}
-.file-upload img{max-height:150px;border-radius:8px;margin-top:10px}
-.stat-card{text-align:center;padding:24px;border-radius:16px;background:var(--bg3);border:1px solid var(--border)}
-.stat-num{font-family:'Outfit';font-size:2.2rem;font-weight:800;color:var(--accent)}
-.notif-badge{position:absolute;top:-4px;left:-4px;width:18px;height:18px;background:#EF4444;color:#fff;border-radius:50%;font-size:.65rem;display:flex;align-items:center;justify-content:center}
-table{width:100%;border-collapse:collapse}
-th{text-align:right;padding:12px 16px;font-size:.8rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--border)}
-td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.9rem}
-tr:hover td{background:var(--bg3)}
-.chat-fab{position:fixed;bottom:24px;left:24px;z-index:900;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#06B6D4);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 6px 24px rgba(14,165,233,.4);transition:all .3s}
-.chat-fab:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(14,165,233,.5)}
-.chat-fab.has-new{animation:chatBounce 1.5s ease infinite}
-.chat-window{position:fixed;bottom:100px;left:24px;z-index:950;width:380px;max-width:calc(100vw - 48px);height:520px;max-height:calc(100vh - 140px);border-radius:20px;background:var(--bg2);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.15);display:flex;flex-direction:column;transform:scale(0) translateY(20px);transform-origin:bottom left;opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
-.chat-window.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
-.chat-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;border-radius:20px 20px 0 0;background:linear-gradient(135deg,var(--accent),#06B6D4)}
-.chat-header .avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
-.chat-header .info h4{color:#fff;font-weight:700;font-size:.95rem}
-.chat-header .info p{color:rgba(255,255,255,.8);font-size:.75rem}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--chat-bg)}
-.chat-msg{max-width:80%;padding:10px 14px;border-radius:16px;font-size:.875rem;line-height:1.6;animation:fadeUp .3s ease}
-.chat-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-left:8px}
-.chat-msg.admin{align-self:flex-start;background:var(--bg3);color:var(--text);border-bottom-right:8px}
-.chat-msg .time{font-size:.65rem;opacity:.7;margin-top:4px;display:block}
-.chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg2);border-radius:0 0 20px 20px}
-.chat-input-area input{flex:1;padding:10px 14px;border-radius:12px;border:2px solid var(--border);background:var(--bg);color:var(--text);font-size:.875rem;font-family:inherit;outline:none;transition:border .2s}
-.chat-input-area input:focus{border-color:var(--accent)}
-.chat-input-area button{width:40px;height:40px;border-radius:12px;border:none;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
-.chat-input-area button:hover{background:var(--btnH);transform:scale(1.05)}
+.stat-card{text-align:center;padding:24px;border-radius:16px;background:var(--bg3);border:1px solid var(--border)}.stat-num{font-family:'Outfit';font-size:2.2rem;font-weight:800;color:var(--accent)}
+.notif-badge{position:absolute;top:-4px;left:-4px;width:18px;height:18px;background:var(--danger);color:#fff;border-radius:50%;font-size:.65rem;display:flex;align-items:center;justify-content:center}
+table{width:100%;border-collapse:collapse}th{text-align:right;padding:12px 16px;font-size:.8rem;font-weight:600;color:var(--text3);border-bottom:2px solid var(--border)}td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.9rem}tr:hover td{background:var(--bg3)}
+.chat-fab{position:fixed;bottom:24px;left:24px;z-index:900;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#06B6D4);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 6px 24px rgba(14,165,233,.4);transition:all .3s}.chat-fab:hover{transform:scale(1.1)}.chat-fab.has-new{animation:chatBounce 1.5s ease infinite}
+.chat-window{position:fixed;bottom:100px;left:24px;z-index:950;width:380px;max-width:calc(100vw - 48px);height:520px;max-height:calc(100vh - 140px);border-radius:20px;background:var(--bg2);border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.15);display:flex;flex-direction:column;transform:scale(0) translateY(20px);transform-origin:bottom left;opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}.chat-window.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.chat-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;border-radius:20px 20px 0 0;background:linear-gradient(135deg,var(--accent),#06B6D4)}.chat-header .avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.1rem}.chat-header .info h4{color:#fff;font-weight:700;font-size:.95rem}.chat-header .info p{color:rgba(255,255,255,.8);font-size:.75rem}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--chat-bg)}.chat-msg{max-width:80%;padding:10px 14px;border-radius:16px;font-size:.875rem;line-height:1.6;animation:fadeUp .3s ease}.chat-msg.user{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-left:8px}.chat-msg.admin{align-self:flex-start;background:var(--bg3);color:var(--text);border-bottom-right:8px}.chat-msg .time{font-size:.65rem;opacity:.7;margin-top:4px;display:block}
+.chat-input-area{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg2);border-radius:0 0 20px 20px}.chat-input-area input{flex:1;padding:10px 14px;border-radius:12px;border:2px solid var(--border);background:var(--bg);color:var(--text);font-size:.875rem;font-family:inherit;outline:none}.chat-input-area input:focus{border-color:var(--accent)}.chat-input-area button{width:40px;height:40px;border-radius:12px;border:none;background:var(--accent);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.err-msg{color:var(--danger);font-size:.75rem;margin-top:4px;display:none}
+.err-msg.show{display:block}
 @media(max-width:768px){.sidebar{transform:translateX(100%)}.sidebar.open{transform:translateX(0)}.hero-title{font-size:2rem!important}.chat-window{left:0;bottom:0;width:100%;max-width:100%;height:100%;max-height:100%;border-radius:0}}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--text3);border-radius:3px}
 </style>
@@ -87,85 +65,50 @@ tr:hover td{background:var(--bg3)}
 <body>
 <div class="toast-container" id="toastContainer"></div>
 
-<nav class="navbar" id="mainNav">
-<div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-  <a href="#" onclick="event.preventDefault();navigate('home')" class="flex items-center gap-2">
-    <div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white text-lg"></i></div>
-    <span class="font-display font-bold text-xl" style="color:var(--text)">استشرني</span>
-  </a>
-  <div class="hidden md:flex items-center gap-6" id="navLinks">
-    <a href="#" onclick="event.preventDefault();navigate('home')" class="text-sm font-medium" style="color:var(--text2)">الرئيسية</a>
-    <a href="#" onclick="event.preventDefault();navigate('doctors')" class="text-sm font-medium" style="color:var(--text2)">الأطباء</a>
-    <a href="#" onclick="event.preventDefault();navigate('contact')" class="text-sm font-medium" style="color:var(--text2)">تواصل معنا</a>
-  </div>
-  <div class="flex items-center gap-3" id="navActions">
-    <button onclick="toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center transition text-xs font-bold" style="background:var(--bg3);color:var(--text2)" id="langBtn">EN</button>
-    <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center transition" style="background:var(--bg3);color:var(--text2)"><i class="fas fa-moon" id="themeIcon"></i></button>
-    <div id="navNotif" class="relative hidden">
-      <button onclick="toggleNotifPanel()" class="w-10 h-10 rounded-full flex items-center justify-center transition" style="background:var(--bg3);color:var(--text2)">
-        <i class="fas fa-bell"></i><span class="notif-badge" id="notifCount" style="display:none">0</span>
-      </button>
-    </div>
+<nav class="navbar"><div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+  <a href="#" onclick="event.preventDefault();navigate('home')" class="flex items-center gap-2"><div style="width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white text-lg"></i></div><span class="font-display font-bold text-xl" style="color:var(--text)">استشرني</span></a>
+  <div class="hidden md:flex items-center gap-6"><a href="#" onclick="event.preventDefault();navigate('home')" class="text-sm font-medium" style="color:var(--text2)">الرئيسية</a><a href="#" onclick="event.preventDefault();navigate('doctors')" class="text-sm font-medium" style="color:var(--text2)">الأطباء</a><a href="#" onclick="event.preventDefault();navigate('contact')" class="text-sm font-medium" style="color:var(--text2)">تواصل معنا</a></div>
+  <div class="flex items-center gap-3">
+    <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text2)"><i class="fas fa-moon" id="themeIcon"></i></button>
     <button id="loginBtn" onclick="navigate('auth')" class="btn btn-sm">تسجيل الدخول</button>
     <div id="userMenu" class="hidden flex items-center gap-2">
-      <button onclick="navigate(currentUser&&currentUser.role==='admin'?'admin-dashboard':'profile')" class="flex items-center gap-2 px-3 py-2 rounded-xl transition" style="background:var(--bg3)">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)" id="userAvatar">م</div>
-        <span class="text-sm font-medium hidden sm:inline" style="color:var(--text)" id="userName">مستخدم</span>
-      </button>
-      <button onclick="logout()" class="w-10 h-10 rounded-full flex items-center justify-center transition" style="background:var(--bg3);color:var(--text2)"><i class="fas fa-sign-out-alt"></i></button>
+      <button onclick="navigate(currentUser&&currentUser.role==='admin'?'admin-dashboard':'profile')" class="flex items-center gap-2 px-3 py-2 rounded-xl" style="background:var(--bg3)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)" id="userAvatar">م</div><span class="text-sm font-medium hidden sm:inline" style="color:var(--text)" id="userName">مستخدم</span></button>
+      <button onclick="logout()" class="w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text2)"><i class="fas fa-sign-out-alt"></i></button>
     </div>
     <button class="md:hidden w-10 h-10 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text2)" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')"><i class="fas fa-bars"></i></button>
   </div>
 </div>
-<div id="mobileMenu" class="hidden md:hidden px-4 pb-4 flex flex-col gap-2" style="border-top:1px solid var(--border)">
-  <a href="#" onclick="event.preventDefault();navigate('home');document.getElementById('mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">الرئيسية</a>
-  <a href="#" onclick="event.preventDefault();navigate('doctors');document.getElementById('mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">الأطباء</a>
-  <a href="#" onclick="event.preventDefault();navigate('contact');document.getElementById('mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">تواصل معنا</a>
-</div>
+<div id="mobileMenu" class="hidden md:hidden px-4 pb-4 flex flex-col gap-2" style="border-top:1px solid var(--border)"><a href="#" onclick="event.preventDefault();navigate('home');document.getElementById('mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">الرئيسية</a><a href="#" onclick="event.preventDefault();navigate('doctors');document.getElementById('mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">الأطباء</a><a href="#" onclick="event.preventDefault();navigate('contact');document.getElementById('mobileMenu').classList.add('hidden')" class="py-2 text-sm" style="color:var(--text2)">تواصل معنا</a></div>
 </nav>
 
-<div id="notifPanel" class="hidden fixed top-16 left-4 w-80 rounded-2xl p-4 z-[1500] max-h-96 overflow-y-auto" style="background:var(--bg2);border:1px solid var(--border);box-shadow:var(--shadowL)">
-  <div class="flex items-center justify-between mb-3"><h4 class="font-display font-bold" style="color:var(--text)">الإشعارات</h4><button onclick="clearNotifications()" class="text-xs" style="color:var(--text3)">مسح الكل</button></div>
-  <div id="notifList"><p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد إشعارات</p></div>
-</div>
+<div id="notifPanel" class="hidden fixed top-16 left-4 w-80 rounded-2xl p-4 z-[1500] max-h-96 overflow-y-auto" style="background:var(--bg2);border:1px solid var(--border);box-shadow:var(--shadowL)"><div class="flex items-center justify-between mb-3"><h4 class="font-display font-bold" style="color:var(--text)">الإشعارات</h4><button onclick="clearNotifications()" class="text-xs" style="color:var(--text3)">مسح</button></div><div id="notifList"><p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد</p></div></div>
 
 <button class="chat-fab" id="chatFab" onclick="toggleChat()"><i class="fas fa-comments" id="chatFabIcon"></i></button>
-
 <div class="chat-window" id="chatWindow">
-  <div class="chat-header">
-    <div class="avatar"><i class="fas fa-headset"></i></div>
-    <div class="info"><h4>الدعم الفني</h4><p>متصل الآن</p></div>
-    <button onclick="toggleChat()" style="margin-right:auto;background:none;border:none;color:#fff;cursor:pointer;font-size:1.1rem;padding:4px"><i class="fas fa-times"></i></button>
-  </div>
-  <div class="chat-messages" id="chatMessages">
-    <div class="chat-msg admin"><span>مرحباً بك في استشرني! كيف يمكننا مساعدتك اليوم؟</span><span class="time">الآن</span></div>
-  </div>
-  <div class="chat-input-area">
-    <input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendChatMessage()">
-    <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
-  </div>
+  <div class="chat-header"><div class="avatar"><i class="fas fa-headset"></i></div><div class="info"><h4>الدعم الفني</h4><p>متصل الآن</p></div><button onclick="toggleChat()" style="margin-right:auto;background:none;border:none;color:#fff;cursor:pointer;font-size:1.1rem"><i class="fas fa-times"></i></button></div>
+  <div class="chat-messages" id="chatMessages"><div class="chat-msg admin"><span>مرحباً بك في استشرني!</span><span class="time">الآن</span></div></div>
+  <div class="chat-input-area"><input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendChatMessage()"><button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button></div>
 </div>
 
-<!-- الصفحة الرئيسية -->
+<!-- ===== الرئيسية ===== -->
 <div id="page-home" class="page active">
 <section class="relative min-h-screen flex items-center overflow-hidden pt-16">
   <div class="hero-blob w-96 h-96 top-20 -right-20" style="background:var(--accent)"></div>
   <div class="hero-blob w-72 h-72 bottom-20 left-10" style="background:#38BDF8;animation-delay:-3s"></div>
-  <div class="hero-blob w-56 h-56 top-40 left-1/3" style="background:#06B6D4;animation-delay:-5s"></div>
   <canvas id="heroCanvas" class="absolute inset-0 w-full h-full" style="pointer-events:none"></canvas>
   <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
     <div class="md:order-2">
       <div class="animate-up inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6" style="background:var(--bg3);color:var(--accent);border:1px solid var(--border)"><i class="fas fa-shield-heart"></i> منصة طبية موثوقة</div>
       <h1 class="hero-title animate-up-d1 font-display font-900 leading-tight mb-6" style="font-size:3.2rem;color:var(--text)">صحتك،<br><span style="color:var(--accent)">أولويتنا</span></h1>
-      <p class="animate-up-d2 text-lg mb-8 leading-relaxed" style="color:var(--text2);max-width:480px">تواصل مع أطباء معتمدين من منزلك. احصل على استشارات متخصصة وخطط علاجية مخصصة ورعاية مستمرة.</p>
+      <p class="animate-up-d2 text-lg mb-8 leading-relaxed" style="color:var(--text2);max-width:480px">تواصل مع أطباء معتمدين من منزلك. احصل على استشارات متخصصة وخطط علاجية مخصصة.</p>
       <div class="animate-up-d3 flex flex-wrap gap-4">
         <button onclick="navigate('doctors')" class="btn text-base px-8 py-3"><i class="fas fa-user-doctor"></i> ابحث عن طبيب</button>
         <button onclick="toggleChat()" class="btn btn-outline text-base px-8 py-3"><i class="fas fa-comments"></i> دردشة مباشرة</button>
       </div>
-      <div class="animate-up-d4 flex gap-8 mt-10">
+      <div class="animate-up-d3 flex gap-8 mt-10">
         <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">+200</span><p class="text-sm" style="color:var(--text3)">طبيب متخصص</p></div>
         <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">+10K</span><p class="text-sm" style="color:var(--text3)">مريض سعيد</p></div>
-        <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">4.9</span><p class="text-sm" style="color:var(--text3)">متوسط التقييم</p></div>
+        <div><span class="font-display font-800 text-2xl" style="color:var(--accent)">4.9</span><p class="text-sm" style="color:var(--text3)">التقييم</p></div>
       </div>
     </div>
     <div class="hidden md:flex justify-center animate-up-d2 md:order-1">
@@ -173,136 +116,135 @@ tr:hover td{background:var(--bg3)}
         <div class="w-80 h-80 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),#06B6D4);opacity:.15;animation:pulse-ring 3s infinite"></div>
         <div class="absolute inset-16 rounded-full flex items-center justify-center" style="background:var(--bg2);box-shadow:var(--shadowL)"><i class="fas fa-stethoscope text-6xl" style="color:var(--accent)"></i></div>
         <div class="absolute -bottom-4 -left-4 card p-3 flex items-center gap-3" style="animation:float 4s ease-in-out infinite"><div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#DCFCE7"><i class="fas fa-check text-green-600"></i></div><div><p class="text-sm font-semibold" style="color:var(--text)">أطباء معتمدون</p><p class="text-xs" style="color:var(--text3)">100% موثوق</p></div></div>
-        <div class="absolute -top-4 -right-4 card p-3 flex items-center gap-3" style="animation:float 5s ease-in-out infinite;animation-delay:-2s"><div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#E0F2FE"><i class="fas fa-clock" style="color:var(--accent)"></i></div><div><p class="text-sm font-semibold" style="color:var(--text)">متاح 24/7</p><p class="text-xs" style="color:var(--text3)">في أي وقت</p></div></div>
+        <div class="absolute -top-4 -right-4 card p-3 flex items-center gap-3" style="animation:float 5s ease-in-out infinite;animation-delay:-2s"><div class="w-10 h-10 rounded-full flex items-center justify-center" style="background:#E0F2FE"><i class="fas fa-clock" style="color:var(--accent)"></i></div><div><p class="text-sm font-semibold" style="color:var(--text)">متاح 24/7</p></div></div>
       </div>
     </div>
   </div>
 </section>
 <section class="py-20 px-4" style="background:var(--bg3)">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">كيف تعمل المنصة؟</h2><p style="color:var(--text2)">ثلاث خطوات بسيطة للحصول على الرعاية</p></div>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-search text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">ابحث عن طبيب</h3><p class="text-sm" style="color:var(--text2)">تصفح شبكتنا الواسعة من الأطباء المتخصصين.</p></div>
-      <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-calendar-check text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">احجز استشارة</h3><p class="text-sm" style="color:var(--text2)">اختر الموعد المناسب وأرسل طلبك.</p></div>
-      <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-video text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">احصل على استشارة</h3><p class="text-sm" style="color:var(--text2)">تواصل مع طبيبك عبر فيديو أو محادثة آمنة.</p></div>
-    </div>
-  </div>
+  <div class="max-w-7xl mx-auto"><div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">كيف تعمل المنصة؟</h2></div>
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-search text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">ابحث عن طبيب</h3><p class="text-sm" style="color:var(--text2)">تصفح شبكتنا الواسعة من الأطباء المتخصصين.</p></div>
+    <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-calendar-check text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">احجز استشارة</h3><p class="text-sm" style="color:var(--text2)">اختر الموعد المناسب وأرسل طلبك.</p></div>
+    <div class="card p-8 text-center group"><div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 transition group-hover:scale-110" style="background:linear-gradient(135deg,var(--accent),#06B6D4)"><i class="fas fa-video text-2xl text-white"></i></div><h3 class="font-display font-700 text-xl mb-3" style="color:var(--text)">احصل على استشارة</h3><p class="text-sm" style="color:var(--text2)">تواصل مع طبيبك عبر فيديو أو محادثة.</p></div>
+  </div></div>
 </section>
-<section class="py-20 px-4">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">التخصصات الطبية</h2></div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="specialtiesGrid"></div>
-  </div>
-</section>
-<section class="py-20 px-4" style="background:var(--bg3)">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">ماذا يقول مرضانا</h2></div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="card p-6"><div class="flex gap-1 mb-3"><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i></div><p class="text-sm mb-4" style="color:var(--text2)">"استشرني سهّلت عليّ جداً العثور على طبيب متخصص."</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style="background:var(--accent)">س</div><div><p class="text-sm font-semibold" style="color:var(--text)">سارة م.</p></div></div></div>
-      <div class="card p-6"><div class="flex gap-1 mb-3"><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i></div><p class="text-sm mb-4" style="color:var(--text2)">"كطبيب، أدوات الإدارة ممتازة والوصول للمرضى سهل."</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style="background:#06B6D4">د</div><div><p class="text-sm font-semibold" style="color:var(--text)">د. أحمد خ.</p></div></div></div>
-      <div class="card p-6"><div class="flex gap-1 mb-3"><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star text-yellow-400 text-sm"></i><i class="fas fa-star-half-alt text-yellow-400 text-sm"></i></div><p class="text-sm mb-4" style="color:var(--text2)">"إشعارات فورية والدردشة المباشرة ممتازة!"</p><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style="background:#8B5CF6">ر</div><div><p class="text-sm font-semibold" style="color:var(--text)">رامي ل.</p></div></div></div>
-    </div>
-  </div>
-</section>
-<footer class="py-12 px-4" style="border-top:1px solid var(--border)">
-  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
-    <div><div class="flex items-center gap-2 mb-4"><div style="width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white"></i></div><span class="font-display font-bold text-lg" style="color:var(--text)">استشرني</span></div><p class="text-sm" style="color:var(--text3)">منصتك الموثوقة للاستشارات الطبية.</p></div>
-    <div><h4 class="font-display font-700 mb-4" style="color:var(--text)">روابط سريعة</h4><div class="flex flex-col gap-2"><a href="#" onclick="event.preventDefault();navigate('home')" class="text-sm" style="color:var(--text3)">الرئيسية</a><a href="#" onclick="event.preventDefault();navigate('doctors')" class="text-sm" style="color:var(--text3)">الأطباء</a></div></div>
-    <div><h4 class="font-display font-700 mb-4" style="color:var(--text)">التخصصات</h4><div class="flex flex-col gap-2"><span class="text-sm" style="color:var(--text3)">أمراض القلب</span><span class="text-sm" style="color:var(--text3)">الجلدية</span><span class="text-sm" style="color:var(--text3)">طب الأطفال</span></div></div>
-    <div><h4 class="font-display font-700 mb-4" style="color:var(--text)">تواصل</h4><div class="flex flex-col gap-2"><span class="text-sm" style="color:var(--text3)"><i class="fas fa-envelope ml-2"></i>support@estesherni.com</span><span class="text-sm" style="color:var(--text3)"><i class="fas fa-phone ml-2"></i>+966 50 123 4567</span></div></div>
-  </div>
-  <div class="max-w-7xl mx-auto mt-8 pt-6 text-center text-sm" style="border-top:1px solid var(--border);color:var(--text3)">&copy; 2025 استشرني. جميع الحقوق محفوظة.</div>
-</footer>
+<section class="py-20 px-4"><div class="max-w-7xl mx-auto"><div class="text-center mb-14"><h2 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">التخصصات الطبية</h2></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="specialtiesGrid"></div></div></section>
+<footer class="py-12 px-4" style="border-top:1px solid var(--border)"><div class="max-w-7xl mx-auto text-center"><div class="flex items-center justify-center gap-2 mb-4"><div style="width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white"></i></div><span class="font-display font-bold text-lg" style="color:var(--text)">استشرني</span></div><p class="text-sm mb-2" style="color:var(--text3)">منصتك الموثوقة للاستشارات الطبية عبر الإنترنت.</p><p class="text-xs" style="color:var(--text3)">&copy; 2025 استشرني. جميع الحقوق محفوظة.</p></div></footer>
 </div>
 
-<!-- صفحة الأطباء -->
+<!-- ===== الأطباء ===== -->
 <div id="page-doctors" class="page">
-<section class="pt-24 pb-12 px-4">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-10"><h1 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">الأطباء المتخصصون</h1></div>
-    <div class="flex flex-wrap gap-3 justify-center mb-8" id="specialtyFilters"></div>
-    <div class="max-w-md mx-auto mb-8"><div class="relative"><i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2" style="color:var(--text3)"></i><input type="text" class="input" style="padding-right:40px" placeholder="ابحث عن طبيب..." oninput="filterDoctors(this.value)"></div></div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="doctorsGrid"><p class="text-center col-span-full py-12" style="color:var(--text3)">جارٍ التحميل...</p></div>
-  </div>
-</section>
+<section class="pt-24 pb-12 px-4"><div class="max-w-7xl mx-auto">
+  <div class="text-center mb-10"><h1 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">الأطباء المتخصصون</h1></div>
+  <div class="flex flex-wrap gap-3 justify-center mb-8" id="specialtyFilters"></div>
+  <div class="max-w-md mx-auto mb-8"><div class="relative"><i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2" style="color:var(--text3)"></i><input type="text" class="input" style="padding-right:40px" placeholder="ابحث عن طبيب..." oninput="filterDoctors(this.value)"></div></div>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="doctorsGrid"><p class="text-center col-span-full py-12" style="color:var(--text3)">جارٍ التحميل...</p></div>
+</div></section>
 </div>
 
-<!-- صفحة التواصل -->
+<!-- ===== التواصل ===== -->
 <div id="page-contact" class="page">
-<section class="pt-24 pb-12 px-4">
-  <div class="max-w-3xl mx-auto">
-    <div class="text-center mb-10"><h1 class="font-display font-800 text-3xl mb-3" style="color:var(--text)">تواصل معنا</h1></div>
-    <div class="card p-8">
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الاسم</label><input type="text" id="contactName" class="input" placeholder="اسمك"></div>
-        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد</label><input type="email" id="contactEmail" class="input" placeholder="your@email.com"></div>
-      </div>
-      <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الموضوع</label><input type="text" id="contactSubject" class="input" placeholder="الموضوع"></div>
-      <div class="mb-6"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الرسالة</label><textarea id="contactMsg" class="input" placeholder="اكتب رسالتك..."></textarea></div>
-      <button onclick="submitContact()" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> إرسال الرسالة</button>
-    </div>
+<section class="pt-24 pb-12 px-4"><div class="max-w-3xl mx-auto">
+  <div class="text-center mb-10"><h1 class="font-display font-800 text-3xl" style="color:var(--text)">تواصل معنا</h1></div>
+  <div class="card p-8">
+    <div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الاسم</label><input type="text" id="contactName" class="input"></div><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد</label><input type="email" id="contactEmail" class="input"></div></div>
+    <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الموضوع</label><input type="text" id="contactSubject" class="input"></div>
+    <div class="mb-6"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الرسالة</label><textarea id="contactMsg" class="input"></textarea></div>
+    <button onclick="submitContact()" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> إرسال</button>
   </div>
-</section>
+</div></section>
 </div>
 
-<!-- صفحة المصادقة -->
+<!-- ===== المصادقة ===== -->
 <div id="page-auth" class="page">
-<section class="min-h-screen flex items-center justify-center px-4 pt-16" style="background:var(--bg3)">
-  <div class="w-full max-w-md">
-    <div class="text-center mb-8">
-      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:var(--accent)"><i class="fas fa-heartbeat text-2xl text-white"></i></div>
-      <h1 class="font-display font-800 text-2xl" style="color:var(--text)" id="authTitle">مرحباً بعودتك</h1>
-      <p class="text-sm mt-1" style="color:var(--text2)" id="authSubtitle">سجل دخولك إلى حسابك</p>
-    </div>
-    <div id="roleSelect" class="card p-6 mb-4">
-      <label class="block text-sm font-medium mb-3" style="color:var(--text2)">أنا:</label>
-      <div class="grid grid-cols-3 gap-3">
-        <button onclick="selectRole('patient')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="patient"><i class="fas fa-user block text-lg mb-1"></i>مريض</button>
-        <button onclick="selectRole('doctor')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="doctor"><i class="fas fa-user-doctor block text-lg mb-1"></i>طبيب</button>
-        <button onclick="selectRole('admin')" class="role-btn p-3 rounded-xl text-center text-sm font-medium transition" style="border:2px solid var(--border);color:var(--text2)" data-role="admin"><i class="fas fa-user-shield block text-lg mb-1"></i>مشرف</button>
-      </div>
-    </div>
-    <div id="signInForm" class="card p-6 mb-4">
-      <div class="flex gap-3 mb-4">
-        <button onclick="googleSignIn()" class="btn btn-outline flex-1 justify-center btn-sm"><i class="fab fa-google"></i> جوجل</button>
-        <button onclick="facebookSignIn()" class="btn btn-outline flex-1 justify-center btn-sm"><i class="fab fa-facebook-f"></i> فيسبوك</button>
-      </div>
-      <div class="flex items-center gap-3 mb-4"><div class="flex-1 h-px" style="background:var(--border)"></div><span class="text-xs" style="color:var(--text3)">أو بالبريد</span><div class="flex-1 h-px" style="background:var(--border)"></div></div>
-      <div class="mb-3"><input type="email" id="loginEmail" class="input" placeholder="البريد الإلكتروني"></div>
-      <div class="mb-4"><input type="password" id="loginPass" class="input" placeholder="كلمة المرور"></div>
-      <button onclick="emailSignIn()" class="btn w-full justify-center mb-3" id="signInBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
-      <p class="text-center text-sm mt-4" style="color:var(--text3)">ليس لديك حساب؟ <a href="#" onclick="event.preventDefault();toggleAuthMode()" style="color:var(--accent);font-weight:600">إنشاء حساب</a></p>
-    </div>
-    <div id="signUpForm" class="card p-6 mb-4 hidden">
-      <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="regName" class="input" placeholder="الاسم الكامل"><input type="email" id="regEmail" class="input" placeholder="البريد الإلكتروني"></div>
-      <div class="mb-3"><input type="password" id="regPass" class="input" placeholder="كلمة المرور (6 أحرف على الأقل)"></div>
-      <div class="mb-4"><input type="password" id="regPassConfirm" class="input" placeholder="تأكيد كلمة المرور"></div>
-      <button onclick="emailSignUp()" class="btn w-full justify-center" id="signUpBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
-      <p class="text-center text-sm mt-4" style="color:var(--text3)">لديك حساب؟ <a href="#" onclick="event.preventDefault();toggleAuthMode()" style="color:var(--accent);font-weight:600">تسجيل الدخول</a></p>
-    </div>
-    <div id="doctorRegForm" class="card p-6 mb-4 hidden">
-      <h3 class="font-display font-700 mb-4" style="color:var(--text)">بيانات تسجيل الطبيب</h3>
-      <div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="docRegName" class="input" placeholder="الاسم"><input type="email" id="docRegEmail" class="input" placeholder="البريد"></div>
-      <div class="mb-3"><input type="password" id="docRegPass" class="input" placeholder="كلمة المرور"></div>
-      <div class="grid grid-cols-2 gap-3 mb-3">
-        <select id="docRegSpecialty" class="input"><option value="">التخصص</option><option>أمراض القلب</option><option>الجلدية</option><option>الأعصاب</option><option>العظام</option><option>طب الأطفال</option><option>الطب النفسي</option><option>الطب العام</option><option>العيون</option><option>النساء والتوليد</option></select>
-        <input type="text" id="docRegExp" class="input" placeholder="سنوات الخبرة">
-      </div>
-      <div class="mb-3"><input type="text" id="docRegQual" class="input" placeholder="المؤهلات"></div>
-      <div class="mb-4"><textarea id="docRegBio" class="input" placeholder="نبذة مهنية"></textarea></div>
-      <button onclick="doctorSignUp()" class="btn w-full justify-center" id="docSignUpBtn"><i class="fas fa-user-doctor"></i> إرسال للمراجعة</button>
-    </div>
+<section class="min-h-screen flex items-center justify-center px-4 pt-16 pb-8" style="background:var(--bg3)">
+<div class="w-full max-w-md">
+  <div class="text-center mb-6">
+    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:var(--accent)"><i class="fas fa-heartbeat text-2xl text-white"></i></div>
+    <h1 class="font-display font-800 text-2xl" style="color:var(--text)" id="authTitle">مرحباً بعودتك</h1>
+    <p class="text-sm mt-1" style="color:var(--text2)" id="authSubtitle">سجل دخولك إلى حسابك</p>
   </div>
+
+  <!-- تسجيل الدخول -->
+  <div id="signInForm" class="card p-6 mb-4">
+    <div class="mb-3">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد الإلكتروني</label>
+      <input type="email" id="loginEmail" class="input" placeholder="example@email.com">
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">كلمة المرور</label>
+      <input type="password" id="loginPass" class="input" placeholder="••••••••">
+    </div>
+    <button onclick="emailSignIn()" class="btn w-full justify-center" id="signInBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
+    <p class="text-center text-sm mt-4" style="color:var(--text3)">ليس لديك حساب؟ <a href="#" onclick="event.preventDefault();toggleAuthMode()" style="color:var(--accent);font-weight:600">إنشاء حساب جديد</a></p>
+  </div>
+
+  <!-- إنشاء حساب مريض -->
+  <div id="signUpForm" class="card p-6 mb-4 hidden">
+    <h3 class="font-display font-700 mb-4" style="color:var(--text)">إنشاء حساب مريض</h3>
+    <div class="mb-3">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">الاسم الثلاثي <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="regName" class="input" placeholder="الاسم الأول + الأوسط + الأخير">
+      <p class="err-msg" id="errName">يرجى إدخال الاسم الثلاثي</p>
+    </div>
+    <div class="mb-3">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">رقم الهاتف <span style="color:var(--danger)">*</span></label>
+      <input type="tel" id="regPhone" class="input" placeholder="77XXXXXXXX أو 78XXXXXXXX" maxlength="10">
+      <p class="err-msg" id="errPhone">رقم الهاتف يجب أن يبدأ بـ 77 أو 78 ويكون 10 أرقام</p>
+    </div>
+    <div class="mb-3">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">الموقع <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="regLocation" class="input" placeholder="المدينة / المنطقة">
+      <p class="err-msg" id="errLocation">يرجى إدخال الموقع</p>
+    </div>
+    <div class="mb-3">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد الإلكتروني <span style="color:var(--danger)">*</span></label>
+      <input type="email" id="regEmail" class="input" placeholder="example@email.com">
+      <p class="err-msg" id="errEmail">يرجى إدخال بريد إلكتروني صحيح</p>
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">كلمة المرور <span style="color:var(--danger)">*</span></label>
+      <input type="password" id="regPass" class="input" placeholder="6 أحرف على الأقل">
+      <p class="err-msg" id="errPass">كلمة المرور يجب أن تكون 6 أحرف على الأقل</p>
+    </div>
+    <button onclick="emailSignUp()" class="btn w-full justify-center" id="signUpBtn"><i class="fas fa-user-plus"></i> إنشاء الحساب</button>
+    <p class="text-center text-sm mt-4" style="color:var(--text3)">لديك حساب؟ <a href="#" onclick="event.preventDefault();toggleAuthMode()" style="color:var(--accent);font-weight:600">تسجيل الدخول</a></p>
+  </div>
+
+  <!-- إنشاء حساب طبيب -->
+  <div id="doctorRegForm" class="card p-6 mb-4 hidden">
+    <h3 class="font-display font-700 mb-4" style="color:var(--text)">التسجيل كمشارك طبيب</h3>
+    <div class="mb-3">
+      <label class="block text-sm font-medium mb-2" style="color:var(--text2)">الاسم الثلاثي <span style="color:var(--danger)">*</span></label>
+      <input type="text" id="docRegName" class="input" placeholder="الاسم الكامل">
+      <p class="err-msg" id="errDocName">يرجى إدخال الاسم الثلاثي</p>
+    </div>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الهاتف <span style="color:var(--danger)">*</span></label><input type="tel" id="docRegPhone" class="input" placeholder="77XXXXXXXX" maxlength="10"><p class="err-msg" id="errDocPhone">يبدأ بـ 77 أو 78</p></div>
+      <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الموقع <span style="color:var(--danger)">*</span></label><input type="text" id="docRegLocation" class="input" placeholder="المدينة"><p class="err-msg" id="errDocLoc">مطلوب</p></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد <span style="color:var(--danger)">*</span></label><input type="email" id="docRegEmail" class="input" placeholder="email@doc.com"><p class="err-msg" id="errDocEmail">بريد غير صحيح</p></div>
+      <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">كلمة المرور <span style="color:var(--danger)">*</span></label><input type="password" id="docRegPass" class="input" placeholder="6 أحرف"><p class="err-msg" id="errDocPass">6 أحرف على الأقل</p></div>
+    </div>
+    <div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">التخصص <span style="color:var(--danger)">*</span></label><select id="docRegSpecialty" class="input"><option value="">اختر التخصص</option></select><p class="err-msg" id="errDocSpec">اختر التخصص</p></div>
+    <div class="grid grid-cols-2 gap-3 mb-3">
+      <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">سنوات الخبرة</label><input type="text" id="docRegExp" class="input" placeholder="مثال: 10"></div>
+      <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">المؤهلات</label><input type="text" id="docRegQual" class="input" placeholder="البورد / الماجستير"></div>
+    </div>
+    <div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">نبذة مهنية</label><textarea id="docRegBio" class="input" placeholder="ملخص عن خبراتك..."></textarea></div>
+    <button onclick="doctorSignUp()" class="btn w-full justify-center" id="docSignUpBtn"><i class="fas fa-user-doctor"></i> إرسال طلب المشاركة</button>
+    <p class="text-center text-xs mt-3" style="color:var(--text3)">سيتم مراجعة طلبك من قبل الإدارة.</p>
+  </div>
+</div>
 </section>
 </div>
 
-<!-- لوحة تحكم المشرف -->
+<!-- ===== لوحة المشرف ===== -->
 <div id="page-admin-dashboard" class="page">
 <div class="sidebar" id="adminSidebar">
-  <div class="p-5 flex items-center gap-3" style="border-bottom:1px solid var(--border)">
-    <div style="width:40px;height:40px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white"></i></div>
-    <div><p class="font-display font-700 text-sm" style="color:var(--text)">استشرني</p><p class="text-xs" style="color:var(--text3)">لوحة التحكم</p></div>
-  </div>
+  <div class="p-5 flex items-center gap-3" style="border-bottom:1px solid var(--border)"><div style="width:40px;height:40px;background:var(--accent);border-radius:12px;display:flex;align-items:center;justify-content:center"><i class="fas fa-heartbeat text-white"></i></div><div><p class="font-display font-700 text-sm" style="color:var(--text)">استشرني</p><p class="text-xs" style="color:var(--text3)">لوحة التحكم</p></div></div>
   <nav class="py-4">
     <div class="sidebar-link active" onclick="showAdminTab('overview',this)"><i class="fas fa-chart-pie w-5"></i> نظرة عامة</div>
     <div class="sidebar-link" onclick="showAdminTab('doctors',this)"><i class="fas fa-user-doctor w-5"></i> الأطباء</div>
@@ -310,47 +252,38 @@ tr:hover td{background:var(--bg3)}
     <div class="sidebar-link" onclick="showAdminTab('requests',this)"><i class="fas fa-inbox w-5"></i> الاستشارات</div>
     <div class="sidebar-link" onclick="showAdminTab('messages',this)"><i class="fas fa-envelope w-5"></i> الرسائل</div>
     <div class="sidebar-link" onclick="showAdminTab('chat-mgmt',this)"><i class="fas fa-comments w-5"></i> الدردشات</div>
-    <div class="sidebar-link" onclick="showAdminTab('admin-mgmt',this)"><i class="fas fa-user-shield w-5"></i> المشرفين</div>
     <div class="sidebar-link" onclick="showAdminTab('settings',this)"><i class="fas fa-cog w-5"></i> الإعدادات</div>
   </nav>
 </div>
 <div class="md:mr-[260px] pt-20 p-6 min-h-screen">
   <button class="md:hidden mb-4 btn btn-sm" onclick="document.getElementById('adminSidebar').classList.toggle('open')"><i class="fas fa-bars"></i> القائمة</button>
   <div id="tab-overview" class="admin-tab"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">نظرة عامة</h2><div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8" id="adminStats"></div><div class="grid lg:grid-cols-2 gap-6"><div class="card p-6"><h3 class="font-display font-700 mb-4" style="color:var(--text)">أحدث المستخدمين</h3><div id="recentUsers"></div></div><div class="card p-6"><h3 class="font-display font-700 mb-4" style="color:var(--text)">أحدث الاستشارات</h3><div id="recentConsultations"></div></div></div></div>
-  <div id="tab-doctors" class="admin-tab hidden"><div class="flex items-center justify-between mb-6"><h2 class="font-display font-800 text-2xl" style="color:var(--text)">إدارة الأطباء</h2><button onclick="showAddDoctorModal()" class="btn btn-sm"><i class="fas fa-plus"></i> إضافة</button></div><div id="pendingDoctorsSection" class="hidden mb-6"><h3 class="font-display font-700 mb-3" style="color:var(--text)">طلبات الانتظار</h3><div id="pendingDoctorsList" class="grid md:grid-cols-2 gap-4"></div></div><div class="card overflow-x-auto"><table><thead><tr><th>الصورة</th><th>الاسم</th><th>التخصص</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="adminDoctorsTable"></tbody></table></div></div>
-  <div id="tab-users" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">المستخدمون</h2><div class="card overflow-x-auto"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الدور</th><th>التاريخ</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div></div>
-  <div id="tab-requests" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الاستشارات</h2><div class="card overflow-x-auto"><table><thead><tr><th>المريض</th><th>الطبيب</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="adminConsultTable"></tbody></table></div></div>
+  <div id="tab-doctors" class="admin-tab hidden"><div class="flex items-center justify-between mb-6"><h2 class="font-display font-800 text-2xl" style="color:var(--text)">إدارة الأطباء</h2></div><div id="pendingDoctorsSection" class="hidden mb-6"><h3 class="font-display font-700 mb-3" style="color:var(--text)">طلبات الانتظار</h3><div id="pendingDoctorsList" class="grid md:grid-cols-2 gap-4"></div></div><div class="card overflow-x-auto"><table><thead><tr><th>الاسم</th><th>التخصص</th><th>الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="adminDoctorsTable"></tbody></table></div></div>
+  <div id="tab-users" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">المستخدمون</h2><div class="card overflow-x-auto"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الموقع</th><th>الدور</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div></div>
+  <div id="tab-requests" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الاستشارات</h2><div class="card overflow-x-auto"><table><thead><tr><th>المريض</th><th>الطبيب</th><th>التاريخ</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody id="adminConsultTable"></tbody></table></div></div>
   <div id="tab-messages" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الرسائل</h2><div id="adminMessagesList"></div></div>
-  <div id="tab-chat-mgmt" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الدردشات المباشرة</h2><div class="grid lg:grid-cols-3 gap-6"><div class="card p-4" style="max-height:600px;overflow-y:auto"><h3 class="font-display font-700 mb-3 text-sm" style="color:var(--text)">المحادثات</h3><div id="chatUsersList"><p class="text-sm" style="color:var(--text3)">لا توجد محادثات</p></div></div><div class="card p-0 lg:col-span-2 flex flex-col" style="height:600px"><div id="adminChatHeader" class="p-4 flex items-center gap-3" style="border-bottom:1px solid var(--border);background:var(--bg3);border-radius:16px 16px 0 0"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:var(--accent)">?</div><div><p class="text-sm font-medium" style="color:var(--text)">اختر محادثة</p></div></div><div id="adminChatMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-2" style="background:var(--chat-bg)"><p class="text-sm text-center m-auto" style="color:var(--text3)">اختر محادثة من القائمة</p></div><div class="p-3 flex gap-2" style="border-top:1px solid var(--border)"><input type="text" id="adminChatInput" class="input" placeholder="اكتب ردك..." onkeypress="if(event.key==='Enter')sendAdminChatReply()"><button onclick="sendAdminChatReply()" class="btn btn-sm"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
-  <div id="tab-admin-mgmt" class="admin-tab hidden"><div class="flex items-center justify-between mb-6"><h2 class="font-display font-800 text-2xl" style="color:var(--text)">المشرفين</h2><button onclick="showAddAdminModal()" class="btn btn-sm"><i class="fas fa-plus"></i> إضافة</button></div><div class="card overflow-x-auto"><table><thead><tr><th>البريد</th><th>الصلاحية</th><th>الإجراءات</th></tr></thead><tbody id="adminMgmtTable"></tbody></table></div></div>
-  <div id="tab-settings" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الإعدادات</h2><div class="card p-6"><div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">اسم المنصة</label><input type="text" id="settName" class="input" value="استشرني"></div><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد</label><input type="email" id="settEmail" class="input" value="support@estesherni.com"></div></div><div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الهاتف</label><input type="text" id="settPhone" class="input" value="+966 50 123 4567"></div><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الوصف</label><input type="text" id="settDesc" class="input" value="منصتك الموثوقة للاستشارات الطبية"></div></div><button onclick="saveSettings()" class="btn"><i class="fas fa-save"></i> حفظ</button></div></div>
+  <div id="tab-chat-mgmt" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الدردشات</h2><div class="grid lg:grid-cols-3 gap-6"><div class="card p-4" style="max-height:600px;overflow-y:auto"><div id="chatUsersList"><p class="text-sm" style="color:var(--text3)">لا توجد</p></div></div><div class="card p-0 lg:col-span-2 flex flex-col" style="height:600px"><div id="adminChatHeader" class="p-4 flex items-center gap-3" style="border-bottom:1px solid var(--border);background:var(--bg3)"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:var(--accent)">?</div><div><p class="text-sm font-medium" style="color:var(--text)">اختر محادثة</p></div></div><div id="adminChatMessages" class="flex-1 p-4 overflow-y-auto flex flex-col gap-2" style="background:var(--chat-bg)"><p class="text-sm text-center m-auto" style="color:var(--text3)">اختر محادثة</p></div><div class="p-3 flex gap-2" style="border-top:1px solid var(--border)"><input type="text" id="adminChatInput" class="input" placeholder="اكتب ردك..." onkeypress="if(event.key==='Enter')sendAdminChatReply()"><button onclick="sendAdminChatReply()" class="btn btn-sm"><i class="fas fa-paper-plane"></i></button></div></div></div></div>
+  <div id="tab-settings" class="admin-tab hidden"><h2 class="font-display font-800 text-2xl mb-6" style="color:var(--text)">الإعدادات</h2><div class="card p-6"><div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">اسم المنصة</label><input type="text" id="settName" class="input" value="استشرني"></div><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد</label><input type="email" id="settEmail" class="input" value="support@estesherni.com"></div></div><div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الهاتف</label><input type="text" id="settPhone" class="input" value="+967"></div><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الوصف</label><input type="text" id="settDesc" class="input" value="منصتك الموثوقة للاستشارات الطبية"></div></div><button onclick="saveSettings()" class="btn"><i class="fas fa-save"></i> حفظ</button></div></div>
 </div>
 </div>
 
-<!-- الملف الشخصي -->
+<!-- ===== الملف الشخصي ===== -->
 <div id="page-profile" class="page">
-<section class="pt-24 pb-12 px-4">
-  <div class="max-w-4xl mx-auto">
-    <div class="card p-6 mb-6">
-      <div class="flex items-center gap-4 mb-6">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl" style="background:var(--accent)" id="profileAvatar">م</div>
-        <div><h2 class="font-display font-800 text-xl" style="color:var(--text)" id="profileName">مستخدم</h2><p class="text-sm" style="color:var(--text3)" id="profileEmail">user@email.com</p><span class="badge badge-blue mt-1" id="profileRole">مريض</span></div>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4 mb-4">
-        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الاسم</label><input type="text" id="profName" class="input"></div>
-        <div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الهاتف</label><input type="tel" id="profPhone" class="input" placeholder="+966..."></div>
-      </div>
-      <button onclick="updateProfile()" class="btn btn-sm"><i class="fas fa-save"></i> تحديث</button>
-    </div>
-    <div class="card p-6 mb-6"><h3 class="font-display font-700 mb-4" style="color:var(--text)">طلبات الاستشارة</h3><div id="userConsultList"><p class="text-sm" style="color:var(--text3)">لا توجد طلبات بعد.</p></div></div>
+<section class="pt-24 pb-12 px-4"><div class="max-w-4xl mx-auto">
+  <div class="card p-6 mb-6">
+    <div class="flex items-center gap-4 mb-6"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl" style="background:var(--accent)" id="profileAvatar">م</div><div><h2 class="font-display font-800 text-xl" style="color:var(--text)" id="profileName">مستخدم</h2><p class="text-sm" style="color:var(--text3)" id="profileEmail">user@email.com</p><span class="badge badge-blue mt-1" id="profileRole">مريض</span></div></div>
+    <div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الاسم</label><input type="text" id="profName" class="input"></div><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الهاتف</label><input type="tel" id="profPhone" class="input"></div></div>
+    <div class="grid md:grid-cols-2 gap-4 mb-4"><div><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الموقع</label><input type="text" id="profLocation" class="input"></div><div></div></div>
+    <button onclick="updateProfile()" class="btn btn-sm"><i class="fas fa-save"></i> تحديث</button>
   </div>
-</section>
+  <div class="card p-6"><h3 class="font-display font-700 mb-4" style="color:var(--text)">طلبات الاستشارة</h3><div id="userConsultList"><p class="text-sm" style="color:var(--text3)">لا توجد طلبات.</p></div></div>
+</div></section>
 </div>
 
 <div id="modalContainer"></div>
 
 <script>
-/* ===================== Firebase ===================== */
+/* =============== Firebase =============== */
 var firebaseConfig = {
   apiKey: "AIzaSyDuPGYxnMYUmP2mWBMh8FGmJQnMPbf-sx0",
   authDomain: "gen-lang-client-0100583073-default-rtdb.firebaseapp.com",
@@ -361,26 +294,20 @@ var firebaseConfig = {
   appId: "1:0100583073:web:abc123def456"
 };
 
-var ADMIN_EMAIL = 'admin@estesherni.com';
-var ADMIN_PASS = 'Admin@2025';
+var ADMIN_EMAIL = 'hadirynasser@gmail.com';
+var ADMIN_PASS = '73702003';
 
-var app, auth, db, storage;
-try {
-  app = firebase.initializeApp(firebaseConfig);
-  auth = firebase.auth();
-  db = firebase.database();
-  storage = firebase.storage();
-} catch(e) { console.error('Firebase error:', e); }
+var auth, db;
+try { firebase.initializeApp(firebaseConfig); auth = firebase.auth(); db = firebase.database(); } catch(e) { console.error('Firebase:', e); }
 
 /* إنشاء حساب المشرف تلقائياً */
 async function initAdmin() {
-  if (localStorage.getItem('estesherni_admin_v3')) return;
+  if (localStorage.getItem('estesherni_admin_v4')) return;
   try {
     var cred = await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASS);
     await cred.user.updateProfile({ displayName: 'مدير استشرني' });
-    await db.ref('users/' + cred.user.uid).set({ name: 'مدير استشرني', email: ADMIN_EMAIL, role: 'admin', phone: '', createdAt: new Date().toISOString() });
-    await db.ref('admins/' + cred.user.uid).set({ email: ADMIN_EMAIL, level: 'Super', createdAt: new Date().toISOString() });
-    localStorage.setItem('estesherni_admin_v3', 'true');
+    await db.ref('users/' + cred.user.uid).set({ name: 'مدير استشرني', email: ADMIN_EMAIL, phone: '', location: '', role: 'admin', createdAt: new Date().toISOString() });
+    localStorage.setItem('estesherni_admin_v4', 'true');
     await auth.signOut();
   } catch(e) {
     if (e.code === 'auth/email-already-in-use') {
@@ -388,100 +315,79 @@ async function initAdmin() {
         var c = await auth.signInWithEmailAndPassword(ADMIN_EMAIL, ADMIN_PASS);
         var s = await db.ref('users/' + c.user.uid).once('value');
         if (!s.val() || s.val().role !== 'admin') {
-          await db.ref('users/' + c.user.uid).set({ name: 'مدير استشرني', email: ADMIN_EMAIL, role: 'admin', phone: '', createdAt: new Date().toISOString() });
-          await db.ref('admins/' + c.user.uid).set({ email: ADMIN_EMAIL, level: 'Super', createdAt: new Date().toISOString() });
+          await db.ref('users/' + c.user.uid).set({ name: 'مدير استشرني', email: ADMIN_EMAIL, phone: '', location: '', role: 'admin', createdAt: new Date().toISOString() });
         }
-        localStorage.setItem('estesherni_admin_v3', 'true');
+        localStorage.setItem('estesherni_admin_v4', 'true');
         await auth.signOut();
       } catch(e2) { console.error(e2); }
     }
   }
 }
 
-/* ===================== الحالة ===================== */
+/* =============== التخصصات =============== */
+var specialties = [
+  {name:'أمراض القلب',icon:'fa-heart-pulse',color:'#EF4444',sub:['أمراض الشرايين التاجية','قصور القلب','اضطرابات النبض','ارتفاع ضغط الدم','صمامات القلب']},
+  {name:'طب الأسنان',icon:'fa-tooth',color:'#06B6D4',sub:['تقويم الأسنان','زراعة الأسنان','جراحة الفم','علاج الجذور','تجميل الأسنان','طب أسنان الأطفال']},
+  {name:'الجلدية',icon:'fa-hand-dots',color:'#F59E0B',sub:['الأكزيما','الصدفية','حب الشباب','أورام الجلد','حساسية الجلد']},
+  {name:'الأعصاب',icon:'fa-brain',color:'#8B5CF6',sub:['الصداع المزمن','الصرع','التصلب المتعدد','السكتة الدماغية','أمراض الأعصاب المحيطية']},
+  {name:'العظام',icon:'fa-bone',color:'#06B6D4',sub:['كسور العظام','استبدال المفاصل','انزلاق الغضروف','التهاب المفاصل','إصابات الرياضة']},
+  {name:'طب الأطفال',icon:'fa-baby',color:'#EC4899',sub:['أمراض الأطفال المعدية','التطعيمات','نمو الطفل','حساسية الأطفال','أمراض الجهاز التنفسي']},
+  {name:'الطب النفسي',icon:'fa-comments',color:'#10B981',sub:['الاكتئاب','القلق','اضطراب ثنائي القطب','الوسواس القهري','إدمان المخدرات']},
+  {name:'الطب العام',icon:'fa-stethoscope',color:'#0EA5E9',sub:['الفحص العام','الإنفلونزا','السكري','ضغط الدم','أمراض الجهاز الهضمي']},
+  {name:'العيون',icon:'fa-eye',color:'#6366F1',sub:['قصر النظر','طول النظر','الكتاراكت','الجلوكوما','التهاب الملتحمة']},
+  {name:'أنف وأذن وحنجرة',icon:'fa-ear-listen',color:'#F97316',sub:['التهاب الجيوب','التهاب الأذن الوسطى','حساسية الأنف','اللحمية','تضخم اللوزتين']},
+  {name:'النساء والتوليد',icon:'fa-person-pregnant',color:'#D946EF',sub:['متابعة الحمل','الولادة','أمراض النساء','تنظيم الأسرة','متلازمة المبيض']},
+  {name:'المسالك البولية',icon:'fa-droplet',color:'#14B8A6',sub:['حصوات الكلى','التهاب المسالك','تضخم البروستاتا','السلس البولي','أورام المسالك']},
+  {name:'الأورام',icon:'fa-ribbon',color:'#F43F5E',sub:['أورام الثدي','أورام الرئة','أورام القولون','أورام الدم','العلاج الكيميائي']}
+];
+
+/* =============== الحالة =============== */
 var currentUser = null;
-var selectedRole = 'patient';
 var isSignUp = false;
 var allDoctors = [];
 var filteredSpecialty = 'all';
 var isDark = localStorage.getItem('estesherni_dark') === 'true';
-var currentLang = localStorage.getItem('estesherni_lang') || 'ar';
 var chatOpen = false;
 var selectedChatUser = null;
 var chatListeners = {};
 var localNotifications = JSON.parse(localStorage.getItem('estesherni_notifs') || '[]');
 
-var specialties = [
-  {name:'أمراض القلب',icon:'fa-heart-pulse',color:'#EF4444'},
-  {name:'الجلدية',icon:'fa-hand-dots',color:'#F59E0B'},
-  {name:'الأعصاب',icon:'fa-brain',color:'#8B5CF6'},
-  {name:'العظام',icon:'fa-bone',color:'#06B6D4'},
-  {name:'طب الأطفال',icon:'fa-baby',color:'#EC4899'},
-  {name:'الطب النفسي',icon:'fa-comments',color:'#10B981'},
-  {name:'الطب العام',icon:'fa-stethoscope',color:'#0EA5E9'},
-  {name:'العيون',icon:'fa-eye',color:'#6366F1'},
-  {name:'أنف وأذن وحنجرة',icon:'fa-ear-listen',color:'#F97316'},
-  {name:'النساء والتوليد',icon:'fa-person-pregnant',color:'#D946EF'},
-  {name:'المسالك البولية',icon:'fa-droplet',color:'#14B8A6'},
-  {name:'الأورام',icon:'fa-ribbon',color:'#F43F5E'}
-];
-
-/* ===================== التهيئة ===================== */
+/* =============== التهيئة =============== */
 document.addEventListener('DOMContentLoaded', async function() {
-  applyTheme();
-  applyLang();
-  renderSpecialties();
-  renderSpecialtyFilters();
-  initHeroCanvas();
+  applyTheme(); renderSpecialties(); renderSpecialtyFilters(); populateDoctorSpecialties(); initHeroCanvas();
   await initAdmin();
   setupAuthListener();
   loadDoctors();
 });
 
-/* ===================== المظهر واللغة ===================== */
-function applyTheme() {
-  document.documentElement.classList.toggle('dark', isDark);
-  document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-}
+/* =============== المظهر =============== */
+function applyTheme() { document.documentElement.classList.toggle('dark', isDark); document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon'; }
 function toggleTheme() { isDark = !isDark; localStorage.setItem('estesherni_dark', isDark); applyTheme(); }
-function applyLang() {
-  document.documentElement.lang = currentLang;
-  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-  document.getElementById('langBtn').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
-}
-function toggleLang() { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('estesherni_lang', currentLang); applyLang(); }
 
-/* ===================== كانفاس ===================== */
+/* =============== كانفاس =============== */
 function initHeroCanvas() {
-  var canvas = document.getElementById('heroCanvas');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var particles = [];
+  var canvas = document.getElementById('heroCanvas'); if (!canvas) return;
+  var ctx = canvas.getContext('2d'), particles = [];
   function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
   resize(); window.addEventListener('resize', resize);
   for (var i = 0; i < 50; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*3+1, dx: (Math.random()-.5)*.5, dy: (Math.random()-.5)*.5, o: Math.random()*.5+.1 });
-  function draw() {
+  (function draw() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     var ac = isDark ? '56,189,248' : '14,165,233';
     particles.forEach(function(p,i) {
       p.x += p.dx; p.y += p.dy;
       if(p.x<0||p.x>canvas.width) p.dx*=-1; if(p.y<0||p.y>canvas.height) p.dy*=-1;
       ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(.5,p.r),0,Math.PI*2); ctx.fillStyle = 'rgba('+ac+','+p.o+')'; ctx.fill();
-      for(var j=i+1;j<particles.length;j++){
-        var dx=p.x-particles[j].x,dy=p.y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle='rgba('+ac+','+(.1*(1-dist/120))+')';ctx.lineWidth=.5;ctx.stroke();}
-      }
+      for(var j=i+1;j<particles.length;j++){var dx=p.x-particles[j].x,dy=p.y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle='rgba('+ac+','+(.1*(1-dist/120))+')';ctx.lineWidth=.5;ctx.stroke();}}
     });
     requestAnimationFrame(draw);
-  }
-  draw();
+  })();
 }
 
-/* ===================== التنقل ===================== */
+/* =============== التنقل =============== */
 function navigate(page) {
   document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-  var el = document.getElementById('page-' + page);
-  if (el) el.classList.add('active');
+  var el = document.getElementById('page-' + page); if (el) el.classList.add('active');
   window.scrollTo(0, 0);
   document.getElementById('notifPanel').classList.add('hidden');
   if (page === 'doctors') loadDoctors();
@@ -489,14 +395,13 @@ function navigate(page) {
   if (page === 'profile') loadUserProfile();
 }
 
-/* ===================== الإشعارات ===================== */
+/* =============== الإشعارات =============== */
 function showToast(msg, type) {
   type = type || 'info';
-  var c = document.getElementById('toastContainer');
-  var t = document.createElement('div');
+  var c = document.getElementById('toastContainer'), t = document.createElement('div');
   t.className = 'toast ' + type;
   var icons = {success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
-  var colors = {success:'#22C55E',error:'#EF4444',info:'var(--accent)'};
+  var colors = {success:'var(--success)',error:'var(--danger)',info:'var(--accent)'};
   t.innerHTML = '<i class="fas '+icons[type]+'" style="color:'+colors[type]+'"></i><span style="color:var(--text)">'+msg+'</span>';
   c.appendChild(t);
   setTimeout(function() { t.style.opacity='0'; t.style.transform='translateX(-100%)'; t.style.transition='all .3s'; setTimeout(function(){t.remove();},300); }, 4000);
@@ -510,39 +415,34 @@ function addNotification(title, body) {
 function updateNotifUI() {
   var unread = localNotifications.filter(function(n){return !n.read;}).length;
   var badge = document.getElementById('notifCount');
-  var panel = document.getElementById('navNotif');
-  if (currentUser) { panel.classList.remove('hidden'); if(unread>0){badge.style.display='flex';badge.textContent=unread;}else{badge.style.display='none';} }
+  if (currentUser) { document.getElementById('navNotif').classList.remove('hidden'); if(unread>0){badge.style.display='flex';badge.textContent=unread;}else{badge.style.display='none';} }
   var list = document.getElementById('notifList');
-  if (!localNotifications.length) { list.innerHTML = '<p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد إشعارات</p>'; }
-  else {
-    list.innerHTML = localNotifications.slice(0,20).map(function(n){return '<div class="p-3 rounded-xl mb-2" style="background:var(--bg3)"><p class="text-sm font-medium" style="color:var(--text)">'+n.title+'</p><p class="text-xs mt-1" style="color:var(--text3)">'+n.body+'</p></div>';}).join('');
-    localNotifications.forEach(function(n){n.read=true;});
-    localStorage.setItem('estesherni_notifs', JSON.stringify(localNotifications));
-  }
+  list.innerHTML = localNotifications.length ? localNotifications.slice(0,15).map(function(n){return '<div class="p-3 rounded-xl mb-2" style="background:var(--bg3)"><p class="text-sm font-medium" style="color:var(--text)">'+n.title+'</p><p class="text-xs mt-1" style="color:var(--text3)">'+n.body+'</p></div>';}).join('') : '<p class="text-sm text-center py-4" style="color:var(--text3)">لا توجد</p>';
+  localNotifications.forEach(function(n){n.read=true;}); localStorage.setItem('estesherni_notifs', JSON.stringify(localNotifications));
 }
 function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('hidden'); }
 function clearNotifications() { localNotifications=[]; localStorage.setItem('estesherni_notifs','[]'); updateNotifUI(); }
 
-/* ===================== التخصصات ===================== */
+/* =============== التخصصات =============== */
 function renderSpecialties() {
   document.getElementById('specialtiesGrid').innerHTML = specialties.map(function(s) {
     return '<div class="card p-5 flex items-center gap-4 cursor-pointer group" onclick="navigate(\'doctors\');setTimeout(function(){filterBySpecialty(\''+s.name+'\')},100)"><div class="w-12 h-12 rounded-xl flex items-center justify-center transition group-hover:scale-110" style="background:'+s.color+'15"><i class="fas '+s.icon+' text-lg" style="color:'+s.color+'"></i></div><span class="font-medium text-sm" style="color:var(--text)">'+s.name+'</span></div>';
   }).join('');
 }
 function renderSpecialtyFilters() {
-  document.getElementById('specialtyFilters').innerHTML = '<button onclick="filterBySpecialty(\'all\')" class="badge badge-blue cursor-pointer spec-filter" data-spec="all">الكل</button>' +
-    specialties.map(function(s){return '<button onclick="filterBySpecialty(\''+s.name+'\')" class="badge cursor-pointer spec-filter" data-spec="'+s.name+'" style="background:var(--bg3);color:var(--text2)">'+s.name+'</button>';}).join('');
+  document.getElementById('specialtyFilters').innerHTML = '<button onclick="filterBySpecialty(\'all\')" class="badge badge-blue cursor-pointer spec-filter" data-spec="all">الكل</button>' + specialties.map(function(s){return '<button onclick="filterBySpecialty(\''+s.name+'\')" class="badge cursor-pointer spec-filter" data-spec="'+s.name+'" style="background:var(--bg3);color:var(--text2)">'+s.name+'</button>';}).join('');
 }
 function filterBySpecialty(spec) {
   filteredSpecialty = spec;
-  document.querySelectorAll('.spec-filter').forEach(function(b) {
-    if(b.dataset.spec===spec){b.className='badge badge-blue cursor-pointer spec-filter';b.style.background='';b.style.color='';}
-    else{b.className='badge cursor-pointer spec-filter';b.style.background='var(--bg3)';b.style.color='var(--text2)';}
-  });
+  document.querySelectorAll('.spec-filter').forEach(function(b) { if(b.dataset.spec===spec){b.className='badge badge-blue cursor-pointer spec-filter';b.style.background='';b.style.color='';}else{b.className='badge cursor-pointer spec-filter';b.style.background='var(--bg3)';b.style.color='var(--text2)';} });
   renderDoctorsGrid();
 }
+function populateDoctorSpecialties() {
+  var sel = document.getElementById('docRegSpecialty');
+  specialties.forEach(function(s) { var opt = document.createElement('option'); opt.value = s.name; opt.textContent = s.name; sel.appendChild(opt); });
+}
 
-/* ===================== الأطباء ===================== */
+/* =============== الأطباء =============== */
 function loadDoctors() {
   db.ref('doctors').once('value').then(function(snap) {
     var data = snap.val();
@@ -553,12 +453,12 @@ function loadDoctors() {
 }
 function seedDoctors() {
   var defaults = [
-    {name:'د. سارة Mitchell',specialty:'أمراض القلب',experience:'12 سنة',qualifications:'أخصائي قلب',bio:'خبيرة في أمراض القلب والأوعية الدموية.',photo:'',status:'approved',rating:4.9},
-    {name:'د. جيمس Chen',specialty:'الأعصاب',experience:'15 سنة',qualifications:'دكتوراه أعصاب',bio:'متخصص في الأمراض العصبية التنكسية.',photo:'',status:'approved',rating:4.8},
-    {name:'د. أميرة حسن',specialty:'الجلدية',experience:'8 سنوات',qualifications:'ماجستير جلدية',bio:'خبيرة في الأمراض الجلدية التجميلية.',photo:'',status:'approved',rating:4.7},
-    {name:'د. مايكل براون',specialty:'العظام',experience:'20 سنة',qualifications:'ماجستير عظام',bio:'متخصص في استبدال المفاصل.',photo:'',status:'approved',rating:4.9},
-    {name:'د. ليلى كريم',specialty:'طب الأطفال',experience:'10 سنوات',qualifications:'ماجستير أطفال',bio:'متخصصة في صحة الطفل.',photo:'',status:'approved',rating:4.8},
-    {name:'د. ديفيد ويلسون',specialty:'الطب النفسي',experience:'14 سنة',qualifications:'زمالة طب نفسي',bio:'خبير في اضطرابات القلق.',photo:'',status:'approved',rating:4.6},
+    {name:'د. سارة أحمد',specialty:'أمراض القلب',experience:'12 سنة',qualifications:'بورد قلب',bio:'خبيرة في أمراض القلب والأوعية الدموية.',status:'approved',rating:4.9,phone:'771234567',location:'صنعاء'},
+    {name:'د. محمد Chen',specialty:'الأعصاب',experience:'15 سنة',qualifications:'دكتوراه أعصاب',bio:'متخصص في الأمراض العصبية.',status:'approved',rating:4.8,phone:'781234567',location:'عدن'},
+    {name:'د. أميرة حسن',specialty:'طب الأسنان',experience:'8 سنوات',qualifications:'ماجستير طب أسنان',bio:'خبيرة في تقويم وزراعة الأسنان.',status:'approved',rating:4.7,phone:'772345678',location:'تعز'},
+    {name:'د. خالد براون',specialty:'العظام',experience:'20 سنة',qualifications:'بورد عظام',bio:'متخصص في استبدال المفاصل وجراحة العمود الفقري.',status:'approved',rating:4.9,phone:'783456789',location:'صنعاء'},
+    {name:'د. ليلى كريم',specialty:'طب الأطفال',experience:'10 سنوات',qualifications:'ماجستير أطفال',bio:'متخصصة في صحة الطفل ورعايته.',status:'approved',rating:4.8,phone:'774567890',location:'حضرموت'},
+    {name:'د. ديفيد ويلسون',specialty:'الطب النفسي',experience:'14 سنة',qualifications:'زمالة طب نفسي',bio:'خبير في اضطرابات القلق والاكتئاب.',status:'approved',rating:4.6,phone:'785678901',location:'إب'}
   ];
   allDoctors = defaults;
   defaults.forEach(function(d) { db.ref('doctors').push(d); });
@@ -569,7 +469,11 @@ function renderDoctorsGrid() {
   if (filteredSpecialty!=='all') docs = docs.filter(function(d){return d.specialty===filteredSpecialty;});
   if (!docs.length) { grid.innerHTML = '<p class="text-center col-span-full py-12" style="color:var(--text3)">لا يوجد أطباء.</p>'; return; }
   grid.innerHTML = docs.map(function(d) {
-    return '<div class="card p-6 flex flex-col"><div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl" style="background:var(--accent)">'+(d.name.charAt(0))+'</div><div><h3 class="font-display font-700" style="color:var(--text)">'+d.name+'</h3><p class="text-sm" style="color:var(--accent)">'+d.specialty+'</p><div class="flex items-center gap-1 mt-1"><i class="fas fa-star text-yellow-400 text-xs"></i><span class="text-xs" style="color:var(--text2)">'+(d.rating||'')+'</span></div></div></div><p class="text-sm mb-2" style="color:var(--text2)">'+(d.bio||'')+'</p><div class="flex flex-wrap gap-2 mb-4"><span class="badge badge-blue text-xs"><i class="fas fa-briefcase-medical"></i> '+(d.experience)+'</span></div><div class="mt-auto"><button onclick="requestConsultation(\''+d.id+'\',\''+d.name.replace(/'/g,"\\'")+'\')" class="btn btn-sm w-full justify-center"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div></div>';
+    var specObj = specialties.find(function(s){return s.name===d.specialty;});
+    var icon = specObj ? specObj.icon : 'fa-stethoscope';
+    var color = specObj ? specObj.color : 'var(--accent)';
+    var subsHtml = specObj ? specObj.sub.slice(0,3).map(function(sub){return '<span class="badge badge-blue text-xs">'+sub+'</span>';}).join('') : '';
+    return '<div class="card p-6 flex flex-col"><div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:'+color+'15"><i class="fas '+icon+' text-2xl" style="color:'+color+'"></i></div><div><h3 class="font-display font-700" style="color:var(--text)">'+d.name+'</h3><p class="text-sm" style="color:var(--accent)">'+d.specialty+'</p><div class="flex items-center gap-1 mt-1"><i class="fas fa-star text-yellow-400 text-xs"></i><span class="text-xs" style="color:var(--text2)">'+(d.rating||'')+'</span></div></div></div><p class="text-sm mb-2" style="color:var(--text2)">'+(d.bio||'')+'</p><div class="flex flex-wrap gap-1 mb-3">'+subsHtml+'</div><div class="flex items-center gap-2 mb-4 text-xs" style="color:var(--text3)"><i class="fas fa-map-marker-alt"></i><span>'+(d.location||'')+'</span></div><div class="mt-auto"><button onclick="requestConsultation(\''+d.id+'\',\''+d.name.replace(/'/g,"\\'")+'\')" class="btn btn-sm w-full justify-center"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div></div>';
   }).join('');
 }
 function filterDoctors(query) {
@@ -577,75 +481,37 @@ function filterDoctors(query) {
   var docs = allDoctors.filter(function(d){return d.status==='approved'&&(d.name.toLowerCase().includes(q)||d.specialty.toLowerCase().includes(q));});
   if (filteredSpecialty!=='all') docs = docs.filter(function(d){return d.specialty===filteredSpecialty;});
   var grid = document.getElementById('doctorsGrid');
-  if (!docs.length) { grid.innerHTML = '<p class="text-center col-span-full py-12" style="color:var(--text3)">لا يوجد أطباء.</p>'; return; }
-  grid.innerHTML = docs.map(function(d) {
-    return '<div class="card p-6 flex flex-col"><div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold" style="background:var(--accent)">'+d.name.charAt(0)+'</div><div><h3 class="font-display font-700" style="color:var(--text)">'+d.name+'</h3><p class="text-sm" style="color:var(--accent)">'+d.specialty+'</p></div></div><p class="text-sm mb-4" style="color:var(--text2)">'+(d.bio||'')+'</p><button onclick="requestConsultation(\''+d.id+'\',\''+d.name.replace(/'/g,"\\'")+'\')" class="btn btn-sm w-full justify-center mt-auto"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div>';
-  }).join('');
+  grid.innerHTML = docs.length ? docs.map(function(d){return '<div class="card p-6 flex flex-col"><div class="flex items-center gap-4 mb-4"><div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:var(--bg3)"><i class="fas fa-user-doctor text-2xl" style="color:var(--accent)"></i></div><div><h3 class="font-display font-700" style="color:var(--text)">'+d.name+'</h3><p class="text-sm" style="color:var(--accent)">'+d.specialty+'</p></div></div><p class="text-sm mb-4" style="color:var(--text2)">'+(d.bio||'')+'</p><button onclick="requestConsultation(\''+d.id+'\',\''+d.name.replace(/'/g,"\\'")+'\')" class="btn btn-sm w-full justify-center mt-auto"><i class="fas fa-calendar-check"></i> طلب استشارة</button></div>';}).join('') : '<p class="text-center col-span-full py-12" style="color:var(--text3)">لا يوجد.</p>';
 }
 function requestConsultation(doctorId, doctorName) {
   if (!currentUser) { navigate('auth'); showToast('يرجى تسجيل الدخول أولاً', 'info'); return; }
   showModal('طلب استشارة', '<p class="text-sm mb-4" style="color:var(--text2)">استشارة مع <strong style="color:var(--text)">'+doctorName+'</strong></p><div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">التاريخ</label><input type="date" id="consultDate" class="input" min="'+new Date().toISOString().split('T')[0]+'"></div><div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">الوقت</label><select id="consultTime" class="input"><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>01:00</option><option>02:00</option><option>03:00</option><option>04:00</option><option>05:00</option></select></div><div class="mb-4"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">وصف الشكوى</label><textarea id="consultDesc" class="input" placeholder="وصف مختصر..."></textarea></div><button onclick="submitConsultation(\''+doctorId+'\',\''+doctorName.replace(/'/g,"\\'")+'\')" class="btn w-full justify-center"><i class="fas fa-paper-plane"></i> إرسال</button>');
 }
 function submitConsultation(doctorId, doctorName) {
-  var date = document.getElementById('consultDate').value;
-  var time = document.getElementById('consultTime').value;
-  var desc = document.getElementById('consultDesc').value;
+  var date=document.getElementById('consultDate').value, time=document.getElementById('consultTime').value, desc=document.getElementById('consultDesc').value;
   if (!date||!desc) { showToast('يرجى ملء التاريخ والوصف', 'error'); return; }
-  var consult = { patientId: currentUser.uid, patientName: currentUser.displayName||currentUser.email, patientEmail: currentUser.email, doctorId: doctorId, doctorName: doctorName, date: date, time: time, description: desc, status: 'pending', createdAt: new Date().toISOString() };
-  db.ref('consultations').push(consult).then(function() { closeModal(); showToast('تم إرسال الطلب بنجاح!', 'success'); addNotification('طلب استشارة', 'تم إرسال طلبك مع '+doctorName); }).catch(function(e){ showToast('خطأ: '+e.message, 'error'); });
+  db.ref('consultations').push({ patientId:currentUser.uid, patientName:currentUser.displayName||currentUser.email, patientEmail:currentUser.email, doctorId:doctorId, doctorName:doctorName, date:date, time:time, description:desc, status:'pending', createdAt:new Date().toISOString() }).then(function(){ closeModal(); showToast('تم إرسال الطلب!', 'success'); addNotification('طلب استشارة', 'مع '+doctorName); });
 }
 function submitContact() {
-  var name=document.getElementById('contactName').value.trim(), email=document.getElementById('contactEmail').value.trim(), subject=document.getElementById('contactSubject').value.trim(), msg=document.getElementById('contactMsg').value.trim();
-  if (!name||!email||!subject||!msg) { showToast('يرجى ملء جميع الحقول', 'error'); return; }
-  db.ref('messages').push({name:name,email:email,subject:subject,message:msg,type:'contact',createdAt:new Date().toISOString()}).then(function(){showToast('تم إرسال الرسالة!','success');document.getElementById('contactName').value='';document.getElementById('contactEmail').value='';document.getElementById('contactSubject').value='';document.getElementById('contactMsg').value='';});
+  var n=document.getElementById('contactName').value.trim(),e=document.getElementById('contactEmail').value.trim(),s=document.getElementById('contactSubject').value.trim(),m=document.getElementById('contactMsg').value.trim();
+  if(!n||!e||!s||!m){showToast('املأ جميع الحقول','error');return;}
+  db.ref('messages').push({name:n,email:e,subject:s,message:m,createdAt:new Date().toISOString()}).then(function(){showToast('تم الإرسال!','success');document.getElementById('contactName').value='';document.getElementById('contactEmail').value='';document.getElementById('contactSubject').value='';document.getElementById('contactMsg').value='';});
 }
 
-/* ===================== الدردشة ===================== */
-function toggleChat() {
-  chatOpen = !chatOpen;
-  document.getElementById('chatWindow').classList.toggle('open', chatOpen);
-  document.getElementById('chatFabIcon').className = chatOpen ? 'fas fa-times' : 'fas fa-comments';
-  document.getElementById('chatFab').classList.remove('has-new');
-  if (chatOpen && currentUser) loadChatMessages();
-}
-function sendChatMessage() {
-  var input = document.getElementById('chatInput');
-  var text = input.value.trim();
-  if (!text) return;
-  if (!currentUser) { navigate('auth'); showToast('يرجى تسجيل الدخول أولاً', 'info'); return; }
-  var chatId = 'chat_' + currentUser.uid;
-  var msg = { from: 'user', text: text, time: new Date().toISOString() };
-  appendChatBubble(msg);
-  input.value = '';
-  db.ref('chats/' + chatId + '/messages').push(msg);
-  db.ref('chatUsers/' + currentUser.uid).update({ name: currentUser.displayName||currentUser.email, email: currentUser.email||'', lastMessage: text.substring(0,50), lastTime: new Date().toISOString() });
-}
-function appendChatBubble(msg) {
-  var container = document.getElementById('chatMessages');
-  var div = document.createElement('div');
-  div.className = 'chat-msg ' + (msg.from === 'user' ? 'user' : 'admin');
-  div.innerHTML = '<span>'+msg.text+'</span><span class="time">'+(msg.time ? new Date(msg.time).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : 'الآن')+'</span>';
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-function loadChatMessages() {
-  var chatId = 'chat_' + currentUser.uid;
-  if (chatListeners[chatId]) { db.ref('chats/' + chatId + '/messages').off('child_added', chatListeners[chatId]); }
-  db.ref('chats/' + chatId + '/messages').once('value').then(function(snap) {
-    var data = snap.val();
-    var container = document.getElementById('chatMessages');
-    container.innerHTML = '';
-    if (!data) { container.innerHTML = '<div class="chat-msg admin"><span>مرحباً بك في استشرني!</span><span class="time">الآن</span></div>'; return; }
-    Object.keys(data).forEach(function(k){ appendChatBubble(data[k]); });
-  });
-  chatListeners[chatId] = db.ref('chats/' + chatId + '/messages').on('child_added', function(snap) {
-    var msg = snap.val();
-    if (!msg || msg.from !== 'admin') return;
-    if (chatOpen) { appendChatBubble(msg); } else { document.getElementById('chatFab').classList.add('has-new'); addNotification('رسالة من الدعم', msg.text); }
-  });
-}
+/* =============== الدردشة =============== */
+function toggleChat() { chatOpen=!chatOpen; document.getElementById('chatWindow').classList.toggle('open',chatOpen); document.getElementById('chatFabIcon').className=chatOpen?'fas fa-times':'fas fa-comments'; document.getElementById('chatFab').classList.remove('has-new'); if(chatOpen&&currentUser)loadChatMessages(); }
+function sendChatMessage() { var input=document.getElementById('chatInput'),text=input.value.trim(); if(!text)return; if(!currentUser){navigate('auth');showToast('سجل دخولك أولاً','info');return;} var chatId='chat_'+currentUser.uid,msg={from:'user',text:text,time:new Date().toISOString()}; appendChatBubble(msg); input.value=''; db.ref('chats/'+chatId+'/messages').push(msg); db.ref('chatUsers/'+currentUser.uid).update({name:currentUser.displayName||currentUser.email,email:currentUser.email||'',lastMessage:text.substring(0,50),lastTime:new Date().toISOString()}); }
+function appendChatBubble(msg) { var c=document.getElementById('chatMessages'),d=document.createElement('div'); d.className='chat-msg '+(msg.from==='user'?'user':'admin'); d.innerHTML='<span>'+msg.text+'</span><span class="time">'+(msg.time?new Date(msg.time).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}):'الآن')+'</span>'; c.appendChild(d); c.scrollTop=c.scrollHeight; }
+function loadChatMessages() { var chatId='chat_'+currentUser.uid; if(chatListeners[chatId])try{db.ref('chats/'+chatId+'/messages').off('child_added',chatListeners[chatId]);}catch(e){} db.ref('chats/'+chatId+'/messages').once('value').then(function(snap){var data=snap.val(),c=document.getElementById('chatMessages');c.innerHTML='';if(!data){c.innerHTML='<div class="chat-msg admin"><span>مرحباً بك في استشرني!</span></div>';return;}Object.keys(data).forEach(function(k){appendChatBubble(data[k]);});}); chatListeners[chatId]=db.ref('chats/'+chatId+'/messages').on('child_added',function(snap){var msg=snap.val();if(!msg||msg.from!=='admin')return;if(chatOpen)appendChatBubble(msg);else{document.getElementById('chatFab').classList.add('has-new');addNotification('رسالة من الدعم',msg.text);}}); }
 
-/* ===================== المصادقة ===================== */
+/* =============== التحقق من المدخلات =============== */
+function validateName(name) { var parts = name.trim().split(/\s+/); return parts.length >= 3; }
+function validatePhone(phone) { var p = phone.trim().replace(/\s/g,''); return p.length === 10 && (p.startsWith('77') || p.startsWith('78')); }
+function validateEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()); }
+function showErr(id, show) { var el = document.getElementById(id); if(el){if(show){el.classList.add('show');el.previousElementSibling.classList.add('err');}else{el.classList.remove('show');el.previousElementSibling.classList.remove('err');}} }
+function clearAllErrors() { document.querySelectorAll('.err-msg').forEach(function(e){e.classList.remove('show');}); document.querySelectorAll('.input').forEach(function(e){e.classList.remove('err');}); }
+
+/* =============== المصادقة =============== */
 function setupAuthListener() {
   auth.onAuthStateChanged(async function(user) {
     currentUser = user;
@@ -653,72 +519,36 @@ function setupAuthListener() {
       try {
         var snap = await db.ref('users/' + user.uid).once('value');
         var userData = snap.val();
-        if (userData) {
-          currentUser.role = userData.role || 'patient';
-          if (!user.displayName && userData.name) await user.updateProfile({ displayName: userData.name });
-        } else {
-          var newUserData = { name: user.displayName||user.email?.split('@')[0]||'مستخدم', email: user.email||'', role: selectedRole, phone: '', createdAt: new Date().toISOString() };
-          await db.ref('users/' + user.uid).set(newUserData);
-          currentUser.role = selectedRole;
-        }
-      } catch(e) { currentUser.role = selectedRole; }
-      updateUIForUser();
-      showToast('مرحباً ' + (currentUser.displayName||currentUser.email||'') + '!', 'success');
-      if (currentUser.role === 'admin') navigate('admin-dashboard');
-      else if (currentUser.role === 'doctor') navigate('profile');
-      else navigate('home');
-    } else {
-      updateUIForGuest();
-      selectedRole = 'patient';
-      isSignUp = false;
-    }
+        if (userData) { currentUser.role = userData.role || 'patient'; if (!user.displayName && userData.name) await user.updateProfile({ displayName: userData.name }); }
+        else { var d = { name: user.displayName||user.email?.split('@')[0]||'مستخدم', email: user.email||'', phone: '', location: '', role: 'patient', createdAt: new Date().toISOString() }; await db.ref('users/' + user.uid).set(d); currentUser.role = 'patient'; }
+      } catch(e) { currentUser.role = 'patient'; }
+      updateUIForUser(); showToast('مرحباً ' + (currentUser.displayName||currentUser.email||'') + '!', 'success');
+      if (currentUser.role === 'admin') navigate('admin-dashboard'); else if (currentUser.role === 'doctor') navigate('profile'); else navigate('home');
+    } else { updateUIForGuest(); isSignUp = false; }
     updateNotifUI();
   });
 }
-function updateUIForUser() {
-  document.getElementById('loginBtn').classList.add('hidden');
-  document.getElementById('userMenu').classList.remove('hidden');
-  var name = currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'مستخدم');
-  document.getElementById('userName').textContent = name;
-  document.getElementById('userAvatar').textContent = name.charAt(0);
-}
-function updateUIForGuest() {
-  document.getElementById('loginBtn').classList.remove('hidden');
-  document.getElementById('userMenu').classList.add('hidden');
-  document.getElementById('navNotif').classList.add('hidden');
+function updateUIForUser() { document.getElementById('loginBtn').classList.add('hidden'); document.getElementById('userMenu').classList.remove('hidden'); var name=currentUser.displayName||(currentUser.email?currentUser.email.split('@')[0]:'مستخدم'); document.getElementById('userName').textContent=name; document.getElementById('userAvatar').textContent=name.charAt(0); }
+function updateUIForGuest() { document.getElementById('loginBtn').classList.remove('hidden'); document.getElementById('userMenu').classList.add('hidden'); document.getElementById('navNotif').classList.add('hidden'); }
+
+function toggleAuthMode() {
+  isSignUp = !isSignUp;
+  clearAllErrors();
+  document.getElementById('signInForm').classList.toggle('hidden', isSignUp);
+  document.getElementById('signUpForm').classList.toggle('hidden', false);
+  document.getElementById('doctorRegForm').classList.add('hidden');
+  document.getElementById('authTitle').textContent = isSignUp ? 'إنشاء حساب جديد' : 'مرحباً بعودتك';
+  document.getElementById('authSubtitle').textContent = isSignUp ? 'أنشئ حسابك للبدء' : 'سجل دخولك إلى حسابك';
 }
 
-function selectRole(role) {
-  selectedRole = role;
-  document.querySelectorAll('.role-btn').forEach(function(b) {
-    if(b.dataset.role===role){b.style.borderColor='var(--accent)';b.style.background='var(--bg3)';b.style.color='var(--accent)';}
-    else{b.style.borderColor='var(--border)';b.style.background='transparent';b.style.color='var(--text2)';}
-  });
-  if (role === 'admin') {
-    isSignUp = false;
-    document.getElementById('signInForm').classList.remove('hidden');
-    document.getElementById('signUpForm').classList.add('hidden');
-    document.getElementById('doctorRegForm').classList.add('hidden');
-    document.getElementById('authTitle').textContent = 'دخول المشرف';
-    document.getElementById('authSubtitle').textContent = 'استخدم بيانات المشرف للدخول';
-  } else {
-    document.getElementById('authTitle').textContent = isSignUp ? 'إنشاء حساب' : 'مرحباً بعودتك';
-    document.getElementById('authSubtitle').textContent = isSignUp ? 'أدخل بياناتك' : 'سجل دخولك';
-    document.getElementById('doctorRegForm').classList.toggle('hidden', role!=='doctor'||!isSignUp);
-  }
+function showDoctorReg() {
+  clearAllErrors();
+  document.getElementById('signUpForm').classList.add('hidden');
+  document.getElementById('doctorRegForm').classList.remove('hidden');
 }
-function toggleAuthMode() {
-  if (selectedRole === 'admin') { showToast('حساب المشرف لا يمكن إنشاؤه من هنا', 'info'); return; }
-  isSignUp = !isSignUp;
-  document.getElementById('signInForm').classList.toggle('hidden', isSignUp);
-  document.getElementById('signUpForm').classList.toggle('hidden', isSignUp || selectedRole==='doctor');
-  document.getElementById('doctorRegForm').classList.toggle('hidden', selectedRole!=='doctor'||!isSignUp);
-  document.getElementById('authTitle').textContent = isSignUp ? 'إنشاء حساب' : 'مرحباً بعودتك';
-  document.getElementById('authSubtitle').textContent = isSignUp ? 'أدخل بياناتك' : 'سجل دخولك';
-}
+
 function setLoading(btnId, loading) {
-  var btn = document.getElementById(btnId);
-  if (!btn) return;
+  var btn = document.getElementById(btnId); if (!btn) return;
   if (loading) { btn.disabled=true; btn.style.opacity='0.7'; btn.dataset.origHtml=btn.innerHTML; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جارٍ المعالجة...'; }
   else { btn.disabled=false; btn.style.opacity='1'; btn.innerHTML=btn.dataset.origHtml||btn.innerHTML; }
 }
@@ -727,37 +557,46 @@ async function emailSignIn() {
   var email = document.getElementById('loginEmail').value.trim();
   var pass = document.getElementById('loginPass').value;
   if (!email||!pass) { showToast('يرجى إدخال البريد وكلمة المرور', 'error'); return; }
-  if (pass.length < 6) { showToast('كلمة المرور قصيرة', 'error'); return; }
   setLoading('signInBtn', true);
   try {
     var cred = await auth.signInWithEmailAndPassword(email, pass);
-    if (selectedRole === 'admin') {
-      var snap = await db.ref('users/' + cred.user.uid).once('value');
-      var userData = snap.val();
-      if (!userData || userData.role !== 'admin') { await auth.signOut(); showToast('ليس لديك صلاحية مشرف', 'error'); setLoading('signInBtn', false); return; }
-    }
-    showToast('تم تسجيل الدخول!', 'success');
+    var snap = await db.ref('users/' + cred.user.uid).once('value');
+    var userData = snap.val();
+    if (!userData || userData.role !== 'admin') {
+      if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+        await db.ref('users/' + cred.user.uid).set({ name: 'مدير استشرني', email: ADMIN_EMAIL, phone: '', location: '', role: 'admin', createdAt: new Date().toISOString() });
+        showToast('تم تسجيل الدخول كمشرف!', 'success');
+      } else {
+        await auth.signOut();
+        showToast('البريد أو كلمة المرور غير صحيحة', 'error');
+      }
+    } else { showToast('تم تسجيل الدخول!', 'success'); }
   } catch(e) {
     var msg = 'حدث خطأ';
     if (e.code==='auth/user-not-found'||e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') msg='البريد أو كلمة المرور غير صحيحة';
-    else if (e.code==='auth/invalid-email') msg='صيغة البريد غير صحيحة';
     else if (e.code==='auth/too-many-requests') msg='محاولات كثيرة. حاول بعد قليل';
     else if (e.message) msg=e.message;
     showToast(msg, 'error');
   }
   setLoading('signInBtn', false);
 }
+
 async function emailSignUp() {
-  var name=document.getElementById('regName').value.trim(), email=document.getElementById('regEmail').value.trim(), pass=document.getElementById('regPass').value, confirm=document.getElementById('regPassConfirm').value;
-  if (!name||!email||!pass) { showToast('يرجى ملء جميع الحقول', 'error'); return; }
-  if (pass.length<6) { showToast('كلمة المرور قصيرة', 'error'); return; }
-  if (pass!==confirm) { showToast('كلمتا المرور غير متطابقتين', 'error'); return; }
+  clearAllErrors();
+  var name=document.getElementById('regName').value.trim(), phone=document.getElementById('regPhone').value.trim(), location=document.getElementById('regLocation').value.trim(), email=document.getElementById('regEmail').value.trim(), pass=document.getElementById('regPass').value;
+  var valid = true;
+  if (!validateName(name)) { showErr('errName', true); valid = false; } else { showErr('errName', false); }
+  if (!validatePhone(phone)) { showErr('errPhone', true); valid = false; } else { showErr('errPhone', false); }
+  if (!location) { showErr('errLocation', true); valid = false; } else { showErr('errLocation', false); }
+  if (!validateEmail(email)) { showErr('errEmail', true); valid = false; } else { showErr('errEmail', false); }
+  if (!pass || pass.length < 6) { showErr('errPass', true); valid = false; } else { showErr('errPass', false); }
+  if (!valid) return;
   setLoading('signUpBtn', true);
   try {
     var cred = await auth.createUserWithEmailAndPassword(email, pass);
     await cred.user.updateProfile({ displayName: name });
-    await db.ref('users/' + cred.user.uid).set({name:name,email:email,role:selectedRole,phone:'',createdAt:new Date().toISOString()});
-    showToast('تم إنشاء الحساب!', 'success');
+    await db.ref('users/' + cred.user.uid).set({ name:name, email:email, phone:phone, location:location, role:'patient', createdAt:new Date().toISOString() });
+    showToast('تم إنشاء الحساب بنجاح!', 'success');
   } catch(e) {
     var msg='خطأ';
     if(e.code==='auth/email-already-in-use') msg='البريد مستخدم بالفعل';
@@ -767,151 +606,106 @@ async function emailSignUp() {
   }
   setLoading('signUpBtn', false);
 }
+
 async function doctorSignUp() {
-  var name=document.getElementById('docRegName').value.trim(), email=document.getElementById('docRegEmail').value.trim(), pass=document.getElementById('docRegPass').value, spec=document.getElementById('docRegSpecialty').value, exp=document.getElementById('docRegExp').value.trim(), qual=document.getElementById('docRegQual').value.trim(), bio=document.getElementById('docRegBio').value.trim();
-  if (!name||!email||!pass||!spec||!exp||!qual) { showToast('يرجى ملء جميع الحقول', 'error'); return; }
+  clearAllErrors();
+  var name=document.getElementById('docRegName').value.trim(), phone=document.getElementById('docRegPhone').value.trim(), location=document.getElementById('docRegLocation').value.trim(), email=document.getElementById('docRegEmail').value.trim(), pass=document.getElementById('docRegPass').value, spec=document.getElementById('docRegSpecialty').value, exp=document.getElementById('docRegExp').value.trim(), qual=document.getElementById('docRegQual').value.trim(), bio=document.getElementById('docRegBio').value.trim();
+  var valid = true;
+  if (!validateName(name)) { showErr('errDocName', true); valid = false; } else { showErr('errDocName', false); }
+  if (!validatePhone(phone)) { showErr('errDocPhone', true); valid = false; } else { showErr('errDocPhone', false); }
+  if (!location) { showErr('errDocLoc', true); valid = false; } else { showErr('errDocLoc', false); }
+  if (!validateEmail(email)) { showErr('errDocEmail', true); valid = false; } else { showErr('errDocEmail', false); }
+  if (!pass || pass.length < 6) { showErr('errDocPass', true); valid = false; } else { showErr('errDocPass', false); }
+  if (!spec) { showErr('errDocSpec', true); valid = false; } else { showErr('errDocSpec', false); }
+  if (!valid) return;
   setLoading('docSignUpBtn', true);
   try {
     var cred = await auth.createUserWithEmailAndPassword(email, pass);
     await cred.user.updateProfile({ displayName: name });
-    await db.ref('doctors').push({name:name,email:email,specialty:spec,experience:exp,qualifications:qual,bio:bio,photo:'',status:'pending',rating:0,createdAt:new Date().toISOString()});
-    await db.ref('users/' + cred.user.uid).set({name:name,email:email,role:'doctor',phone:'',createdAt:new Date().toISOString()});
-    showToast('تم إرسال التسجيل! بانتظار المراجعة.', 'success');
+    await db.ref('doctors').push({ name:name, email:email, phone:phone, location:location, specialty:spec, experience:exp||'', qualifications:qual||'', bio:bio||'', status:'pending', rating:0, createdAt:new Date().toISOString() });
+    await db.ref('users/' + cred.user.uid).set({ name:name, email:email, phone:phone, location:location, role:'doctor', createdAt:new Date().toISOString() });
+    showToast('تم إرسال طلب المشاركة! بانتظار مراجعة الإدارة.', 'success');
   } catch(e) { showToast(e.message||'خطأ','error'); }
   setLoading('docSignUpBtn', false);
 }
-function googleSignIn() {
-  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(cred) {
-    db.ref('users/'+cred.user.uid).once('value').then(function(snap) {
-      if(!snap.val()) db.ref('users/'+cred.user.uid).set({name:cred.user.displayName||'',email:cred.user.email||'',role:selectedRole,phone:'',createdAt:new Date().toISOString()});
-    });
-  }).catch(function(e){ if(e.code!=='auth/popup-closed-by-user') showToast(e.message||'خطأ','error'); });
-}
-function facebookSignIn() {
-  auth.signInWithPopup(new firebase.auth.FacebookAuthProvider()).then(function(cred) {
-    db.ref('users/'+cred.user.uid).once('value').then(function(snap) {
-      if(!snap.val()) db.ref('users/'+cred.user.uid).set({name:cred.user.displayName||'',email:cred.user.email||'',role:selectedRole,phone:'',createdAt:new Date().toISOString()});
-    });
-  }).catch(function(e){ if(e.code!=='auth/popup-closed-by-user') showToast(e.message||'خطأ','error'); });
-}
+
 async function logout() {
-  chatOpen = false;
-  document.getElementById('chatWindow').classList.remove('open');
-  document.getElementById('chatFabIcon').className = 'fas fa-comments';
-  Object.keys(chatListeners).forEach(function(key) { try{db.ref('chats/'+key+'/messages').off('child_added',chatListeners[key]);}catch(e){} });
-  chatListeners = {};
-  try { await auth.signOut(); } catch(e) {}
-  currentUser = null;
-  updateUIForGuest();
-  navigate('home');
-  showToast('تم تسجيل الخروج', 'info');
+  chatOpen=false; document.getElementById('chatWindow').classList.remove('open'); document.getElementById('chatFabIcon').className='fas fa-comments';
+  Object.keys(chatListeners).forEach(function(k){try{db.ref('chats/'+k+'/messages').off('child_added',chatListeners[k]);}catch(e){}}); chatListeners={};
+  try{await auth.signOut();}catch(e){}
+  currentUser=null; updateUIForGuest(); navigate('home'); showToast('تم تسجيل الخروج','info');
 }
 
-/* ===================== نوافذ ===================== */
-function showModal(title, content) {
-  document.getElementById('modalContainer').innerHTML = '<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="flex items-center justify-between mb-5"><h3 class="font-display font-700 text-lg" style="color:var(--text)">'+title+'</h3><button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text3)"><i class="fas fa-times"></i></button></div>'+content+'</div></div>';
-}
-function closeModal() { document.getElementById('modalContainer').innerHTML = ''; }
+/* =============== نوافذ =============== */
+function showModal(title, content) { document.getElementById('modalContainer').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="flex items-center justify-between mb-5"><h3 class="font-display font-700 text-lg" style="color:var(--text)">'+title+'</h3><button onclick="closeModal()" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:var(--bg3);color:var(--text3)"><i class="fas fa-times"></i></button></div>'+content+'</div></div>'; }
+function closeModal() { document.getElementById('modalContainer').innerHTML=''; }
 
-/* ===================== لوحة المشرف ===================== */
+/* =============== لوحة المشرف =============== */
 function showAdminTab(tab, el) {
-  document.querySelectorAll('.admin-tab').forEach(function(t){t.classList.add('hidden');});
-  document.getElementById('tab-'+tab).classList.remove('hidden');
-  document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active');});
-  if (el) el.classList.add('active');
+  document.querySelectorAll('.admin-tab').forEach(function(t){t.classList.add('hidden');}); document.getElementById('tab-'+tab).classList.remove('hidden');
+  document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active');}); if(el) el.classList.add('active');
   document.getElementById('adminSidebar').classList.remove('open');
-  if(tab==='overview') loadAdminOverview();
-  if(tab==='doctors') loadAdminDoctors();
-  if(tab==='users') loadAdminUsers();
-  if(tab==='requests') loadAdminConsultations();
-  if(tab==='messages') loadAdminMessages();
-  if(tab==='chat-mgmt') loadAdminChats();
-  if(tab==='admin-mgmt') loadAdminMgmt();
-  if(tab==='settings') loadSettings();
+  if(tab==='overview') loadAdminOverview(); if(tab==='doctors') loadAdminDoctors(); if(tab==='users') loadAdminUsers();
+  if(tab==='requests') loadAdminConsultations(); if(tab==='messages') loadAdminMessages(); if(tab==='chat-mgmt') loadAdminChats(); if(tab==='settings') loadSettings();
 }
 function loadAdminData() { loadAdminOverview(); }
-
 function loadAdminOverview() {
-  Promise.all([db.ref('doctors').once('value'),db.ref('users').once('value'),db.ref('consultations').once('value')]).then(function(results) {
-    var d=results[0].val()||{}, u=results[1].val()||{}, c=results[2].val()||{};
-    var ad=Object.values(d).filter(function(x){return x.status==='approved';}).length;
-    var pd=Object.values(d).filter(function(x){return x.status==='pending';}).length;
-    document.getElementById('adminStats').innerHTML = '<div class="stat-card"><div class="stat-num">'+Object.keys(u).length+'</div><p class="text-sm mt-1" style="color:var(--text3)">المستخدمين</p></div><div class="stat-card"><div class="stat-num">'+ad+'</div><p class="text-sm mt-1" style="color:var(--text3)">الأطباء النشطين</p></div><div class="stat-card"><div class="stat-num">'+Object.keys(c).length+'</div><p class="text-sm mt-1" style="color:var(--text3)">الاستشارات</p></div><div class="stat-card"><div class="stat-num">'+pd+'</div><p class="text-sm mt-1" style="color:var(--text3)">طلبات معلقة</p></div>';
-    var recentU=Object.entries(u).slice(-5).reverse();
-    document.getElementById('recentUsers').innerHTML=recentU.length?recentU.map(function(item){var id=item[0],uu=item[1];return '<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:var(--accent)">'+(uu.name||'م').charAt(0)+'</div><div><p class="text-sm font-medium" style="color:var(--text)">'+(uu.name||'-')+'</p><p class="text-xs" style="color:var(--text3)">'+(uu.role==='admin'?'مشرف':uu.role==='doctor'?'طبيب':'مريض')+'</p></div></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا يوجد</p>';
-    var recentC=Object.entries(c).slice(-5).reverse();
-    document.getElementById('recentConsultations').innerHTML=recentC.length?recentC.map(function(item){var cc=item[1];return '<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">'+(cc.patientName||'-')+' - '+(cc.doctorName||'-')+'</p><p class="text-xs" style="color:var(--text3)">'+(cc.date||'')+'</p></div><span class="badge '+(cc.status==='pending'?'badge-yellow':cc.status==='approved'?'badge-green':'badge-red')+' text-xs">'+(cc.status==='pending'?'معلق':cc.status==='approved'?'مقبول':'مرفوض')+'</span></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد</p>';
+  Promise.all([db.ref('doctors').once('value'),db.ref('users').once('value'),db.ref('consultations').once('value')]).then(function(r) {
+    var d=r[0].val()||{},u=r[1].val()||{},c=r[2].val()||{};
+    var ad=Object.values(d).filter(function(x){return x.status==='approved';}).length, pd=Object.values(d).filter(function(x){return x.status==='pending';}).length;
+    document.getElementById('adminStats').innerHTML='<div class="stat-card"><div class="stat-num">'+Object.keys(u).length+'</div><p class="text-sm mt-1" style="color:var(--text3)">المستخدمين</p></div><div class="stat-card"><div class="stat-num">'+ad+'</div><p class="text-sm mt-1" style="color:var(--text3)">أطباء نشطين</p></div><div class="stat-card"><div class="stat-num">'+Object.keys(c).length+'</div><p class="text-sm mt-1" style="color:var(--text3)">استشارات</p></div><div class="stat-card"><div class="stat-num">'+pd+'</div><p class="text-sm mt-1" style="color:var(--text3)">طلبات معلقة</p></div>';
+    var rU=Object.entries(u).slice(-5).reverse();
+    document.getElementById('recentUsers').innerHTML=rU.length?rU.map(function(i){var uu=i[1];return '<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold" style="background:var(--accent)">'+(uu.name||'م').charAt(0)+'</div><div><p class="text-sm font-medium" style="color:var(--text)">'+(uu.name||'-')+'</p><p class="text-xs" style="color:var(--text3)">'+(uu.role==='admin'?'مشرف':uu.role==='doctor'?'طبيب':'مريض')+(uu.location?' - '+uu.location:'')+'</p></div></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا يوجد</p>';
+    var rC=Object.entries(c).slice(-5).reverse();
+    document.getElementById('recentConsultations').innerHTML=rC.length?rC.map(function(i){var cc=i[1];return '<div class="flex items-center gap-3 py-2" style="border-bottom:1px solid var(--border)"><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">'+(cc.patientName||'-')+' ← '+(cc.doctorName||'-')+'</p><p class="text-xs" style="color:var(--text3)">'+(cc.date||'')+'</p></div><span class="badge '+(cc.status==='pending'?'badge-yellow':cc.status==='approved'?'badge-green':'badge-red')+' text-xs">'+(cc.status==='pending'?'معلق':cc.status==='approved'?'مقبول':'مرفوض')+'</span></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد</p>';
   });
 }
 function loadAdminDoctors() {
   db.ref('doctors').once('value').then(function(snap) {
     var data=snap.val()||{}; allDoctors=Object.keys(data).map(function(id){return Object.assign({id:id},data[id]);});
-    var pending=allDoctors.filter(function(d){return d.status==='pending';});
-    var ps=document.getElementById('pendingDoctorsSection');
-    if(pending.length){ps.classList.remove('hidden');document.getElementById('pendingDoctorsList').innerHTML=pending.map(function(d){return '<div class="card p-4 flex items-center gap-4"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold" style="background:var(--accent)">'+d.name.charAt(0)+'</div><div class="flex-1"><p class="font-medium text-sm" style="color:var(--text)">'+d.name+'</p><p class="text-xs" style="color:var(--text3)">'+d.specialty+'</p></div><div class="flex gap-2"><button onclick="approveDoctor(\''+d.id+'\')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button><button onclick="rejectDoctor(\''+d.id+'\')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div></div>';}).join('');}else{ps.classList.add('hidden');}
+    var pending=allDoctors.filter(function(d){return d.status==='pending';}), ps=document.getElementById('pendingDoctorsSection');
+    if(pending.length){ps.classList.remove('hidden');document.getElementById('pendingDoctorsList').innerHTML=pending.map(function(d){return '<div class="card p-4"><div class="flex items-center gap-3 mb-2"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold" style="background:var(--accent)">'+d.name.charAt(0)+'</div><div><p class="font-medium text-sm" style="color:var(--text)">'+d.name+'</p><p class="text-xs" style="color:var(--text3)">'+d.specialty+' | '+d.phone+'</p></div></div><p class="text-xs mb-3" style="color:var(--text2)">'+(d.bio||'')+'</p><div class="flex gap-2"><button onclick="approveDoctor(\''+d.id+'\')" class="btn btn-sm btn-success"><i class="fas fa-check"></i> قبول</button><button onclick="rejectDoctor(\''+d.id+'\')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i> رفض</button></div></div>';}).join('');}else{ps.classList.add('hidden');}
     var others=allDoctors.filter(function(d){return d.status!=='pending';});
-    document.getElementById('adminDoctorsTable').innerHTML=others.length?others.map(function(d){return '<tr><td><div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)">'+d.name.charAt(0)+'</div></td><td style="color:var(--text)">'+d.name+'</td><td style="color:var(--text2)">'+d.specialty+'</td><td><span class="badge '+(d.status==='approved'?'badge-green':'badge-red')+'">'+(d.status==='approved'?'مقبول':'مرفوض')+'</span></td><td><div class="flex gap-2"><button onclick="deleteDoctor(\''+d.id+'\')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></div></td></tr>';}).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا يوجد</td></tr>';
+    document.getElementById('adminDoctorsTable').innerHTML=others.length?others.map(function(d){return '<tr><td style="color:var(--text)">'+d.name+'</td><td style="color:var(--text2)">'+d.specialty+'</td><td style="color:var(--text3)">'+(d.phone||'-')+'</td><td><span class="badge '+(d.status==='approved'?'badge-green':'badge-red')+'">'+(d.status==='approved'?'مقبول':'مرفوض')+'</span></td><td><button onclick="deleteDoctor(\''+d.id+'\')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td></tr>';}).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا يوجد</td></tr>';
   });
 }
 function approveDoctor(id){db.ref('doctors/'+id+'/status').set('approved').then(function(){showToast('تم القبول!','success');loadAdminDoctors();});}
 function rejectDoctor(id){db.ref('doctors/'+id+'/status').set('rejected').then(function(){showToast('تم الرفض','info');loadAdminDoctors();});}
 function deleteDoctor(id){if(!confirm('حذف هذا الطبيب؟'))return;db.ref('doctors/'+id).remove().then(function(){showToast('تم الحذف','info');loadAdminDoctors();});}
-function showAddDoctorModal(){showModal('إضافة طبيب','<div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocName" class="input" placeholder="الاسم"><input type="text" id="addDocSpec" class="input" placeholder="التخصص"></div><div class="grid grid-cols-2 gap-3 mb-3"><input type="text" id="addDocExp" class="input" placeholder="الخبرة"><input type="text" id="addDocQual" class="input" placeholder="المؤهلات"></div><div class="mb-4"><textarea id="addDocBio" class="input" placeholder="نبذة"></textarea></div><button onclick="addDoctor()" class="btn w-full justify-center"><i class="fas fa-plus"></i> إضافة</button>');}
-function addDoctor(){var n=document.getElementById('addDocName').value.trim(),s=document.getElementById('addDocSpec').value.trim();if(!n||!s){showToast('الاسم والتخصص مطلوبان','error');return;}db.ref('doctors').push({name:n,specialty:s,experience:document.getElementById('addDocExp').value.trim(),qualifications:document.getElementById('addDocQual').value.trim(),bio:document.getElementById('addDocBio').value.trim(),photo:'',status:'approved',rating:4.5,createdAt:new Date().toISOString()}).then(function(){closeModal();showToast('تمت الإضافة!','success');loadAdminDoctors();});}
 
-function loadAdminUsers(){db.ref('users').once('value').then(function(snap){var d=snap.val()||{};var users=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);});document.getElementById('adminUsersTable').innerHTML=users.length?users.map(function(u){return '<tr><td style="color:var(--text)">'+(u.name||'-')+'</td><td style="color:var(--text2)">'+(u.email||'-')+'</td><td><span class="badge '+(u.role==='admin'?'badge-red':u.role==='doctor'?'badge-blue':'badge-green')+'">'+(u.role==='admin'?'مشرف':u.role==='doctor'?'طبيب':'مريض')+'</span></td><td style="color:var(--text3)">'+(u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-EG'):'-')+'</td></tr>';}).join(''):'<tr><td colspan="4" class="text-center py-8" style="color:var(--text3)">لا يوجد</td></tr>';});}
-function loadAdminConsultations(){db.ref('consultations').once('value').then(function(snap){var d=snap.val()||{};var items=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);});document.getElementById('adminConsultTable').innerHTML=items.length?items.map(function(c){return '<tr><td style="color:var(--text)">'+(c.patientName||'-')+'</td><td style="color:var(--text2)">'+(c.doctorName||'-')+'</td><td style="color:var(--text3)">'+(c.date||'-')+'</td><td><span class="badge '+(c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red')+'">'+(c.status==='pending'?'معلق':c.status==='approved'?'مقبول':'مرفوض')+'</span></td><td>'+(c.status==='pending'?'<div class="flex gap-2"><button onclick="updateConsultStatus(\''+c.id+'\',\'approved\')" class="btn btn-sm" style="background:#22C55E;color:#fff"><i class="fas fa-check"></i></button><button onclick="updateConsultStatus(\''+c.id+'\',\'rejected\')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div>':'<span class="text-xs" style="color:var(--text3)">تمت</span>')+'</td></tr>';}).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا توجد</td></tr>';});}
-function updateConsultStatus(id,status){db.ref('consultations/'+id+'/status').set(status).then(function(){showToast('تم تحديث الحالة!','success');loadAdminConsultations();});}
+function loadAdminUsers(){db.ref('users').once('value').then(function(snap){var d=snap.val()||{};var users=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);});document.getElementById('adminUsersTable').innerHTML=users.length?users.map(function(u){return '<tr><td style="color:var(--text)">'+(u.name||'-')+'</td><td style="color:var(--text2)">'+(u.email||'-')+'</td><td style="color:var(--text3)">'+(u.phone||'-')+'</td><td style="color:var(--text3)">'+(u.location||'-')+'</td><td><span class="badge '+(u.role==='admin'?'badge-red':u.role==='doctor'?'badge-blue':'badge-green')+'">'+(u.role==='admin'?'مشرف':u.role==='doctor'?'طبيب':'مريض')+'</span></td></tr>';}).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا يوجد</td></tr>';});}
+function loadAdminConsultations(){db.ref('consultations').once('value').then(function(snap){var d=snap.val()||{};var items=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);});document.getElementById('adminConsultTable').innerHTML=items.length?items.map(function(c){return '<tr><td style="color:var(--text)">'+(c.patientName||'-')+'</td><td style="color:var(--text2)">'+(c.doctorName||'-')+'</td><td style="color:var(--text3)">'+(c.date||'-')+'</td><td><span class="badge '+(c.status==='pending'?'badge-yellow':c.status==='approved'?'badge-green':'badge-red')+'">'+(c.status==='pending'?'معلق':c.status==='approved'?'مقبول':'مرفوض')+'</span></td><td>'+(c.status==='pending'?'<div class="flex gap-2"><button onclick="updateConsultStatus(\''+c.id+'\',\'approved\')" class="btn btn-sm btn-success"><i class="fas fa-check"></i></button><button onclick="updateConsultStatus(\''+c.id+'\',\'rejected\')" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button></div>':'تمت')+'</td></tr>';}).join(''):'<tr><td colspan="5" class="text-center py-8" style="color:var(--text3)">لا توجد</td></tr>';});}
+function updateConsultStatus(id,status){db.ref('consultations/'+id+'/status').set(status).then(function(){showToast('تم التحديث!','success');loadAdminConsultations();});}
 function loadAdminMessages(){db.ref('messages').once('value').then(function(snap){var d=snap.val()||{};var items=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);}).reverse();document.getElementById('adminMessagesList').innerHTML=items.length?items.map(function(m){return '<div class="card p-4 mb-3"><div class="flex items-center gap-3 mb-2"><div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style="background:var(--accent)">'+(m.name||'م').charAt(0)+'</div><div><p class="text-sm font-medium" style="color:var(--text)">'+(m.name||'-')+'</p><p class="text-xs" style="color:var(--text3)">'+(m.email||'')+'</p></div>'+(m.subject?'<span class="badge badge-blue text-xs mr-auto">'+m.subject+'</span>':'')+'</div><p class="text-sm" style="color:var(--text2)">'+(m.message||'')+'</p></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد رسائل</p>';});}
 
 function loadAdminChats() {
   db.ref('chatUsers').once('value').then(function(snap) {
-    var data=snap.val()||{};
-    var users=Object.keys(data).map(function(uid){return Object.assign({uid:uid},data[uid]);}).sort(function(a,b){return new Date(b.lastTime||0)-new Date(a.lastTime||0);});
-    var list=document.getElementById('chatUsersList');
-    if(!users.length){list.innerHTML='<p class="text-sm" style="color:var(--text3)">لا توجد محادثات</p>';return;}
-    list.innerHTML=users.map(function(u){return '<div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition mb-1" style="border:1px solid var(--border);'+(selectedChatUser===u.uid?'background:var(--bg3)':'')+'" onclick="openAdminChat(\''+u.uid+'\',\''+(u.name||u.email||'مستخدم').replace(/'/g,"\\'")+'\')"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)">'+(u.name||'م').charAt(0)+'</div><div class="flex-1 min-w-0"><p class="text-sm font-medium truncate" style="color:var(--text)">'+(u.name||u.email||'مستخدم')+'</p><p class="text-xs truncate" style="color:var(--text3)">'+(u.lastMessage||'')+'</p></div></div>';}).join('');
+    var data=snap.val()||{}, users=Object.keys(data).map(function(uid){return Object.assign({uid:uid},data[uid]);}).sort(function(a,b){return new Date(b.lastTime||0)-new Date(a.lastTime||0);});
+    document.getElementById('chatUsersList').innerHTML=users.length?users.map(function(u){return '<div class="flex items-center gap-3 p-3 rounded-xl cursor-pointer mb-1" style="border:1px solid var(--border);'+(selectedChatUser===u.uid?'background:var(--bg3)':'')+'" onclick="openAdminChat(\''+u.uid+'\',\''+(u.name||u.email||'').replace(/'/g,"\\'")+'\')"><div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:var(--accent)">'+(u.name||'م').charAt(0)+'</div><div class="flex-1 min-w-0"><p class="text-sm font-medium truncate" style="color:var(--text)">'+(u.name||u.email||'مستخدم')+'</p><p class="text-xs truncate" style="color:var(--text3)">'+(u.lastMessage||'')+'</p></div></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد</p>';
   });
 }
 function openAdminChat(uid, name) {
-  selectedChatUser = uid;
-  document.getElementById('adminChatHeader').innerHTML = '<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:var(--accent)">'+name.charAt(0)+'</div><div><p class="text-sm font-medium" style="color:var(--text)">'+name+'</p></div>';
-  db.ref('chatUsers/'+uid+'/unread').set(0);
-  loadAdminChats();
-  var chatId='chat_'+uid;
-  db.ref('chats/'+chatId+'/messages').once('value').then(function(snap) {
-    var data=snap.val(); var container=document.getElementById('adminChatMessages'); container.innerHTML='';
-    if(!data){container.innerHTML='<p class="text-sm text-center m-auto" style="color:var(--text3)">لا توجد رسائل</p>';return;}
-    Object.keys(data).forEach(function(k){var msg=data[k]; var div=document.createElement('div'); div.className='chat-msg '+(msg.from==='admin'?'admin':'user'); div.innerHTML='<span>'+msg.text+'</span><span class="time">'+(msg.time?new Date(msg.time).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}):'')+'</span>'; container.appendChild(div); });
-    container.scrollTop=container.scrollHeight;
-  });
+  selectedChatUser=uid;
+  document.getElementById('adminChatHeader').innerHTML='<div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background:var(--accent)">'+name.charAt(0)+'</div><div><p class="text-sm font-medium" style="color:var(--text)">'+name+'</p></div>';
+  db.ref('chatUsers/'+uid+'/unread').set(0); loadAdminChats();
+  db.ref('chats/chat_'+uid+'/messages').once('value').then(function(snap){var data=snap.val(),c=document.getElementById('adminChatMessages');c.innerHTML='';if(!data){c.innerHTML='<p class="text-sm text-center m-auto" style="color:var(--text3)">لا توجد رسائل</p>';return;}Object.keys(data).forEach(function(k){var msg=data[k],div=document.createElement('div');div.className='chat-msg '+(msg.from==='admin'?'admin':'user');div.innerHTML='<span>'+msg.text+'</span><span class="time">'+(msg.time?new Date(msg.time).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}):'')+'</span>';c.appendChild(div);});c.scrollTop=c.scrollHeight;});
 }
-function sendAdminChatReply() {
-  if(!selectedChatUser){showToast('اختر محادثة أولاً','info');return;}
-  var input=document.getElementById('adminChatInput'); var text=input.value.trim(); if(!text)return;
-  db.ref('chats/chat_'+selectedChatUser+'/messages').push({from:'admin',text:text,time:new Date().toISOString()}).then(function(){input.value='';openAdminChat(selectedChatUser, document.querySelector('#adminChatHeader p').textContent);});
-}
-
-function loadAdminMgmt(){db.ref('admins').once('value').then(function(snap){var d=snap.val()||{};var items=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);});document.getElementById('adminMgmtTable').innerHTML=items.length?items.map(function(a){return '<tr><td style="color:var(--text)">'+(a.email||'-')+'</td><td><span class="badge badge-blue">'+(a.level==='Super'?'كامل':'قياسي')+'</span></td><td>'+(a.email===ADMIN_EMAIL?'<span class="text-xs" style="color:var(--text3)">المشرف الرئيسي</span>':'<button onclick="deleteAdmin(\''+a.id+'\')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>')+'</td></tr>';}).join(''):'<tr><td colspan="3" class="text-center py-8" style="color:var(--text3)">لا يوجد مشرفون إضافيون</td></tr>';});}
-function showAddAdminModal(){showModal('إضافة مشرف','<div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">البريد</label><input type="email" id="newAdminEmail" class="input" placeholder="admin@example.com"></div><div class="mb-3"><label class="block text-sm font-medium mb-2" style="color:var(--text2)">كلمة المرور</label><input type="password" id="newAdminPass" class="input" placeholder="6 أحرف على الأقل"></div><div class="mb-4"><select id="newAdminLevel" class="input"><option value="Standard">قياسي</option><option value="Super">كامل</option></select></div><button onclick="addAdmin()" class="btn w-full justify-center"><i class="fas fa-user-shield"></i> إضافة</button>');}
-async function addAdmin(){var e=document.getElementById('newAdminEmail').value.trim(),p=document.getElementById('newAdminPass').value,l=document.getElementById('newAdminLevel').value;if(!e||!p){showToast('املأ الحقول','error');return;}if(p.length<6){showToast('كلمة المرور قصيرة','error');return;}try{var cred=await auth.createUserWithEmailAndPassword(e,p);await db.ref('users/'+cred.user.uid).set({name:e.split('@')[0],email:e,role:'admin',phone:'',createdAt:new Date().toISOString()});await db.ref('admins/'+cred.user.uid).set({email:e,level:l,createdAt:new Date().toISOString()});closeModal();showToast('تمت الإضافة!','success');loadAdminMgmt();}catch(err){showToast(err.message||'خطأ','error');}}
-function deleteAdmin(id){if(!confirm('إزالة هذا المشرف؟'))return;db.ref('admins/'+id).remove().then(function(){showToast('تمت الإزالة','info');loadAdminMgmt();});}
+function sendAdminChatReply() { if(!selectedChatUser){showToast('اختر محادثة','info');return;} var input=document.getElementById('adminChatInput'),text=input.value.trim();if(!text)return; var name=document.querySelector('#adminChatHeader p').textContent; db.ref('chats/chat_'+selectedChatUser+'/messages').push({from:'admin',text:text,time:new Date().toISOString()}).then(function(){input.value='';openAdminChat(selectedChatUser,name);}); }
 
 function loadSettings(){db.ref('settings').once('value').then(function(snap){var d=snap.val()||{};if(d.name)document.getElementById('settName').value=d.name;if(d.email)document.getElementById('settEmail').value=d.email;if(d.phone)document.getElementById('settPhone').value=d.phone;if(d.description)document.getElementById('settDesc').value=d.description;});}
 function saveSettings(){db.ref('settings').set({name:document.getElementById('settName').value.trim(),email:document.getElementById('settEmail').value.trim(),phone:document.getElementById('settPhone').value.trim(),description:document.getElementById('settDesc').value.trim()}).then(function(){showToast('تم الحفظ!','success');});}
 
-/* ===================== الملف الشخصي ===================== */
+/* =============== الملف الشخصي =============== */
 function loadUserProfile() {
   if(!currentUser)return;
   var name=currentUser.displayName||currentUser.email||'مستخدم';
-  document.getElementById('profileName').textContent=name;
-  document.getElementById('profileEmail').textContent=currentUser.email||'';
+  document.getElementById('profileName').textContent=name; document.getElementById('profileEmail').textContent=currentUser.email||'';
   document.getElementById('profileAvatar').textContent=name.charAt(0);
   document.getElementById('profileRole').textContent=currentUser.role==='doctor'?'طبيب':currentUser.role==='admin'?'مشرف':'مريض';
-  db.ref('users/'+currentUser.uid).once('value').then(function(snap){var d=snap.val()||{};document.getElementById('profName').value=d.name||currentUser.displayName||'';document.getElementById('profPhone').value=d.phone||'';});
-  db.ref('consultations').orderByChild('patientId').equalTo(currentUser.uid).once('value').then(function(snap){var d=snap.val()||{};var items=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);}).reverse();document.getElementById('userConsultList').innerHTML=items.length?items.map(function(v){return '<div class="flex items-center gap-4 py-3" style="border-bottom:1px solid var(--border)"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:var(--bg3)"><i class="fas fa-user-doctor" style="color:var(--accent)"></i></div><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">'+v.doctorName+'</p><p class="text-xs" style="color:var(--text3)">'+v.date+' '+v.time+'</p></div><span class="badge '+(v.status==='pending'?'badge-yellow':v.status==='approved'?'badge-green':'badge-red')+'">'+(v.status==='pending'?'معلق':v.status==='approved'?'مقبول':'مرفوض')+'</span></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد طلبات.</p>';});
+  db.ref('users/'+currentUser.uid).once('value').then(function(snap){var d=snap.val()||{};document.getElementById('profName').value=d.name||currentUser.displayName||'';document.getElementById('profPhone').value=d.phone||'';document.getElementById('profLocation').value=d.location||'';});
+  db.ref('consultations').orderByChild('patientId').equalTo(currentUser.uid).once('value').then(function(snap){var d=snap.val()||{};var items=Object.keys(d).map(function(id){return Object.assign({id:id},d[id]);}).reverse();document.getElementById('userConsultList').innerHTML=items.length?items.map(function(v){return '<div class="flex items-center gap-4 py-3" style="border-bottom:1px solid var(--border)"><div class="flex-1"><p class="text-sm font-medium" style="color:var(--text)">'+v.doctorName+'</p><p class="text-xs" style="color:var(--text3)">'+v.date+' '+v.time+'</p></div><span class="badge '+(v.status==='pending'?'badge-yellow':v.status==='approved'?'badge-green':'badge-red')+'">'+(v.status==='pending'?'معلق':v.status==='approved'?'مقبول':'مرفوض')+'</span></div>';}).join(''):'<p class="text-sm" style="color:var(--text3)">لا توجد طلبات.</p>';});
 }
-async function updateProfile(){var n=document.getElementById('profName').value.trim(),p=document.getElementById('profPhone').value.trim();if(!n){showToast('الاسم مطلوب','error');return;}await db.ref('users/'+currentUser.uid).update({name:n,phone:p});if(currentUser.displayName!==n)await currentUser.updateProfile({displayName:n});document.getElementById('profileName').textContent=n;document.getElementById('profileAvatar').textContent=n.charAt(0);document.getElementById('userName').textContent=n;showToast('تم التحديث!','success');}
+async function updateProfile(){var n=document.getElementById('profName').value.trim(),p=document.getElementById('profPhone').value.trim(),l=document.getElementById('profLocation').value.trim();if(!n){showToast('الاسم مطلوب','error');return;}await db.ref('users/'+currentUser.uid).update({name:n,phone:p,location:l});if(currentUser.displayName!==n)await currentUser.updateProfile({displayName:n});document.getElementById('profileName').textContent=n;document.getElementById('profileAvatar').textContent=n.charAt(0);document.getElementById('userName').textContent=n;showToast('تم التحديث!','success');}
 </script>
 </body>
 </html>
