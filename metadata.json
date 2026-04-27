@@ -1,9 +1,0 @@
-{
-  "name": "Estasharni",
-  "description": "A multilingual (English/Arabic) medical consultation platform connecting patients with specialized doctors. Features include RTL support, real-time messaging, doctor verification, and a comprehensive admin terminal.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ],
-  "majorCapabilities": []
-}
