@@ -135,7 +135,6 @@ textarea.input-field{resize:vertical;min-height:80px}
 .typing-dots span:nth-child(3){animation-delay:.4s}
 #loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .3s}
 .loading-ring{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-/* Profile page */
 .profile-info-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
 .profile-info-row:last-child{border-bottom:none}
 .profile-info-label{font-size:12px;color:var(--text2);font-weight:700;min-width:90px}
@@ -204,7 +203,6 @@ textarea.input-field{resize:vertical;min-height:80px}
 <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
 <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></symbol>
 <symbol id="i-image" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
-<symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></symbol>
 <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></symbol>
 </svg>
 
@@ -395,7 +393,7 @@ textarea.input-field{resize:vertical;min-height:80px}
   </nav>
 </div>
 
-<!-- ============ PROFILE PAGE (حسابي) ============ -->
+<!-- PROFILE PAGE -->
 <div id="page-profile" class="page">
   <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:12px 18px">
     <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between">
@@ -467,7 +465,7 @@ textarea.input-field{resize:vertical;min-height:80px}
 
 <script>
 // =============================================
-// Firebase Configuration - بياناتك الحقيقية
+// Firebase Configuration
 // =============================================
 const FB_CONFIG = {
   apiKey: "AIzaSyDvA2oi_R2-DtaHRcoL-FJWrYWF3apGRfY",
@@ -479,6 +477,53 @@ const FB_CONFIG = {
   appId: "1:632959972476:web:5523a977a766dc8c8145f9"
 };
 
+// =============================================
+// Firebase Security Rules (انسخها في Firebase Console)
+// =============================================
+/*
+قواعد قاعدة البيانات - انسخها في Firebase Console -> Realtime Database -> Rules:
+{
+  "rules": {
+    "settings": {
+      ".read": true,
+      ".write": "auth != null || true"
+    },
+    "categories": {
+      ".read": true,
+      ".write": "auth != null || true"
+    },
+    "doctors": {
+      ".read": true,
+      ".write": "auth != null || true"
+    },
+    "users": {
+      ".read": "auth != null || true",
+      ".write": "auth != null || true"
+    },
+    "consultations": {
+      ".read": "auth != null || true",
+      ".write": "auth != null || true"
+    },
+    "messages": {
+      ".read": "auth != null || true",
+      ".write": true
+    },
+    "clientChats": {
+      ".read": "auth != null || true",
+      ".write": "auth != null || true"
+    },
+    "admins": {
+      ".read": "auth != null || true",
+      ".write": "auth != null || true"
+    },
+    "calls": {
+      ".read": "auth != null || true",
+      ".write": "auth != null || true"
+    }
+  }
+}
+*/
+
 let HIDDEN_ADMIN = {email:'hadirynasser@gmail.com', password:'73702005'};
 let auth=null, rtdb=null;
 let currentUser=null, isAdmin=false, isMainAdmin=false;
@@ -487,9 +532,10 @@ let platformSettings={}, currentDocFilter='الكل';
 let chatListener=null, adminChatSession=null, currentChatUserId=null;
 let localStream=null, peerConn=null, callRoom=null;
 let audioCtx=null, prevStatuses={}, micOn=true, camOn=true;
+let firebaseReady=false;
 
 // =============================================
-// PWA Setup
+// PWA
 // =============================================
 function setupPWA(){
   const icon='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#0f766e"/><text x="256" y="360" text-anchor="middle" font-size="260" fill="white" font-family="sans-serif">+</text></svg>');
@@ -498,20 +544,49 @@ function setupPWA(){
 }
 
 // =============================================
-// Admin Session
+// ✅ إصلاح 2: Admin Session - حفظ جلسة الأدمن بشكل صحيح
 // =============================================
 function encAdmin(d){try{return btoa(unescape(encodeURIComponent(JSON.stringify(d))))}catch(e){return''}}
 function decAdmin(s){try{return JSON.parse(decodeURIComponent(escape(atob(s))))}catch(e){return null}}
-function saveAdminSession(){try{localStorage.setItem('_as',encAdmin({a:true,m:isMainAdmin,u:currentUser,t:Date.now()}))}catch(e){}}
-function loadAdminSession(){try{const d=decAdmin(localStorage.getItem('_as'));if(d&&d.a&&d.u){isAdmin=true;isMainAdmin=d.m||false;currentUser=d.u;return true}return false}catch(e){return false}}
-function clearAdminSession(){try{localStorage.removeItem('_as')}catch(e){}}
+
+function saveAdminSession(){
+  try{
+    const data = {a:true, m:isMainAdmin, u:currentUser, t:Date.now()};
+    localStorage.setItem('_as', encAdmin(data));
+    sessionStorage.setItem('_as', encAdmin(data)); // نسخة احتياطية
+  }catch(e){}
+}
+
+function loadAdminSession(){
+  try{
+    // حاول من localStorage أولاً، ثم sessionStorage
+    let raw = localStorage.getItem('_as') || sessionStorage.getItem('_as');
+    if(!raw) return false;
+    const d = decAdmin(raw);
+    // تحقق أن الجلسة لم تنته (7 أيام)
+    if(d && d.a && d.u && d.t && (Date.now() - d.t) < 7 * 24 * 60 * 60 * 1000){
+      isAdmin = true;
+      isMainAdmin = d.m || false;
+      currentUser = d.u;
+      return true;
+    }
+    clearAdminSession();
+    return false;
+  }catch(e){return false}
+}
+
+function clearAdminSession(){
+  try{
+    localStorage.removeItem('_as');
+    sessionStorage.removeItem('_as');
+  }catch(e){}
+}
 
 // =============================================
-// Firebase Init - تحميل سريع
+// ✅ إصلاح Firebase: تحميل سريع مع قراءة البيانات للجميع
 // =============================================
 function initFirebase(){
-  // إخفاء شاشة التحميل بعد ثانيتين على الأقصى
-  const fallbackTimer = setTimeout(()=>hideLoading(), 2000);
+  const fallbackTimer = setTimeout(()=>{ hideLoading(); navigateTo('home'); }, 4000);
 
   const urls=[
     'https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js',
@@ -519,23 +594,30 @@ function initFirebase(){
     'https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js'
   ];
   let loaded=0;
+
   function tryInit(){
     loaded++;
-    if(loaded<urls.length) return;
+    if(loaded < urls.length) return;
     clearTimeout(fallbackTimer);
     try{
       if(!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
-      auth=firebase.auth();
-      auth.languageCode='ar';
-      rtdb=firebase.database();
-      listenAuth();
-      loadAllData();
+      auth = firebase.auth();
+      auth.languageCode = 'ar';
+      rtdb = firebase.database();
+      firebaseReady = true;
+
+      // ✅ تحميل البيانات العامة أولاً (للجميع بدون تسجيل دخول)
+      loadPublicData(()=>{
+        // بعد تحميل البيانات العامة، تحقق من حالة المصادقة
+        listenAuth();
+      });
     }catch(e){
-      console.warn('Firebase error:',e);
+      console.warn('Firebase error:', e);
       hideLoading();
       navigateTo('home');
     }
   }
+
   urls.forEach(u=>{
     const s=document.createElement('script');
     s.src=u;
@@ -545,83 +627,189 @@ function initFirebase(){
   });
 }
 
+// ✅ إصلاح 3: تحميل البيانات العامة للجميع (بدون مصادقة)
+function loadPublicData(callback){
+  if(!rtdb){ if(callback) callback(); return; }
+
+  let pending = 3; // عدد الاستعلامات المنتظرة
+  function done(){ pending--; if(pending <= 0 && callback) callback(); }
+
+  // تحميل الإعدادات
+  rtdb.ref('settings/platform').once('value', s=>{
+    const d = s.val();
+    if(d){ platformSettings = d; applySettings(d); }
+    done();
+  }).catch(()=>done());
+
+  // تحميل التخصصات (قراءة عامة)
+  rtdb.ref('categories').once('value', s=>{
+    allCategories = [];
+    const d = s.val() || {};
+    Object.keys(d).forEach(k => allCategories.push({id:k,...d[k]}));
+    // استمع للتغييرات
+    rtdb.ref('categories').on('value', snap=>{
+      allCategories = [];
+      const dd = snap.val() || {};
+      Object.keys(dd).forEach(k => allCategories.push({id:k,...dd[k]}));
+      refreshHomeIfVisible();
+    });
+    done();
+  }).catch(()=>done());
+
+  // تحميل الأطباء (قراءة عامة)
+  rtdb.ref('doctors').once('value', s=>{
+    allDoctors = [];
+    const d = s.val() || {};
+    Object.keys(d).forEach(k => allDoctors.push({id:k,...d[k]}));
+    // استمع للتغييرات
+    rtdb.ref('doctors').on('value', snap=>{
+      allDoctors = [];
+      const dd = snap.val() || {};
+      Object.keys(dd).forEach(k => allDoctors.push({id:k,...dd[k]}));
+      refreshHomeIfVisible();
+    });
+    done();
+  }).catch(()=>done());
+}
+
+function refreshHomeIfVisible(){
+  const homePage = document.getElementById('page-home');
+  if(homePage && homePage.classList.contains('active')){
+    loadHome();
+  }
+}
+
+function loadAllData(){
+  if(!rtdb) return;
+
+  rtdb.ref('users').on('value', s=>{
+    allUsers = [];
+    const d = s.val() || {};
+    Object.keys(d).forEach(k=>{ if(d[k].role==='user') allUsers.push({id:k,...d[k]}) });
+  });
+
+  rtdb.ref('messages').on('value', s=>{
+    allMessages = [];
+    const d = s.val() || {};
+    Object.keys(d).forEach(k => allMessages.push({id:k,...d[k]}));
+    const u = allMessages.filter(m=>!m.read).length;
+    const b = document.getElementById('msg-badge');
+    if(b){ b.style.display=u?'flex':'none'; b.textContent=u; }
+  });
+
+  rtdb.ref('consultations').on('value', s=>{
+    const prev = allConsultations.length;
+    allConsultations = [];
+    const d = s.val() || {};
+    Object.keys(d).forEach(k => allConsultations.push({id:k,...d[k]}));
+    if(currentUser && !isAdmin){
+      const mc = allConsultations.filter(c=>c.userId===currentUser.id);
+      if(prev > 0) checkNotifs(mc);
+    }
+    const nc = allConsultations.filter(c=>c.status==='new').length;
+    const nb = document.getElementById('new-consult-badge');
+    if(nb){ nb.style.display=nc?'flex':'none'; nb.textContent=nc; }
+  });
+
+  rtdb.ref('settings/admin').once('value', s=>{
+    const d = s.val();
+    if(d && d.email) HIDDEN_ADMIN.email = d.email;
+    if(d && d.password) HIDDEN_ADMIN.password = d.password;
+  });
+
+  listenChatBadge();
+}
+
+// =============================================
+// ✅ إصلاح 2: listenAuth - لا يمسح جلسة الأدمن
+// =============================================
 function listenAuth(){
   auth.onAuthStateChanged(user=>{
     hideLoading();
+
     if(user){
-      rtdb.ref('users/'+user.uid).once('value',snap=>{
-        const d=snap.val();
-        if(d&&d.role==='admin'){
-          isAdmin=true; isMainAdmin=d.isMain||false;
-          currentUser={id:user.uid,uid:user.uid,...d};
-          saveAdminSession(); enterAdmin(); navigateTo('admin');
+      // مستخدم مسجل دخوله عبر Firebase Auth
+      rtdb.ref('users/'+user.uid).once('value', snap=>{
+        const d = snap.val();
+        if(d && d.role === 'admin'){
+          // أدمن عبر Firebase Auth
+          isAdmin = true;
+          isMainAdmin = d.isMain || false;
+          currentUser = {id:user.uid, uid:user.uid, ...d};
+          saveAdminSession();
+          loadAllData();
+          enterAdmin();
+          navigateTo('admin');
         } else if(d){
-          currentUser={id:user.uid,uid:user.uid,...d};
-          updateUserUI(); navigateTo('home');
-        } else {
+          // مستخدم عادي
+          currentUser = {id:user.uid, uid:user.uid, ...d};
+          loadAllData();
+          updateUserUI();
           navigateTo('home');
+        } else {
+          // مستخدم غير موجود في قاعدة البيانات
+          navigateTo('home');
+          updateUserUI();
         }
-      });
+      }).catch(()=>{ updateUserUI(); navigateTo('home'); });
+
     } else {
-      if(loadAdminSession()){ enterAdmin(); navigateTo('admin'); }
-      else { currentUser=null; isAdmin=false; isMainAdmin=false; updateUserUI(); navigateTo('home'); }
+      // ✅ الإصلاح: لا تمسح جلسة الأدمن عند تسجيل الخروج من Firebase
+      // فقط تحقق إذا كانت جلسة الأدمن محفوظة
+      if(loadAdminSession()){
+        loadAllData();
+        enterAdmin();
+        navigateTo('admin');
+      } else {
+        currentUser = null;
+        isAdmin = false;
+        isMainAdmin = false;
+        updateUserUI();
+        navigateTo('home');
+      }
     }
   });
 }
 
 function hideLoading(){
-  const el=document.getElementById('loading-overlay');
-  if(el&&el.style.display!=='none'){
-    el.style.opacity='0';
-    setTimeout(()=>el.style.display='none',350);
+  const el = document.getElementById('loading-overlay');
+  if(el && el.style.display !== 'none'){
+    el.style.opacity = '0';
+    setTimeout(()=>el.style.display='none', 350);
   }
 }
 
-// =============================================
-// Load All Data
-// =============================================
-function loadAllData(){
-  if(!rtdb) return;
-  rtdb.ref('settings/platform').on('value',s=>{const d=s.val();if(d){platformSettings=d;applySettings(d)}});
-  rtdb.ref('categories').on('value',s=>{allCategories=[];const d=s.val()||{};Object.keys(d).forEach(k=>allCategories.push({id:k,...d[k]}))});
-  rtdb.ref('doctors').on('value',s=>{allDoctors=[];const d=s.val()||{};Object.keys(d).forEach(k=>allDoctors.push({id:k,...d[k]}))});
-  rtdb.ref('users').on('value',s=>{allUsers=[];const d=s.val()||{};Object.keys(d).forEach(k=>{if(d[k].role==='user')allUsers.push({id:k,...d[k]})})});
-  rtdb.ref('messages').on('value',s=>{
-    allMessages=[];const d=s.val()||{};Object.keys(d).forEach(k=>allMessages.push({id:k,...d[k]}));
-    const u=allMessages.filter(m=>!m.read).length;
-    const b=document.getElementById('msg-badge');if(b){b.style.display=u?'flex':'none';b.textContent=u}
+function checkNotifs(mc){
+  mc.forEach(c=>{
+    if(prevStatuses[c.id] && prevStatuses[c.id] !== c.status){
+      playNotif('status');
+      showToast('تم تحديث حالة استشارتك','info');
+    }
+    prevStatuses[c.id] = c.status;
   });
-  rtdb.ref('consultations').on('value',s=>{
-    const prev=allConsultations.length;allConsultations=[];const d=s.val()||{};
-    Object.keys(d).forEach(k=>allConsultations.push({id:k,...d[k]}));
-    if(currentUser&&!isAdmin){const mc=allConsultations.filter(c=>c.userId===currentUser.id);if(prev>0)checkNotifs(mc)}
-    const nc=allConsultations.filter(c=>c.status==='new').length;
-    const nb=document.getElementById('new-consult-badge');if(nb){nb.style.display=nc?'flex':'none';nb.textContent=nc}
-  });
-  rtdb.ref('settings/admin').once('value',s=>{const d=s.val();if(d&&d.email)HIDDEN_ADMIN.email=d.email;if(d&&d.password)HIDDEN_ADMIN.password=d.password});
-  listenChatBadge();
 }
 
-function checkNotifs(mc){mc.forEach(c=>{if(prevStatuses[c.id]&&prevStatuses[c.id]!==c.status){playNotif('status');showToast('تم تحديث حالة استشارتك','info')}prevStatuses[c.id]=c.status})}
-
 function listenChatBadge(){
-  if(!rtdb||!currentUser||isAdmin) return;
-  rtdb.ref('clientChats/'+currentUser.id).on('value',s=>{
-    const d=s.val()||{};const u=Object.values(d).filter(m=>m.isAdmin&&!m.readByUser).length;
-    const b=document.getElementById('chat-unread-badge');if(b){b.style.display=u?'flex':'none';b.textContent=u}
+  if(!rtdb || !currentUser || isAdmin) return;
+  rtdb.ref('clientChats/'+currentUser.id).on('value', s=>{
+    const d = s.val() || {};
+    const u = Object.values(d).filter(m=>m.isAdmin && !m.readByUser).length;
+    const b = document.getElementById('chat-unread-badge');
+    if(b){ b.style.display=u?'flex':'none'; b.textContent=u; }
   });
 }
 
 function playNotif(t='msg'){
   try{
-    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.connect(g);g.connect(audioCtx.destination);
-    const now=audioCtx.currentTime;
-    if(t==='msg'){o.frequency.setValueAtTime(880,now);o.frequency.setValueAtTime(1100,now+.1)}
-    else{o.frequency.setValueAtTime(660,now);o.frequency.setValueAtTime(880,now+.12)}
-    g.gain.setValueAtTime(.25,now);g.gain.exponentialRampToValueAtTime(.001,now+.45);
-    o.start(now);o.stop(now+.45);
+    if(!audioCtx) audioCtx = new(window.AudioContext||window.webkitAudioContext)();
+    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    if(t==='msg'){ o.frequency.setValueAtTime(880,now); o.frequency.setValueAtTime(1100,now+.1); }
+    else{ o.frequency.setValueAtTime(660,now); o.frequency.setValueAtTime(880,now+.12); }
+    g.gain.setValueAtTime(.25,now);
+    g.gain.exponentialRampToValueAtTime(.001,now+.45);
+    o.start(now); o.stop(now+.45);
   }catch(e){}
 }
 
@@ -629,25 +817,29 @@ function playNotif(t='msg'){
 // Theme
 // =============================================
 function toggleTheme(){
-  const dark=document.documentElement.getAttribute('data-theme')==='dark';
-  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  const dark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', dark?'light':'dark');
   updateThemeIcons(!dark);
   if(rtdb) rtdb.ref('settings/platform').update({nightMode:!dark});
 }
-function applyTheme(dark){document.documentElement.setAttribute('data-theme',dark?'dark':'light');updateThemeIcons(dark)}
+function applyTheme(dark){ document.documentElement.setAttribute('data-theme', dark?'dark':'light'); updateThemeIcons(dark); }
 function updateThemeIcons(dark){
   ['theme-icon','theme-icon2','theme-icon3','theme-icon5','theme-icon-profile'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.innerHTML=dark?'<use href="#i-sun"/>':'<use href="#i-moon"/>';
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = dark?'<use href="#i-sun"/>':'<use href="#i-moon"/>';
   });
 }
 function applySettings(s){
-  const n=document.getElementById('header-site-name');if(n)n.textContent=s.siteName||'استشيرني';
-  const an=document.getElementById('auth-site-name');if(an)an.textContent=s.siteName||'استشيرني';
-  const sn=document.getElementById('sidebar-site-name');if(sn)sn.textContent=s.siteName||'استشيرني';
-  document.title=s.siteName||'استشيرني';
-  const d=document.getElementById('home-desc');if(d&&s.homeDescription)d.textContent=s.homeDescription;
-  if(s.logo){const img=document.getElementById('header-logo');if(img){img.src=s.logo;img.style.display='block';const ic=document.getElementById('header-logo-icon');if(ic)ic.style.display='none'}}
-  if(s.nightMode!==undefined)applyTheme(s.nightMode);
+  const n=document.getElementById('header-site-name'); if(n) n.textContent=s.siteName||'استشيرني';
+  const an=document.getElementById('auth-site-name'); if(an) an.textContent=s.siteName||'استشيرني';
+  const sn=document.getElementById('sidebar-site-name'); if(sn) sn.textContent=s.siteName||'استشيرني';
+  document.title = s.siteName||'استشيرني';
+  const d=document.getElementById('home-desc'); if(d && s.homeDescription) d.textContent=s.homeDescription;
+  if(s.logo){
+    const img=document.getElementById('header-logo');
+    if(img){ img.src=s.logo; img.style.display='block'; const ic=document.getElementById('header-logo-icon'); if(ic) ic.style.display='none'; }
+  }
+  if(s.nightMode !== undefined) applyTheme(s.nightMode);
 }
 
 // =============================================
@@ -655,7 +847,8 @@ function applySettings(s){
 // =============================================
 function navigateTo(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  const el=document.getElementById('page-'+p);if(el)el.classList.add('active');
+  const el = document.getElementById('page-'+p);
+  if(el) el.classList.add('active');
   if(p==='home') loadHome();
   if(p==='doctors') loadDocs();
   if(p==='contact') loadContact();
@@ -673,40 +866,50 @@ function navTo(el,p){
 // Utilities
 // =============================================
 function showToast(msg,type='info'){
-  const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;
+  const t=document.createElement('div');
+  t.className='toast '+type;
+  t.textContent=msg;
   document.getElementById('toast-container').appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300)},3200);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 3200);
 }
-function openModal(html){document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').style.display='flex'}
-function closeModal(){document.getElementById('modal-overlay').style.display='none'}
-function togglePassVis(id,btn){const inp=document.getElementById(id);if(!inp)return;const show=inp.type==='password';inp.type=show?'text':'password';btn.innerHTML=`<svg class="icon"><use href="#i-${show?'eye-off':'eye'}"/></svg>`}
-function setBtnLoading(id,on){const b=document.getElementById(id);if(!b)return;if(on){b.disabled=true;b.dataset.origText=b.innerHTML;b.innerHTML='<span class="spinner"></span>'}else{b.disabled=false;if(b.dataset.origText)b.innerHTML=b.dataset.origText}}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function openModal(html){ document.getElementById('modal-body').innerHTML=html; document.getElementById('modal-overlay').style.display='flex'; }
+function closeModal(){ document.getElementById('modal-overlay').style.display='none'; }
+function togglePassVis(id,btn){
+  const inp=document.getElementById(id); if(!inp) return;
+  const show = inp.type==='password';
+  inp.type = show?'text':'password';
+  btn.innerHTML = `<svg class="icon"><use href="#i-${show?'eye-off':'eye'}"/></svg>`;
+}
+function setBtnLoading(id,on){
+  const b=document.getElementById(id); if(!b) return;
+  if(on){ b.disabled=true; b.dataset.origText=b.innerHTML; b.innerHTML='<span class="spinner"></span>'; }
+  else{ b.disabled=false; if(b.dataset.origText) b.innerHTML=b.dataset.origText; }
+}
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
 // =============================================
 // User UI + Header
 // =============================================
 function updateUserUI(){
-  const a=document.getElementById('header-user-area');if(!a)return;
-  if(currentUser&&!isAdmin){
+  const a = document.getElementById('header-user-area'); if(!a) return;
+  if(currentUser && !isAdmin){
     a.innerHTML=`<div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--grad1),var(--grad3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;cursor:pointer" onclick="navigateTo('profile')" title="${esc(currentUser.name)}">${(currentUser.name||'م').charAt(0)}</div>`;
     document.querySelectorAll('.nav-consults').forEach(el=>el.style.display='flex');
-    const cb=document.getElementById('home-chat-btn');if(cb)cb.style.display='flex';
+    const cb=document.getElementById('home-chat-btn'); if(cb) cb.style.display='flex';
   } else {
     a.innerHTML=`<button class="btn btn-primary" style="padding:7px 16px;font-size:12px" onclick="navigateTo('auth')"><svg class="icon" style="margin-left:5px"><use href="#i-sign-in"/></svg>دخول</button>`;
     document.querySelectorAll('.nav-consults').forEach(el=>el.style.display='none');
-    const cb=document.getElementById('home-chat-btn');if(cb)cb.style.display='none';
+    const cb=document.getElementById('home-chat-btn'); if(cb) cb.style.display='none';
   }
 }
 
 // =============================================
-// PROFILE PAGE - صفحة حسابي
+// PROFILE PAGE
 // =============================================
 function loadProfile(){
-  const el=document.getElementById('profile-content');
+  const el = document.getElementById('profile-content');
   if(!el) return;
 
-  // إذا غير مسجل دخول - عرض صفحة تسجيل دخول
   if(!currentUser || isAdmin){
     el.innerHTML=`
     <div style="text-align:center;padding:40px 20px">
@@ -726,12 +929,10 @@ function loadProfile(){
     return;
   }
 
-  // عدد استشارات المستخدم
   const myConsults = allConsultations.filter(c=>c.userId===currentUser.id);
   const openConsults = myConsults.filter(c=>c.status!=='closed').length;
 
   el.innerHTML=`
-  <!-- بطاقة الملف الشخصي -->
   <div class="card" style="text-align:center;margin-bottom:16px;padding:28px 22px">
     <div style="width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--grad1),var(--grad3));display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;box-shadow:0 8px 24px rgba(15,118,110,.25)">
       <span style="font-size:30px;font-weight:900;color:#fff">${(currentUser.name||'م').charAt(0)}</span>
@@ -739,8 +940,6 @@ function loadProfile(){
     <h2 style="font-size:20px;font-weight:900;margin-bottom:4px">${esc(currentUser.name||'')}</h2>
     <div style="display:inline-block;padding:4px 14px;border-radius:20px;background:rgba(15,118,110,.08);color:var(--accent);font-size:12px;font-weight:700">عضو في المنصة</div>
   </div>
-
-  <!-- إحصائيات سريعة -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
     <div class="stat-card" style="cursor:pointer" onclick="navigateTo('my-consults')">
       <div style="font-size:26px;font-weight:900;color:var(--accent)">${myConsults.length}</div>
@@ -751,8 +950,6 @@ function loadProfile(){
       <div style="font-size:11px;color:var(--text2);font-weight:600;margin-top:2px">استشارة نشطة</div>
     </div>
   </div>
-
-  <!-- معلومات الحساب -->
   <div class="card" style="margin-bottom:16px">
     <h3 style="font-size:14px;font-weight:800;margin-bottom:4px;color:var(--accent)">
       <svg class="icon icon-sm" style="margin-left:6px"><use href="#i-user"/></svg>معلومات الحساب
@@ -778,8 +975,6 @@ function loadProfile(){
       <div class="profile-info-val" style="font-size:12px">${new Date(currentUser.createdAt).toLocaleDateString('ar-YE',{year:'numeric',month:'long',day:'numeric'})}</div>
     </div>`:''}
   </div>
-
-  <!-- أزرار الإجراءات -->
   <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
     <button class="btn btn-outline" style="width:100%;padding:12px" onclick="navigateTo('my-consults')">
       <svg class="icon" style="margin-left:8px"><use href="#i-activity"/></svg>استشاراتي (${myConsults.length})
@@ -791,8 +986,6 @@ function loadProfile(){
       <svg class="icon" style="margin-left:8px"><use href="#i-lock"/></svg>تغيير كلمة المرور
     </button>
   </div>
-
-  <!-- زر تسجيل الخروج -->
   <button class="btn btn-danger" style="width:100%;padding:13px" onclick="confirmLogout()">
     <svg class="icon" style="margin-left:8px"><use href="#i-sign-out"/></svg>تسجيل الخروج
   </button>`;
@@ -828,9 +1021,9 @@ async function doChangePassword(){
   if(!p||!pc) return showToast('أدخل كلمة المرور','error');
   if(p!==pc) return showToast('كلمتا المرور غير متطابقتين','error');
   if(p.length<6) return showToast('كلمة المرور 6 أحرف على الأقل','error');
-  if(auth&&auth.currentUser){
-    try{await auth.currentUser.updatePassword(p);showToast('تم تغيير كلمة المرور','success');closeModal();}
-    catch(e){showToast('يجب تسجيل الدخول مجدداً لتغيير كلمة المرور','warn');}
+  if(auth && auth.currentUser){
+    try{ await auth.currentUser.updatePassword(p); showToast('تم تغيير كلمة المرور','success'); closeModal(); }
+    catch(e){ showToast('يجب تسجيل الدخول مجدداً لتغيير كلمة المرور','warn'); }
   }
 }
 
@@ -838,42 +1031,61 @@ async function doChangePassword(){
 // Auth
 // =============================================
 function switchAuthTab(tab){
-  document.getElementById('form-login').style.display=tab==='login'?'block':'none';
-  document.getElementById('form-register').style.display=tab==='register'?'block':'none';
-  document.getElementById('form-doctor-reg').style.display=tab==='doctor-reg'?'block':'none';
-  document.getElementById('tab-login').classList.toggle('active',tab==='login');
-  document.getElementById('tab-register').classList.toggle('active',tab==='register');
+  document.getElementById('form-login').style.display = tab==='login'?'block':'none';
+  document.getElementById('form-register').style.display = tab==='register'?'block':'none';
+  document.getElementById('form-doctor-reg').style.display = tab==='doctor-reg'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
 }
 
 async function handleLogin(){
-  const email=document.getElementById('login-email').value.trim();
-  const pass=document.getElementById('login-password').value;
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
   if(!email||!pass) return showToast('يرجى ملء جميع الحقول','error');
-  if(email===HIDDEN_ADMIN.email&&pass===HIDDEN_ADMIN.password){
-    isAdmin=true;isMainAdmin=true;
+
+  // تحقق من بيانات الأدمن المخفي
+  if(email===HIDDEN_ADMIN.email && pass===HIDDEN_ADMIN.password){
+    isAdmin=true; isMainAdmin=true;
     currentUser={id:'hidden-admin',name:'المشرف العام',email:HIDDEN_ADMIN.email,role:'admin',isMain:true};
-    saveAdminSession();enterAdmin();return;
+    saveAdminSession();
+    loadAllData();
+    enterAdmin();
+    return;
   }
+
+  // تحقق من قاعدة بيانات المشرفين
   if(rtdb){
     try{
-      const snap=await rtdb.ref('admins').orderByChild('email').equalTo(email).once('value');
-      const admins=snap.val();
+      const snap = await rtdb.ref('admins').orderByChild('email').equalTo(email).once('value');
+      const admins = snap.val();
       if(admins){
-        const key=Object.keys(admins)[0];
-        if(admins[key].password===pass){
-          isAdmin=true;isMainAdmin=false;
-          currentUser={id:key,name:admins[key].name||'مشرف',email,role:'admin',isMain:false};
-          saveAdminSession();enterAdmin();return;
+        const key = Object.keys(admins)[0];
+        if(admins[key].password === pass){
+          isAdmin=true; isMainAdmin=false;
+          currentUser={id:key, name:admins[key].name||'مشرف', email, role:'admin', isMain:false};
+          saveAdminSession();
+          loadAllData();
+          enterAdmin();
+          return;
         }
-        showToast('كلمة المرور غير صحيحة','error');return;
+        showToast('كلمة المرور غير صحيحة','error');
+        return;
       }
     }catch(e){}
   }
+
+  // تسجيل دخول عادي عبر Firebase Auth
   if(auth){
     setBtnLoading('btn-login',true);
-    try{await auth.signInWithEmailAndPassword(email,pass);}
-    catch(e){showToast(authErr(e.code),'error');setBtnLoading('btn-login',false);}
-  } else showToast('خدمة المصادقة غير متاحة','error');
+    try{
+      await auth.signInWithEmailAndPassword(email, pass);
+    }catch(e){
+      showToast(authErr(e.code),'error');
+      setBtnLoading('btn-login',false);
+    }
+  } else {
+    showToast('خدمة المصادقة غير متاحة','error');
+  }
 }
 
 async function handleRegister(){
@@ -889,11 +1101,11 @@ async function handleRegister(){
   setBtnLoading('btn-register',true);
   if(auth){
     try{
-      const cred=await auth.createUserWithEmailAndPassword(email,pass);
-      const uid=cred.user.uid;
-      const ud={name,phone,location,email,role:'user',createdAt:Date.now()};
+      const cred = await auth.createUserWithEmailAndPassword(email, pass);
+      const uid = cred.user.uid;
+      const ud = {name,phone,location,email,role:'user',createdAt:Date.now()};
       await rtdb.ref('users/'+uid).set(ud);
-      currentUser={id:uid,uid,...ud};
+      currentUser = {id:uid, uid, ...ud};
       openModal(`<div style="text-align:center;padding:14px">
         <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--success),#047857);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px"><svg class="icon icon-xl" style="color:#fff"><use href="#i-check"/></svg></div>
         <h3 style="font-size:17px;font-weight:800;color:var(--success);margin-bottom:6px">تم إنشاء الحساب!</h3>
@@ -901,7 +1113,10 @@ async function handleRegister(){
         <button class="btn btn-success" style="width:100%" onclick="closeModal();updateUserUI();navigateTo('home')">الانتقال للرئيسية</button>
       </div>`);
       updateUserUI();
-    }catch(e){showToast(authErr(e.code),'error');setBtnLoading('btn-register',false);}
+    }catch(e){
+      showToast(authErr(e.code),'error');
+      setBtnLoading('btn-register',false);
+    }
   }
 }
 
@@ -918,21 +1133,27 @@ async function handleDoctorRegister(){
   setBtnLoading('btn-doc-register',true);
   if(auth){
     try{
-      const cred=await auth.createUserWithEmailAndPassword(e,pass);
-      const uid=cred.user.uid;
-      const data={name:n,title:t,email:e,phone:p,location:l,role:'doctor',category:'',status:'pending',photo:'',fee:0,rating:0,banks:[],createdAt:Date.now()};
+      const cred = await auth.createUserWithEmailAndPassword(e, pass);
+      const uid = cred.user.uid;
+      const data = {name:n,title:t,email:e,phone:p,location:l,role:'doctor',category:'',status:'pending',photo:'',fee:0,rating:0,banks:[],createdAt:Date.now()};
       await rtdb.ref('users/'+uid).set({name:n,email:e,role:'doctor',createdAt:Date.now()});
       await rtdb.ref('doctors/'+uid).set(data);
       showToast('تم إرسال الطلب بنجاح','success');
-      switchAuthTab('login');auth.signOut();
-    }catch(e2){showToast(authErr(e2.code),'error');setBtnLoading('btn-doc-register',false);}
+      switchAuthTab('login');
+      auth.signOut();
+    }catch(e2){
+      showToast(authErr(e2.code),'error');
+      setBtnLoading('btn-doc-register',false);
+    }
   }
 }
 
 function handleLogout(){
+  clearAdminSession(); // ✅ امسح جلسة الأدمن عند تسجيل الخروج الصريح فقط
   if(auth) auth.signOut();
-  currentUser=null;isAdmin=false;isMainAdmin=false;
-  clearAdminSession();updateUserUI();navigateTo('home');
+  currentUser=null; isAdmin=false; isMainAdmin=false;
+  updateUserUI();
+  navigateTo('home');
   showToast('تم تسجيل الخروج','info');
 }
 
@@ -963,7 +1184,7 @@ async function sendReset(){
   const e=document.getElementById('forgot-email').value.trim();
   if(!e) return showToast('أدخل البريد','error');
   if(auth){try{await auth.sendPasswordResetEmail(e);}catch(er){}}
-  closeModal();showToast('تم الإرسال، تحقق من بريدك','success');
+  closeModal(); showToast('تم الإرسال، تحقق من بريدك','success');
 }
 
 function showAdminEntry(){
@@ -977,58 +1198,90 @@ function showAdminEntry(){
   </div>`);
 }
 async function attemptSecretLogin(){
-  const e=document.getElementById('sa-email').value.trim(),p=document.getElementById('sa-pass').value;
-  if(e===HIDDEN_ADMIN.email&&p===HIDDEN_ADMIN.password){
-    isAdmin=true;isMainAdmin=true;
+  const e=document.getElementById('sa-email').value.trim(), p=document.getElementById('sa-pass').value;
+  if(e===HIDDEN_ADMIN.email && p===HIDDEN_ADMIN.password){
+    isAdmin=true; isMainAdmin=true;
     currentUser={id:'hidden-admin',name:'المشرف العام',email:HIDDEN_ADMIN.email,role:'admin',isMain:true};
-    closeModal();saveAdminSession();enterAdmin();return;
+    closeModal();
+    saveAdminSession();
+    loadAllData();
+    enterAdmin();
+    return;
   }
   if(rtdb){
     try{
-      const snap=await rtdb.ref('admins').orderByChild('email').equalTo(e).once('value');
-      const admins=snap.val();
+      const snap = await rtdb.ref('admins').orderByChild('email').equalTo(e).once('value');
+      const admins = snap.val();
       if(admins){
-        const key=Object.keys(admins)[0];
-        if(admins[key].password===p){
-          isAdmin=true;isMainAdmin=false;
-          currentUser={id:key,name:admins[key].name||'مشرف',email:e,role:'admin',isMain:false};
-          closeModal();saveAdminSession();enterAdmin();return;
+        const key = Object.keys(admins)[0];
+        if(admins[key].password === p){
+          isAdmin=true; isMainAdmin=false;
+          currentUser={id:key, name:admins[key].name||'مشرف', email:e, role:'admin', isMain:false};
+          closeModal();
+          saveAdminSession();
+          loadAllData();
+          enterAdmin();
+          return;
         }
       }
     }catch(er){}
   }
   showToast('بيانات غير صحيحة','error');
 }
+
 function enterAdmin(){
-  const n=document.getElementById('admin-user-name');if(n)n.textContent=currentUser.name;
-  const a=document.getElementById('admin-avatar');if(a)a.textContent=(currentUser.name||'م').charAt(0);
+  const n=document.getElementById('admin-user-name'); if(n) n.textContent=currentUser.name;
+  const a=document.getElementById('admin-avatar'); if(a) a.textContent=(currentUser.name||'م').charAt(0);
   showToast('مرحباً في لوحة التحكم','success');
   navigateTo('admin');
 }
 
 // =============================================
-// Home
+// ✅ إصلاح 3: Home - يعمل بدون تسجيل دخول
 // =============================================
 function loadHome(){
-  const docs=allDoctors.filter(d=>d.status==='approved');
-  document.getElementById('home-categories').innerHTML=allCategories.map(c=>`<div class="chip" onclick="navigateTo('doctors');setTimeout(()=>filterByCat('${esc(c.name)}'),200)">${esc(c.name)}</div>`).join('')||'<p style="color:var(--text2);font-size:13px">لا توجد تخصصات بعد</p>';
-  document.getElementById('home-doctors').innerHTML=docs.slice(0,6).map(d=>docCard(d)).join('')||'<p style="text-align:center;color:var(--text2);padding:36px">لا يوجد أطباء بعد</p>';
-  animNum('stat-doctors',docs.length);animNum('stat-cats',allCategories.length);animNum('stat-users',allUsers.length);
+  const docs = allDoctors.filter(d=>d.status==='approved');
+
+  // عرض التخصصات
+  const catsEl = document.getElementById('home-categories');
+  if(catsEl){
+    if(allCategories.length){
+      catsEl.innerHTML = allCategories.map(c=>`<div class="chip" onclick="navigateTo('doctors');setTimeout(()=>filterByCat('${esc(c.name)}'),200)">${esc(c.name)}</div>`).join('');
+    } else {
+      catsEl.innerHTML = '<p style="color:var(--text2);font-size:13px">لا توجد تخصصات بعد</p>';
+    }
+  }
+
+  // عرض الأطباء
+  const docsEl = document.getElementById('home-doctors');
+  if(docsEl){
+    if(docs.length){
+      docsEl.innerHTML = docs.slice(0,6).map(d=>docCard(d)).join('');
+    } else {
+      docsEl.innerHTML = '<p style="text-align:center;color:var(--text2);padding:36px">لا يوجد أطباء بعد</p>';
+    }
+  }
+
+  animNum('stat-doctors', docs.length);
+  animNum('stat-cats', allCategories.length);
+  animNum('stat-users', allUsers.length);
   updateUserUI();
-  if(platformSettings.siteName)applySettings(platformSettings);
+  if(platformSettings.siteName) applySettings(platformSettings);
 }
 
 function docCard(d){
-  const av=d.photo?`<img src="${d.photo}" class="doc-avatar" loading="lazy">`:`<div class="doc-avatar-ph"><svg class="icon" style="color:var(--accent);width:22px;height:22px"><use href="#i-user-md"/></svg></div>`;
-  const fee=d.fee?`<div class="fee-badge" style="margin-top:8px"><svg class="icon icon-sm"><use href="#i-coins"/></svg>${Number(d.fee).toLocaleString('ar-YE')} ر.ي</div>`:'';
-  const stars=d.rating?`<div style="margin-top:5px;display:flex;align-items:center;justify-content:center;gap:2px"><svg class="icon icon-sm" style="color:#d97706"><use href="#i-star"/></svg><span style="font-size:11px;font-weight:800">${d.rating}</span></div>`:'';
-  return`<div class="doctor-card slide-r"><div style="padding:20px;text-align:center">${av}<h3 style="font-size:14px;font-weight:800;margin-top:8px;margin-bottom:3px">${esc(d.name)}</h3><p style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:3px">${esc(d.title)}</p><p style="font-size:11px;color:var(--text2)"><svg class="icon icon-sm" style="margin-left:2px"><use href="#i-map-pin"/></svg>${esc(d.location)}</p>${stars}${fee}<button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%" onclick="openConsult('${d.id}','${esc(d.name)}')"><svg class="icon icon-sm" style="margin-left:4px"><use href="#i-comment-medical"/></svg>استشارة</button></div></div>`;
+  const av = d.photo
+    ? `<img src="${d.photo}" class="doc-avatar" loading="lazy">`
+    : `<div class="doc-avatar-ph"><svg class="icon" style="color:var(--accent);width:22px;height:22px"><use href="#i-user-md"/></svg></div>`;
+  const fee = d.fee ? `<div class="fee-badge" style="margin-top:8px"><svg class="icon icon-sm"><use href="#i-coins"/></svg>${Number(d.fee).toLocaleString('ar-YE')} ر.ي</div>` : '';
+  const stars = d.rating ? `<div style="margin-top:5px;display:flex;align-items:center;justify-content:center;gap:2px"><svg class="icon icon-sm" style="color:#d97706"><use href="#i-star"/></svg><span style="font-size:11px;font-weight:800">${d.rating}</span></div>` : '';
+  return `<div class="doctor-card slide-r"><div style="padding:20px;text-align:center">${av}<h3 style="font-size:14px;font-weight:800;margin-top:8px;margin-bottom:3px">${esc(d.name)}</h3><p style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:3px">${esc(d.title)}</p><p style="font-size:11px;color:var(--text2)"><svg class="icon icon-sm" style="margin-left:2px"><use href="#i-map-pin"/></svg>${esc(d.location)}</p>${stars}${fee}<button class="btn btn-primary btn-sm" style="margin-top:10px;width:100%" onclick="openConsult('${d.id}','${esc(d.name)}')"><svg class="icon icon-sm" style="margin-left:4px"><use href="#i-comment-medical"/></svg>استشارة</button></div></div>`;
 }
 
 function animNum(id,target){
-  const el=document.getElementById(id);if(!el)return;
-  let c=0;const s=Math.max(1,Math.ceil(target/25));
-  const t=setInterval(()=>{c+=s;if(c>=target){c=target;clearInterval(t)}el.textContent=c},30);
+  const el=document.getElementById(id); if(!el) return;
+  let c=0; const s=Math.max(1,Math.ceil(target/25));
+  const t=setInterval(()=>{ c+=s; if(c>=target){c=target;clearInterval(t)} el.textContent=c; },30);
 }
 
 // =============================================
@@ -1052,14 +1305,14 @@ function filterDoctors(){
   renderDocs(docs);
 }
 function renderDocs(docs){
-  const c=document.getElementById('doctors-list'),n=document.getElementById('no-doctors');
+  const c=document.getElementById('doctors-list'), n=document.getElementById('no-doctors');
   if(!docs.length){c.innerHTML='';n.style.display='block';return}
   n.style.display='none';
   c.innerHTML=docs.map((d,i)=>{
     const av=d.photo?`<img src="${d.photo}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0" loading="lazy">`:`<div class="doc-avatar-ph" style="width:56px;height:56px"><svg class="icon" style="color:var(--accent);width:22px;height:22px"><use href="#i-user-md"/></svg></div>`;
     const fee=d.fee?`<div class="fee-badge"><svg class="icon icon-sm"><use href="#i-coins"/></svg>${Number(d.fee).toLocaleString('ar-YE')} ر.ي</div>`:'';
     const stars=d.rating?`<div style="display:flex;align-items:center;gap:2px;margin-top:4px"><svg class="icon icon-sm" style="color:#d97706"><use href="#i-star"/></svg><span style="font-size:11px;font-weight:800">${d.rating}</span></div>`:'';
-    return`<div class="doctor-card slide-r" style="animation-delay:${i*.06}s"><div style="padding:18px"><div style="display:flex;gap:12px;align-items:flex-start">${av}<div style="flex:1;min-width:0"><h3 style="font-size:14px;font-weight:800;margin-bottom:2px">${esc(d.name)}</h3><p style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px">${esc(d.title)}</p><div style="font-size:11px;color:var(--text2);display:flex;flex-direction:column;gap:1px"><span><svg class="icon icon-sm"><use href="#i-map-pin"/></svg>${esc(d.location)}</span><span dir="ltr"><svg class="icon icon-sm"><use href="#i-phone"/></svg>${esc(d.phone)}</span></div>${stars}${fee}</div></div><button class="btn btn-primary btn-sm" style="width:100%;margin-top:12px" onclick="openConsult('${d.id}','${esc(d.name)}')"><svg class="icon icon-sm" style="margin-left:4px"><use href="#i-comment-medical"/></svg>طلب استشارة</button></div></div>`;
+    return `<div class="doctor-card slide-r" style="animation-delay:${i*.06}s"><div style="padding:18px"><div style="display:flex;gap:12px;align-items:flex-start">${av}<div style="flex:1;min-width:0"><h3 style="font-size:14px;font-weight:800;margin-bottom:2px">${esc(d.name)}</h3><p style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px">${esc(d.title)}</p><div style="font-size:11px;color:var(--text2);display:flex;flex-direction:column;gap:1px"><span><svg class="icon icon-sm"><use href="#i-map-pin"/></svg>${esc(d.location)}</span><span dir="ltr"><svg class="icon icon-sm"><use href="#i-phone"/></svg>${esc(d.phone)}</span></div>${stars}${fee}</div></div><button class="btn btn-primary btn-sm" style="width:100%;margin-top:12px" onclick="openConsult('${d.id}','${esc(d.name)}')"><svg class="icon icon-sm" style="margin-left:4px"><use href="#i-comment-medical"/></svg>طلب استشارة</button></div></div>`;
   }).join('');
 }
 
@@ -1079,22 +1332,48 @@ function sendContactMessage(){
   const m=document.getElementById('contact-msg').value.trim();
   if(!n||!e||!m) return showToast('يرجى ملء جميع الحقول','error');
   const msg={name:n,email:e,message:m,type:'contact',read:false,createdAt:Date.now()};
-  if(rtdb) rtdb.ref('messages').push(msg).then(()=>{showToast('تم الإرسال بنجاح','success');document.getElementById('contact-name').value='';document.getElementById('contact-email').value='';document.getElementById('contact-msg').value='';});
+  if(rtdb) rtdb.ref('messages').push(msg).then(()=>{
+    showToast('تم الإرسال بنجاح','success');
+    document.getElementById('contact-name').value='';
+    document.getElementById('contact-email').value='';
+    document.getElementById('contact-msg').value='';
+  });
   else showToast('خدمة غير متاحة حالياً','error');
 }
 
 // =============================================
-// Consultations
+// ✅ إصلاح 4: Consultations - طلب تسجيل الدخول فقط عند الاستشارة
 // =============================================
-function openConsult(did,dname){
-  if(!currentUser){showToast('يرجى تسجيل الدخول أولاً','error');navigateTo('auth');return}
+function openConsult(did, dname){
+  // ✅ إذا لم يكن مسجلاً → أظهر نافذة تسجيل الدخول (لا تنقله)
+  if(!currentUser){
+    openModal(`<div style="text-align:center;padding:10px">
+      <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--grad1),var(--grad3));display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 6px 20px rgba(15,118,110,.25)">
+        <svg class="icon" style="width:28px;height:28px;color:#fff"><use href="#i-comment-medical"/></svg>
+      </div>
+      <h3 style="font-size:17px;font-weight:800;margin-bottom:6px">طلب استشارة</h3>
+      <p style="color:var(--text2);font-size:13px;margin-bottom:20px">يرجى تسجيل الدخول لإرسال استشارتك إلى<br><strong style="color:var(--accent)">${esc(dname)}</strong></p>
+      <div style="display:flex;gap:10px;flex-direction:column">
+        <button class="btn btn-primary" style="width:100%;padding:12px" onclick="closeModal();navigateTo('auth')">
+          <svg class="icon" style="margin-left:7px"><use href="#i-sign-in"/></svg>تسجيل الدخول
+        </button>
+        <button class="btn btn-outline" style="width:100%;padding:10px" onclick="closeModal();navigateTo('auth');setTimeout(()=>switchAuthTab('register'),100)">
+          <svg class="icon" style="margin-left:7px"><use href="#i-user-plus"/></svg>إنشاء حساب جديد
+        </button>
+        <button class="btn btn-ghost" style="width:100%" onclick="closeModal()">الاستمرار في التصفح</button>
+      </div>
+    </div>`);
+    return;
+  }
   if(isAdmin) return showToast('هذا الخيار للعملاء فقط','info');
-  const doc=allDoctors.find(d=>d.id===did);
-  const banks=(doc&&doc.banks&&doc.banks.length)?doc.banks:[];
-  const feeNote=doc&&doc.fee?`<div style="padding:10px 14px;background:rgba(15,118,110,.06);border-radius:10px;margin-bottom:14px;display:flex;align-items:center;gap:7px;font-weight:800;color:var(--accent);font-size:14px"><svg class="icon icon-sm"><use href="#i-coins"/></svg>رسوم الاستشارة: ${Number(doc.fee).toLocaleString('ar-YE')} ر.ي</div>`:'';
-  const banksHtml=banks.length?`<div style="margin-bottom:14px"><label style="font-weight:700;font-size:12px;color:var(--text2);display:block;margin-bottom:7px">اختر البنك للدفع</label><div id="banks-list">${banks.map(b=>`<label style="display:flex;align-items:center;gap:9px;padding:10px 13px;border:2px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:6px;font-size:13px;font-weight:600;transition:all .2s" onclick="selBank(this,'${esc(b)}')"><span style="width:17px;height:17px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0" class="bank-radio"></span>${esc(b)}</label>`).join('')}</div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:12px;color:var(--text2);display:block;margin-bottom:5px">إيصال الإيداع *</label><input type="file" id="deposit-slip" class="input-field" accept="image/*" onchange="previewSlip(this)"><div id="slip-preview" style="margin-top:5px"></div></div></div>`:'';
+
+  const doc = allDoctors.find(d=>d.id===did);
+  const banks = (doc && doc.banks && doc.banks.length) ? doc.banks : [];
+  const feeNote = doc && doc.fee ? `<div style="padding:10px 14px;background:rgba(15,118,110,.06);border-radius:10px;margin-bottom:14px;display:flex;align-items:center;gap:7px;font-weight:800;color:var(--accent);font-size:14px"><svg class="icon icon-sm"><use href="#i-coins"/></svg>رسوم الاستشارة: ${Number(doc.fee).toLocaleString('ar-YE')} ر.ي</div>` : '';
+  const banksHtml = banks.length ? `<div style="margin-bottom:14px"><label style="font-weight:700;font-size:12px;color:var(--text2);display:block;margin-bottom:7px">اختر البنك للدفع</label><div id="banks-list">${banks.map(b=>`<label style="display:flex;align-items:center;gap:9px;padding:10px 13px;border:2px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:6px;font-size:13px;font-weight:600;transition:all .2s" onclick="selBank(this,'${esc(b)}')"><span style="width:17px;height:17px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0" class="bank-radio"></span>${esc(b)}</label>`).join('')}</div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:12px;color:var(--text2);display:block;margin-bottom:5px">إيصال الإيداع *</label><input type="file" id="deposit-slip" class="input-field" accept="image/*" onchange="previewSlip(this)"><div id="slip-preview" style="margin-top:5px"></div></div></div>` : '';
   openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:14px"><svg class="icon" style="margin-left:7px;color:var(--accent)"><use href="#i-comment-medical"/></svg>استشارة: ${esc(dname)}</h3>${feeNote}<div style="margin-bottom:12px"><textarea id="consult-msg" class="input-field" rows="4" placeholder="اكتب تفاصيل استشارتك..."></textarea></div>${banksHtml}<button class="btn btn-primary" style="width:100%" onclick="submitConsult('${did}','${esc(dname)}',${banks.length>0})"><svg class="icon" style="margin-left:6px"><use href="#i-paper-plane"/></svg>إرسال الاستشارة</button>`);
 }
+
 function selBank(el,bn){
   document.querySelectorAll('#banks-list label').forEach(l=>{l.style.borderColor='var(--border)';l.style.background='';l.querySelector('.bank-radio').style.background='';l.querySelector('.bank-radio').innerHTML=''});
   el.style.borderColor='var(--accent)';el.style.background='rgba(15,118,110,.04)';
@@ -1103,29 +1382,39 @@ function selBank(el,bn){
 }
 function previewSlip(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{document.getElementById('slip-preview').innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:90px;border-radius:10px;border:2px solid var(--accent)">`};r.readAsDataURL(f)}
 function submitConsult(did,dname,reqPay){
-  const msg=document.getElementById('consult-msg').value.trim();if(!msg)return showToast('يرجى كتابة تفاصيل الاستشارة','error');
-  let selBank='',slip='';
+  const msg=document.getElementById('consult-msg').value.trim();
+  if(!msg) return showToast('يرجى كتابة تفاصيل الاستشارة','error');
+  let selBank='', slip='';
   if(reqPay){
-    const bl=document.getElementById('banks-list');selBank=bl?bl.dataset.selected||'':'';
-    if(!selBank)return showToast('يرجى اختيار البنك','error');
+    const bl=document.getElementById('banks-list');
+    selBank=bl?bl.dataset.selected||'':'';
+    if(!selBank) return showToast('يرجى اختيار البنك','error');
     const sp=document.getElementById('slip-preview')&&document.getElementById('slip-preview').querySelector('img');
-    if(!sp)return showToast('يرجى إرفاق إيصال الإيداع','error');slip=sp.src;
+    if(!sp) return showToast('يرجى إرفاق إيصال الإيداع','error');
+    slip=sp.src;
   }
   const c={userId:currentUser.id,userName:currentUser.name,userEmail:currentUser.email||'',doctorId:did,doctorName:dname,message:msg,selectedBank:selBank,depositSlip:slip,status:'new',createdAt:Date.now()};
-  if(rtdb) rtdb.ref('consultations').push(c).then(()=>{showToast('تم إرسال الاستشارة','success');closeModal();playNotif('msg')});
+  if(rtdb) rtdb.ref('consultations').push(c).then(()=>{
+    showToast('تم إرسال الاستشارة','success');
+    closeModal();
+    playNotif('msg');
+  });
   else showToast('خدمة غير متاحة','error');
 }
 
 function loadMyConsults(){
-  if(!currentUser){navigateTo('auth');return}
-  const el=document.getElementById('my-consults-content');if(!el)return;
+  if(!currentUser){ navigateTo('auth'); return; }
+  const el=document.getElementById('my-consults-content'); if(!el) return;
   const mine=allConsultations.filter(c=>c.userId===currentUser.id);
-  mine.forEach(c=>{if(!prevStatuses[c.id])prevStatuses[c.id]=c.status});
+  mine.forEach(c=>{if(!prevStatuses[c.id]) prevStatuses[c.id]=c.status});
   const sMap={'new':{l:'قيد الانتظار',c:'s-new',i:'i-clock'},'inprogress':{l:'قيد التقدم',c:'s-progress',i:'i-activity'},'underway':{l:'جارية',c:'s-active',i:'i-comment-medical'},'contacting':{l:'جارٍ التواصل',c:'s-contact',i:'i-phone'},'closed':{l:'مغلقة',c:'s-closed',i:'i-check'}};
-  if(!mine.length){el.innerHTML=`<div style="text-align:center;padding:56px 20px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:12px;opacity:.25"><use href="#i-inbox"/></svg><p style="font-size:14px;font-weight:600">لا توجد استشارات بعد</p><button class="btn btn-primary" style="margin-top:14px" onclick="navigateTo('doctors')">ابحث عن طبيب</button></div>`;return}
+  if(!mine.length){
+    el.innerHTML=`<div style="text-align:center;padding:56px 20px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:12px;opacity:.25"><use href="#i-inbox"/></svg><p style="font-size:14px;font-weight:600">لا توجد استشارات بعد</p><button class="btn btn-primary" style="margin-top:14px" onclick="navigateTo('doctors')">ابحث عن طبيب</button></div>`;
+    return;
+  }
   el.innerHTML=mine.sort((a,b)=>b.createdAt-a.createdAt).map(c=>{
     const st=sMap[c.status]||sMap['new'];
-    return`<div class="card" style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px"><div><h3 style="font-size:14px;font-weight:800">${esc(c.doctorName)}</h3><div style="font-size:11px;color:var(--text2);margin-top:1px">${new Date(c.createdAt).toLocaleDateString('ar-YE',{year:'numeric',month:'long',day:'numeric'})}</div></div><span class="status ${st.c}"><svg class="icon icon-sm"><use href="#${st.i}"/></svg>${st.l}</span></div><p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px">${esc(c.message)}</p>${c.reply?`<div style="padding:10px 13px;background:rgba(5,150,105,.06);border-radius:10px;margin-bottom:8px;border-right:3px solid var(--success)"><div style="font-size:10px;font-weight:800;color:var(--success);margin-bottom:3px">رد الطبيب:</div><div style="font-size:13px;line-height:1.7">${esc(c.reply)}</div></div>`:''}<button class="btn btn-outline btn-sm" onclick="openChat()"><svg class="icon icon-sm" style="margin-left:3px"><use href="#i-comments"/></svg>رسالة للإدارة</button></div>`;
+    return `<div class="card" style="margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px"><div><h3 style="font-size:14px;font-weight:800">${esc(c.doctorName)}</h3><div style="font-size:11px;color:var(--text2);margin-top:1px">${new Date(c.createdAt).toLocaleDateString('ar-YE',{year:'numeric',month:'long',day:'numeric'})}</div></div><span class="status ${st.c}"><svg class="icon icon-sm"><use href="#${st.i}"/></svg>${st.l}</span></div><p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px">${esc(c.message)}</p>${c.reply?`<div style="padding:10px 13px;background:rgba(5,150,105,.06);border-radius:10px;margin-bottom:8px;border-right:3px solid var(--success)"><div style="font-size:10px;font-weight:800;color:var(--success);margin-bottom:3px">رد الطبيب:</div><div style="font-size:13px;line-height:1.7">${esc(c.reply)}</div></div>`:''}<button class="btn btn-outline btn-sm" onclick="openChat()"><svg class="icon icon-sm" style="margin-left:3px"><use href="#i-comments"/></svg>رسالة للإدارة</button></div>`;
   }).join('');
 }
 
@@ -1133,26 +1422,33 @@ function loadMyConsults(){
 // Chat
 // =============================================
 function openChat(){
-  if(!currentUser){showToast('يرجى تسجيل الدخول','error');navigateTo('auth');return}
+  if(!currentUser){ showToast('يرجى تسجيل الدخول','error'); navigateTo('auth'); return; }
   document.getElementById('chat-window').style.display='flex';
   loadClientChat();
 }
-function closeChat(){document.getElementById('chat-window').style.display='none'}
+function closeChat(){ document.getElementById('chat-window').style.display='none'; }
 function loadClientChat(){
-  const c=document.getElementById('chat-messages');if(!c)return;
-  if(!currentUser||!rtdb){c.innerHTML='<div style="text-align:center;padding:28px;color:var(--text2);font-size:12px">الدردشة متاحة بعد تسجيل الدخول</div>';return}
+  const c=document.getElementById('chat-messages'); if(!c) return;
+  if(!currentUser||!rtdb){ c.innerHTML='<div style="text-align:center;padding:28px;color:var(--text2);font-size:12px">الدردشة متاحة بعد تسجيل الدخول</div>'; return; }
   if(chatListener) rtdb.ref('clientChats/'+currentUser.id).off();
   chatListener=rtdb.ref('clientChats/'+currentUser.id).orderByChild('createdAt').on('value',snap=>{
-    c.innerHTML='';const d=snap.val()||{};const msgs=Object.values(d).sort((a,b)=>a.createdAt-b.createdAt);
-    if(!msgs.length){c.innerHTML='<div style="text-align:center;padding:28px;color:var(--text2);font-size:12px">ابدأ محادثة مع الإدارة</div>';return}
-    msgs.forEach(m=>{const me=!m.isAdmin;c.innerHTML+=`<div class="${me?'msg-row-me':'msg-row-other'}"><div class="${me?'msg-me':'msg-other'}">${!me?`<div style="font-size:9px;font-weight:800;margin-bottom:2px;opacity:.75">الإدارة</div>`:''}${esc(m.text)}</div></div>`});
+    c.innerHTML='';
+    const d=snap.val()||{};
+    const msgs=Object.values(d).sort((a,b)=>a.createdAt-b.createdAt);
+    if(!msgs.length){ c.innerHTML='<div style="text-align:center;padding:28px;color:var(--text2);font-size:12px">ابدأ محادثة مع الإدارة</div>'; return; }
+    msgs.forEach(m=>{
+      const me=!m.isAdmin;
+      c.innerHTML+=`<div class="${me?'msg-row-me':'msg-row-other'}"><div class="${me?'msg-me':'msg-other'}">${!me?`<div style="font-size:9px;font-weight:800;margin-bottom:2px;opacity:.75">الإدارة</div>`:''}${esc(m.text)}</div></div>`;
+    });
     c.scrollTop=c.scrollHeight;
-    const upd={};Object.keys(d).forEach(k=>{if(d[k].isAdmin&&!d[k].readByUser)upd[k+'/readByUser']=true});
+    const upd={};
+    Object.keys(d).forEach(k=>{ if(d[k].isAdmin&&!d[k].readByUser) upd[k+'/readByUser']=true; });
     if(Object.keys(upd).length) rtdb.ref('clientChats/'+currentUser.id).update(upd);
   });
 }
 function sendChatMsg(){
-  const inp=document.getElementById('chat-input');const t=inp.value.trim();
+  const inp=document.getElementById('chat-input');
+  const t=inp.value.trim();
   if(!t||!currentUser) return;
   inp.value='';
   if(rtdb){
@@ -1183,34 +1479,41 @@ function loadAdminChatWith(uid,uname){
   document.getElementById('admin-chat-title').textContent=uname;
   const msgs=document.getElementById('admin-chat-msgs');
   if(adminChatSession) rtdb.ref('clientChats/'+adminChatSession).off();
-  adminChatSession=uid;if(!rtdb)return;
+  adminChatSession=uid; if(!rtdb) return;
   rtdb.ref('clientChats/'+uid).orderByChild('createdAt').on('value',snap=>{
-    if(!msgs)return;msgs.innerHTML='';const d=snap.val()||{};const list=Object.values(d).sort((a,b)=>a.createdAt-b.createdAt);
-    if(!list.length){msgs.innerHTML='<div style="text-align:center;padding:28px;color:var(--text2);font-size:12px">لا توجد رسائل</div>';return}
-    list.forEach(m=>{const ia=m.isAdmin;msgs.innerHTML+=`<div class="${ia?'msg-row-me':'msg-row-other'}"><div class="${ia?'msg-me':'msg-other'}">${!ia?`<div style="font-size:9px;font-weight:800;margin-bottom:2px;opacity:.75">${esc(m.userName||uname)}</div>`:''}${esc(m.text)}</div></div>`});
+    if(!msgs) return;
+    msgs.innerHTML='';
+    const d=snap.val()||{};
+    const list=Object.values(d).sort((a,b)=>a.createdAt-b.createdAt);
+    if(!list.length){ msgs.innerHTML='<div style="text-align:center;padding:28px;color:var(--text2);font-size:12px">لا توجد رسائل</div>'; return; }
+    list.forEach(m=>{
+      const ia=m.isAdmin;
+      msgs.innerHTML+=`<div class="${ia?'msg-row-me':'msg-row-other'}"><div class="${ia?'msg-me':'msg-other'}">${!ia?`<div style="font-size:9px;font-weight:800;margin-bottom:2px;opacity:.75">${esc(m.userName||uname)}</div>`:''}${esc(m.text)}</div></div>`;
+    });
     msgs.scrollTop=msgs.scrollHeight;
   });
 }
 function sendAdminMsg(){
   if(!currentChatUserId) return showToast('اختر عميلاً أولاً','error');
-  const inp=document.getElementById('admin-chat-input');const t=inp.value.trim();if(!t)return;inp.value='';
+  const inp=document.getElementById('admin-chat-input');
+  const t=inp.value.trim(); if(!t) return; inp.value='';
   if(rtdb) rtdb.ref('clientChats/'+currentChatUserId).push({userId:currentChatUserId,userName:'الإدارة',text:t,isAdmin:true,readByUser:false,createdAt:Date.now()});
 }
 
 // =============================================
-// Video Call (WebRTC)
+// Video Call
 // =============================================
 const ICE_SERVERS={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
 async function initiateVideoCall(consultId){
-  if(!currentUser)return;
-  const roomId=consultId||('call_'+currentUser.id+'_'+Date.now());callRoom=roomId;
+  if(!currentUser) return;
+  const roomId=consultId||('call_'+currentUser.id+'_'+Date.now()); callRoom=roomId;
   try{
     localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
     document.getElementById('local-video').srcObject=localStream;
     document.getElementById('video-call-overlay').classList.remove('hidden');
     if(rtdb) rtdb.ref('calls/'+roomId).set({initiator:currentUser.id,status:'calling',createdAt:Date.now()});
     setupWebRTC(roomId,true);
-  }catch(e){showToast('تعذر الوصول للكاميرا/الميكروفون','error')}
+  }catch(e){ showToast('تعذر الوصول للكاميرا/الميكروفون','error'); }
 }
 async function setupWebRTC(roomId,isInit){
   peerConn=new RTCPeerConnection(ICE_SERVERS);
@@ -1218,8 +1521,8 @@ async function setupWebRTC(roomId,isInit){
   peerConn.ontrack=e=>{document.getElementById('remote-video').srcObject=e.streams[0];document.getElementById('call-status-txt').textContent='متصل'};
   peerConn.onicecandidate=e=>{if(e.candidate&&rtdb)rtdb.ref('calls/'+roomId+'/ice_'+(isInit?'a':'b')).push(e.candidate.toJSON())};
   if(isInit){
-    const offer=await peerConn.createOffer();await peerConn.setLocalDescription(offer);
-    if(rtdb)rtdb.ref('calls/'+roomId+'/offer').set({type:offer.type,sdp:offer.sdp});
+    const offer=await peerConn.createOffer(); await peerConn.setLocalDescription(offer);
+    if(rtdb) rtdb.ref('calls/'+roomId+'/offer').set({type:offer.type,sdp:offer.sdp});
     rtdb.ref('calls/'+roomId+'/answer').on('value',async snap=>{const a=snap.val();if(a&&peerConn&&peerConn.signalingState!=='stable'){try{await peerConn.setRemoteDescription(new RTCSessionDescription(a))}catch(er){}}});
   }
   if(rtdb) rtdb.ref('calls/'+roomId+'/'+(isInit?'ice_b':'ice_a')).on('child_added',snap=>{const c=snap.val();if(c&&peerConn)peerConn.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{})});
@@ -1233,19 +1536,20 @@ function endCall(){if(peerConn){peerConn.close();peerConn=null}if(localStream){l
 // =============================================
 function loadAdminDash(){
   if(currentUser){
-    const n=document.getElementById('admin-user-name');if(n)n.textContent=currentUser.name;
-    const a=document.getElementById('admin-avatar');if(a)a.textContent=(currentUser.name||'م').charAt(0);
+    const n=document.getElementById('admin-user-name'); if(n) n.textContent=currentUser.name;
+    const a=document.getElementById('admin-avatar'); if(a) a.textContent=(currentUser.name||'م').charAt(0);
   }
   renderDashboard();
 }
 function switchAdmin(el){
-  document.querySelectorAll('.admin-sidebar .menu-item').forEach(m=>m.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('.admin-sidebar .menu-item').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
   document.getElementById('admin-sidebar').classList.remove('open');
-  const tab=el.dataset.tab;if(!tab)return;
+  const tab=el.dataset.tab; if(!tab) return;
   const titles={dashboard:'الإحصائيات','a-doctors':'إدارة الأطباء','a-users':'المستخدمون','a-consultations':'الاستشارات','a-messages':'الرسائل','a-client-chat':'محادثات العملاء','a-categories':'التخصصات','a-settings':'الإعدادات','a-add-admin':'إضافة مشرف','a-profile-admin':'حساب المشرف'};
   document.getElementById('admin-page-title').textContent=titles[tab]||'';
   const fn={dashboard:renderDashboard,'a-doctors':renderADoctors,'a-users':renderAUsers,'a-consultations':renderAConsult,'a-messages':renderAMsgs,'a-client-chat':renderAClientChat,'a-categories':renderACats,'a-settings':renderASettings,'a-add-admin':renderAddAdmin,'a-profile-admin':renderAdminProfile};
-  if(fn[tab])fn[tab]();
+  if(fn[tab]) fn[tab]();
 }
 
 function renderDashboard(){
@@ -1263,15 +1567,16 @@ function renderDashboard(){
 }
 
 function renderADoctors(){
-  const pending=allDoctors.filter(d=>d.status==='pending');
+  const pending = allDoctors.filter(d=>d.status==='pending');
   document.getElementById('admin-main-content').innerHTML=`
   <button class="btn btn-primary" style="margin-bottom:16px" onclick="openAddDocModal()"><svg class="icon" style="margin-left:5px"><use href="#i-plus"/></svg>إضافة طبيب</button>
   ${pending.length?`<div class="card" style="border-right:4px solid var(--warn);margin-bottom:16px"><h3 style="font-size:13px;font-weight:800;color:var(--warn);margin-bottom:10px">طلبات بانتظار الموافقة (${pending.length})</h3>${pending.map(d=>`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--input);border-radius:10px;margin-bottom:5px;flex-wrap:wrap"><div style="flex:1;min-width:100px"><div style="font-weight:800;font-size:13px">${esc(d.name)}</div><div style="font-size:11px;color:var(--text2)">${esc(d.title)}</div></div><div style="display:flex;gap:6px"><button class="btn btn-success btn-sm" onclick="approveDoc('${d.id}')"><svg class="icon icon-sm"><use href="#i-check"/></svg>قبول</button><button class="btn btn-danger btn-sm" onclick="rejectDoc('${d.id}')"><svg class="icon icon-sm"><use href="#i-times"/></svg>رفض</button></div></div>`).join('')}</div>`:''}
   <div class="card" style="overflow-x:auto"><table class="data-table"><thead><tr><th>الطبيب</th><th>التخصص</th><th>الرسوم</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody>${allDoctors.length?allDoctors.map(d=>`<tr><td><div style="display:flex;align-items:center;gap:9px">${d.photo?`<img src="${d.photo}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">`:`<div style="width:32px;height:32px;border-radius:50%;background:var(--glow);display:flex;align-items:center;justify-content:center"><svg class="icon icon-sm" style="color:var(--accent)"><use href="#i-user-md"/></svg></div>`}<div><div style="font-weight:800;font-size:12px">${esc(d.name)}</div><div style="font-size:10px;color:var(--text2)">${esc(d.title)}</div></div></div></td><td style="font-size:12px">${esc(d.category||'-')}</td><td>${d.fee?`<span class="fee-badge">${Number(d.fee).toLocaleString('ar-YE')}</span>`:'-'}</td><td><span style="padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;background:${d.status==='approved'?'rgba(5,150,105,.1);color:var(--success)':'rgba(217,119,6,.1);color:var(--warn)'}">${d.status==='approved'?'معتمد':'معلق'}</span></td><td><button style="background:none;border:none;color:var(--danger);cursor:pointer;padding:4px" onclick="deleteDoc('${d.id}')"><svg class="icon"><use href="#i-trash"/></svg></button></td></tr>`).join(''):`<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text2)">لا يوجد أطباء</td></tr>`}</tbody></table></div>`;
 }
+
 function openAddDocModal(){
-  const cats=allCategories;
-  const banks=['بنك الكريمي','بنك القطيبي','البنك الإسلامي عدن','بنك البصيري','بنك بن دول'];
+  const cats = allCategories;
+  const banks = ['بنك الكريمي','بنك القطيبي','البنك الإسلامي عدن','بنك البصيري','بنك بن دول'];
   openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:16px">إضافة طبيب</h3>
   <div style="margin-bottom:10px"><label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:4px">صورة الطبيب</label><input type="file" id="add-doc-photo" class="input-field" accept="image/*" onchange="previewDP(this)"><div id="dp-preview" style="margin-top:5px"></div></div>
   <div style="margin-bottom:10px"><input type="text" id="add-doc-name" class="input-field" placeholder="اسم الطبيب"></div>
@@ -1279,25 +1584,62 @@ function openAddDocModal(){
   <div style="margin-bottom:10px"><input type="tel" id="add-doc-phone" class="input-field" placeholder="رقم الهاتف" dir="ltr" maxlength="9"></div>
   <div style="margin-bottom:10px"><input type="text" id="add-doc-location" class="input-field" placeholder="الموقع"></div>
   <div style="margin-bottom:10px"><input type="email" id="add-doc-email" class="input-field" placeholder="البريد" dir="ltr"></div>
-  <div style="margin-bottom:10px"><select id="add-doc-cat" class="input-field"><option value="">اختر التخصص</option>${cats.map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('')}</select></div>
+  <div style="margin-bottom:10px">
+    <select id="add-doc-cat" class="input-field">
+      <option value="">اختر التخصص</option>
+      ${cats.map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('')}
+    </select>
+    ${cats.length===0?'<p style="color:var(--warn);font-size:11px;margin-top:4px">⚠️ لا توجد تخصصات. أضف تخصصاً أولاً من قسم التخصصات.</p>':''}
+  </div>
   <div style="margin-bottom:10px"><input type="number" id="add-doc-fee" class="input-field" placeholder="رسوم الاستشارة (ريال)" dir="ltr" min="0"></div>
   <div style="margin-bottom:14px"><label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:7px">البنوك المتاحة</label>${banks.map(b=>`<label style="display:flex;align-items:center;gap:7px;margin-bottom:5px;cursor:pointer;font-size:13px"><input type="checkbox" class="doc-bank-cb" value="${esc(b)}" style="width:15px;height:15px;accent-color:var(--accent)">${esc(b)}</label>`).join('')}</div>
-  <button class="btn btn-primary" style="width:100%" onclick="addDoc()"><svg class="icon" style="margin-left:6px"><use href="#i-plus"/></svg>إضافة</button>`);
+  <button class="btn btn-primary" style="width:100%" id="btn-add-doc" onclick="addDoc()"><svg class="icon" style="margin-left:6px"><use href="#i-plus"/></svg>إضافة الطبيب</button>`);
 }
-function previewDP(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{document.getElementById('dp-preview').innerHTML=`<img src="${e.target.result}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--accent)">`};r.readAsDataURL(f)}
+
+function previewDP(input){
+  const f=input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{ document.getElementById('dp-preview').innerHTML=`<img src="${e.target.result}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--accent)">`; };
+  r.readAsDataURL(f);
+}
+
+// ✅ إصلاح 1: إضافة طبيب - مع معالجة الأخطاء وتأكيد الحفظ
 function addDoc(){
-  const n=document.getElementById('add-doc-name').value.trim(),t=document.getElementById('add-doc-title').value.trim(),p=document.getElementById('add-doc-phone').value.trim(),l=document.getElementById('add-doc-location').value.trim(),e=document.getElementById('add-doc-email').value.trim(),c=document.getElementById('add-doc-cat').value,f=parseInt(document.getElementById('add-doc-fee').value)||0;
-  if(!n||!t||!p) return showToast('يرجى ملء الحقول الأساسية','error');
-  const ph=document.getElementById('dp-preview').querySelector('img');const photo=ph?ph.src:'';
+  const n=document.getElementById('add-doc-name').value.trim();
+  const t=document.getElementById('add-doc-title').value.trim();
+  const p=document.getElementById('add-doc-phone').value.trim();
+  const l=document.getElementById('add-doc-location').value.trim();
+  const e=document.getElementById('add-doc-email').value.trim();
+  const c=document.getElementById('add-doc-cat').value;
+  const f=parseInt(document.getElementById('add-doc-fee').value)||0;
+  if(!n||!t||!p) return showToast('يرجى ملء الحقول الأساسية (الاسم، اللقب، الهاتف)','error');
+  const ph=document.getElementById('dp-preview').querySelector('img');
+  const photo=ph?ph.src:'';
   const banks=[...document.querySelectorAll('.doc-bank-cb:checked')].map(cb=>cb.value);
   const doc={name:n,title:t,phone:p,location:l,email:e,category:c,photo,fee:f,banks,status:'approved',rating:0,role:'doctor',createdAt:Date.now()};
-  if(rtdb) rtdb.ref('doctors').push(doc).then(()=>{showToast('تم إضافة الطبيب','success');closeModal()});
+
+  if(!rtdb){ showToast('قاعدة البيانات غير متصلة','error'); return; }
+
+  setBtnLoading('btn-add-doc', true);
+  rtdb.ref('doctors').push(doc)
+    .then(ref=>{
+      console.log('Doctor added with ID:', ref.key);
+      showToast('✅ تم إضافة الطبيب بنجاح','success');
+      closeModal();
+    })
+    .catch(err=>{
+      console.error('Error adding doctor:', err);
+      showToast('خطأ في الحفظ: ' + (err.message||'تحقق من قواعد Firebase'),'error');
+      setBtnLoading('btn-add-doc', false);
+    });
 }
-function approveDoc(id){if(rtdb)rtdb.ref('doctors/'+id).update({status:'approved'}).then(()=>showToast('تم القبول','success'))}
-function rejectDoc(id){if(rtdb)rtdb.ref('doctors/'+id).update({status:'rejected'}).then(()=>showToast('تم الرفض','info'))}
+
+function approveDoc(id){ if(rtdb) rtdb.ref('doctors/'+id).update({status:'approved'}).then(()=>showToast('تم القبول','success')); }
+function rejectDoc(id){ if(rtdb) rtdb.ref('doctors/'+id).update({status:'rejected'}).then(()=>showToast('تم الرفض','info')); }
 function deleteDoc(id){
-  openModal(`<div style="text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg class="icon icon-xl" style="color:var(--danger)"><use href="#i-exclamation"/></svg></div><h3 style="margin-bottom:6px">تأكيد الحذف</h3><p style="color:var(--text2);font-size:13px;margin-bottom:16px">سيتم حذف الطبيب نهائياً</p><div style="display:flex;gap:10px;justify-content:center"><button class="btn btn-danger" onclick="if(rtdb)rtdb.ref('doctors/${id}').remove().then(()=>{showToast('تم الحذف','success');closeModal()})">حذف</button><button class="btn btn-outline" onclick="closeModal()">إلغاء</button></div></div>`);
+  openModal(`<div style="text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg class="icon icon-xl" style="color:var(--danger)"><use href="#i-exclamation"/></svg></div><h3 style="margin-bottom:6px">تأكيد الحذف</h3><p style="color:var(--text2);font-size:13px;margin-bottom:16px">سيتم حذف الطبيب نهائياً</p><div style="display:flex;gap:10px;justify-content:center"><button class="btn btn-danger" onclick="if(rtdb)rtdb.ref('doctors/${id}').remove().then(()=>{showToast('تم الحذف','success');closeModal()}).catch(e=>showToast('خطأ: '+e.message,'error'))">حذف</button><button class="btn btn-outline" onclick="closeModal()">إلغاء</button></div></div>`);
 }
+
 function renderAUsers(){
   document.getElementById('admin-main-content').innerHTML=`<div class="card" style="overflow-x:auto"><table class="data-table"><thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الموقع</th><th>التاريخ</th></tr></thead><tbody>${allUsers.length?allUsers.map(u=>`<tr><td style="font-weight:700">${esc(u.name)}</td><td dir="ltr" style="font-size:12px">${esc(u.email||'-')}</td><td dir="ltr" style="font-size:12px">${esc(u.phone||'-')}</td><td style="font-size:12px">${esc(u.location||'-')}</td><td style="font-size:11px;color:var(--text2)">${u.createdAt?new Date(u.createdAt).toLocaleDateString('ar-YE'):'-'}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text2)">لا يوجد</td></tr>'}</tbody></table></div>`;
 }
@@ -1305,19 +1647,67 @@ function renderAConsult(){
   const sMap={'new':{l:'جديدة',c:'s-new'},'inprogress':{l:'تقدم',c:'s-progress'},'underway':{l:'جارية',c:'s-active'},'contacting':{l:'تواصل',c:'s-contact'},'closed':{l:'مغلقة',c:'s-closed'}};
   document.getElementById('admin-main-content').innerHTML=`<div class="card">${allConsultations.length?allConsultations.sort((a,b)=>b.createdAt-a.createdAt).map(c=>{const st=sMap[c.status]||sMap['new'];return`<div style="padding:14px;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;flex-wrap:wrap;gap:6px"><div><span style="font-weight:800;font-size:13px">${esc(c.userName)}</span><span style="margin:0 5px;color:var(--text2)">→</span><span style="font-size:12px;color:var(--accent);font-weight:700">${esc(c.doctorName)}</span></div><select style="padding:3px 8px;border-radius:20px;font-size:11px;font-weight:800;background:var(--input);color:var(--text);border:2px solid var(--border);cursor:pointer;font-family:'Cairo'" onchange="updateCStatus('${c.id}',this.value)">${Object.entries(sMap).map(([k,v])=>`<option value="${k}" ${c.status===k?'selected':''}>${v.l}</option>`).join('')}</select></div><p style="font-size:13px;color:var(--text2);margin-bottom:8px;line-height:1.7">${esc(c.message)}</p>${c.depositSlip?`<div style="margin-bottom:7px"><img src="${c.depositSlip}" style="max-width:120px;max-height:80px;border-radius:8px;border:2px solid var(--border);cursor:pointer" onclick="window.open('${c.depositSlip}','_blank')"></div>`:''}${c.reply?`<div style="padding:9px 12px;background:rgba(5,150,105,.05);border-radius:10px;margin-bottom:7px;font-size:13px;border-right:3px solid var(--success)"><span style="font-weight:800;color:var(--success);font-size:10px">الرد:</span> ${esc(c.reply)}</div>`:''}<button class="btn btn-primary btn-sm" onclick="replyConsult('${c.id}')"><svg class="icon icon-sm" style="margin-left:3px"><use href="#i-reply"/></svg>رد</button></div>`}).join(''):'<div style="text-align:center;padding:36px;color:var(--text2)">لا توجد استشارات</div>'}</div>`;
 }
-function updateCStatus(id,val){if(rtdb)rtdb.ref('consultations/'+id).update({status:val}).then(()=>{showToast('تم تحديث الحالة','success');playNotif('status')})}
-function replyConsult(id){openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:14px">الرد على الاستشارة</h3><textarea id="cr" class="input-field" rows="5" placeholder="اكتب ردك..."></textarea><button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="const v=document.getElementById('cr').value.trim();if(!v)return;if(rtdb)rtdb.ref('consultations/${id}').update({reply:v}).then(()=>{showToast('تم إرسال الرد','success');closeModal();playNotif('msg')})">إرسال الرد</button>`)}
+function updateCStatus(id,val){ if(rtdb) rtdb.ref('consultations/'+id).update({status:val}).then(()=>{ showToast('تم تحديث الحالة','success'); playNotif('status'); }); }
+function replyConsult(id){ openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:14px">الرد على الاستشارة</h3><textarea id="cr" class="input-field" rows="5" placeholder="اكتب ردك..."></textarea><button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="const v=document.getElementById('cr').value.trim();if(!v)return;if(rtdb)rtdb.ref('consultations/${id}').update({reply:v}).then(()=>{showToast('تم إرسال الرد','success');closeModal();playNotif('msg')})">إرسال الرد</button>`); }
 function renderAMsgs(){
   document.getElementById('admin-main-content').innerHTML=`<div class="card">${allMessages.length?allMessages.sort((a,b)=>b.createdAt-a.createdAt).map(m=>`<div style="padding:12px;border-bottom:1px solid var(--border);${!m.read?'background:var(--glow);border-right:3px solid var(--accent)':''}"><div style="margin-bottom:4px;display:flex;align-items:center;gap:6px"><span style="font-weight:800;font-size:13px">${esc(m.name)}</span>${!m.read?'<span style="padding:2px 7px;border-radius:10px;background:var(--accent);color:#fff;font-size:9px;font-weight:800">جديدة</span>':''}</div><div style="font-size:11px;color:var(--text2);margin-bottom:4px" dir="ltr">${esc(m.email)}</div><p style="font-size:13px;line-height:1.7">${esc(m.message)}</p>${!m.read?`<button class="btn btn-outline btn-sm" style="margin-top:6px" onclick="if(rtdb)rtdb.ref('messages/${m.id}').update({read:true})">تحديد كمقروءة</button>`:''}</div>`).join(''):'<div style="text-align:center;padding:36px;color:var(--text2)">لا توجد رسائل</div>'}</div>`;
 }
+
+// ✅ إصلاح 1: إضافة تخصص - مع معالجة الأخطاء وتأكيد الحفظ
 function renderACats(){
   document.getElementById('admin-main-content').innerHTML=`
   <button class="btn btn-primary" style="margin-bottom:16px" onclick="openAddCatModal()"><svg class="icon" style="margin-left:5px"><use href="#i-plus"/></svg>إضافة تخصص</button>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">${allCategories.length?allCategories.map(c=>`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><h3 style="font-size:14px;font-weight:800;color:var(--accent)">${esc(c.name)}</h3><button style="background:none;border:none;color:var(--danger);cursor:pointer;padding:3px" onclick="deleteCat('${c.id}')"><svg class="icon"><use href="#i-trash"/></svg></button></div><div style="display:flex;flex-wrap:wrap;gap:4px">${(c.subs||[]).map(s=>`<span style="padding:3px 9px;border-radius:20px;background:var(--input);font-size:11px;font-weight:600;color:var(--text2)">${esc(s)}</span>`).join('')}</div></div>`).join(''):'<p style="color:var(--text2);font-size:13px">لا توجد تخصصات</p>'}</div>`;
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+    ${allCategories.length?allCategories.map(c=>`<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><h3 style="font-size:14px;font-weight:800;color:var(--accent)">${esc(c.name)}</h3><button style="background:none;border:none;color:var(--danger);cursor:pointer;padding:3px" onclick="deleteCat('${c.id}')"><svg class="icon"><use href="#i-trash"/></svg></button></div><div style="display:flex;flex-wrap:wrap;gap:4px">${(c.subs||[]).map(s=>`<span style="padding:3px 9px;border-radius:20px;background:var(--input);font-size:11px;font-weight:600;color:var(--text2)">${esc(s)}</span>`).join('')}</div></div>`).join('')
+    :'<div style="text-align:center;padding:40px;color:var(--text2)"><svg class="icon icon-xl" style="opacity:.25;margin-bottom:10px"><use href="#i-tags"/></svg><p>لا توجد تخصصات بعد</p></div>'}
+  </div>`;
 }
-function openAddCatModal(){openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:16px">إضافة تخصص</h3><div style="margin-bottom:10px"><input type="text" id="acn" class="input-field" placeholder="اسم التخصص"></div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:5px">التخصصات الفرعية (سطر لكل واحد)</label><textarea id="acs" class="input-field" rows="4" placeholder="فرعي 1&#10;فرعي 2"></textarea></div><button class="btn btn-primary" style="width:100%" onclick="addCat()">إضافة</button>`)}
-function addCat(){const n=document.getElementById('acn').value.trim(),st=document.getElementById('acs').value.trim();if(!n)return showToast('أدخل اسم التخصص','error');const subs=st?st.split('\n').map(s=>s.trim()).filter(s=>s):[];if(rtdb)rtdb.ref('categories').push({name:n,subs}).then(()=>{showToast('تم الإضافة','success');closeModal()})}
-function deleteCat(id){openModal(`<div style="text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg class="icon icon-xl" style="color:var(--danger)"><use href="#i-exclamation"/></svg></div><h3 style="margin-bottom:6px">حذف التخصص؟</h3><p style="color:var(--text2);font-size:13px;margin-bottom:16px">سيتم حذفه نهائياً</p><div style="display:flex;gap:10px;justify-content:center"><button class="btn btn-danger" onclick="if(rtdb)rtdb.ref('categories/${id}').remove().then(()=>{showToast('تم الحذف','success');closeModal()})">حذف</button><button class="btn btn-outline" onclick="closeModal()">إلغاء</button></div></div>`)}
+
+function openAddCatModal(){
+  openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:16px"><svg class="icon" style="margin-left:7px;color:var(--accent)"><use href="#i-tags"/></svg>إضافة تخصص جديد</h3>
+  <div style="margin-bottom:10px">
+    <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:5px">اسم التخصص *</label>
+    <input type="text" id="acn" class="input-field" placeholder="مثال: طب القلب، طب الأطفال...">
+  </div>
+  <div style="margin-bottom:14px">
+    <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:5px">التخصصات الفرعية (اختياري - سطر لكل واحد)</label>
+    <textarea id="acs" class="input-field" rows="4" placeholder="فرعي 1&#10;فرعي 2&#10;فرعي 3"></textarea>
+  </div>
+  <button class="btn btn-primary" style="width:100%" id="btn-add-cat" onclick="addCat()">
+    <svg class="icon" style="margin-left:6px"><use href="#i-plus"/></svg>إضافة التخصص
+  </button>`);
+}
+
+// ✅ إصلاح 1: حفظ التخصص في Firebase مع معالجة الأخطاء
+function addCat(){
+  const n=document.getElementById('acn').value.trim();
+  const st=document.getElementById('acs').value.trim();
+  if(!n) return showToast('أدخل اسم التخصص','error');
+
+  if(!rtdb){ showToast('قاعدة البيانات غير متصلة','error'); return; }
+
+  const subs = st ? st.split('\n').map(s=>s.trim()).filter(s=>s) : [];
+  const catData = {name:n, subs, createdAt:Date.now()};
+
+  setBtnLoading('btn-add-cat', true);
+  rtdb.ref('categories').push(catData)
+    .then(ref=>{
+      console.log('Category added with ID:', ref.key);
+      showToast('✅ تم إضافة التخصص بنجاح: ' + n,'success');
+      closeModal();
+      renderACats(); // تحديث العرض
+    })
+    .catch(err=>{
+      console.error('Error adding category:', err);
+      showToast('خطأ في الحفظ: ' + (err.message||'تحقق من قواعد Firebase'),'error');
+      setBtnLoading('btn-add-cat', false);
+    });
+}
+
+function deleteCat(id){
+  openModal(`<div style="text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><svg class="icon icon-xl" style="color:var(--danger)"><use href="#i-exclamation"/></svg></div><h3 style="margin-bottom:6px">حذف التخصص؟</h3><p style="color:var(--text2);font-size:13px;margin-bottom:16px">سيتم حذفه نهائياً</p><div style="display:flex;gap:10px;justify-content:center"><button class="btn btn-danger" onclick="if(rtdb)rtdb.ref('categories/${id}').remove().then(()=>{showToast('تم الحذف','success');closeModal();renderACats()}).catch(e=>showToast('خطأ: '+e.message,'error'))">حذف</button><button class="btn btn-outline" onclick="closeModal()">إلغاء</button></div></div>`);
+}
+
 function renderASettings(){
   const s=platformSettings;
   document.getElementById('admin-main-content').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
@@ -1334,7 +1724,9 @@ function saveSettings(){
   if(lf){const r=new FileReader();r.onload=e=>{data.logo=e.target.result;persistSettings(data)};r.readAsDataURL(lf)}
   else{data.logo=platformSettings.logo||'';persistSettings(data)}
 }
-function persistSettings(data){if(rtdb)rtdb.ref('settings/platform').update(data).then(()=>{platformSettings=data;applySettings(data);showToast('تم حفظ الإعدادات','success')})}
+function persistSettings(data){
+  if(rtdb) rtdb.ref('settings/platform').update(data).then(()=>{ platformSettings=data; applySettings(data); showToast('تم حفظ الإعدادات','success'); });
+}
 function renderAddAdmin(){
   document.getElementById('admin-main-content').innerHTML=`<div class="card" style="max-width:480px"><h3 style="margin-bottom:14px;font-size:15px">إضافة مشرف مساعد</h3><div style="margin-bottom:10px"><input type="text" id="na-name" class="input-field" placeholder="الاسم"></div><div style="margin-bottom:10px"><input type="email" id="nae" class="input-field" placeholder="البريد الإلكتروني" dir="ltr"></div><div style="margin-bottom:6px"><input type="password" id="nap" class="input-field" placeholder="كلمة المرور (6 أحرف+)"></div><button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="addSubAdmin()">إضافة المشرف</button></div>
   <div class="card" style="max-width:480px;margin-top:16px"><h3 style="margin-bottom:12px;font-size:14px">المشرفون المساعدون</h3><div id="sub-admins-list"><div class="skeleton" style="height:40px;margin-bottom:8px"></div></div></div>`;
@@ -1342,48 +1734,105 @@ function renderAddAdmin(){
 }
 function addSubAdmin(){
   const name=document.getElementById('na-name').value.trim(),e=document.getElementById('nae').value.trim(),p=document.getElementById('nap').value;
-  if(!name||!e||!p)return showToast('يرجى ملء جميع الحقول','error');
-  if(p.length<6)return showToast('كلمة المرور 6 أحرف على الأقل','error');
-  if(rtdb)rtdb.ref('admins').push({name,email:e,password:p,role:'admin',isMain:false,createdAt:Date.now()}).then(()=>{showToast('تم إضافة المشرف','success');document.getElementById('na-name').value='';document.getElementById('nae').value='';document.getElementById('nap').value='';loadSubAdmins()});
+  if(!name||!e||!p) return showToast('يرجى ملء جميع الحقول','error');
+  if(p.length<6) return showToast('كلمة المرور 6 أحرف على الأقل','error');
+  if(rtdb) rtdb.ref('admins').push({name,email:e,password:p,role:'admin',isMain:false,createdAt:Date.now()}).then(()=>{ showToast('تم إضافة المشرف','success'); document.getElementById('na-name').value=''; document.getElementById('nae').value=''; document.getElementById('nap').value=''; loadSubAdmins(); });
 }
 function loadSubAdmins(){
-  const el=document.getElementById('sub-admins-list');if(!el||!rtdb)return;
+  const el=document.getElementById('sub-admins-list'); if(!el||!rtdb) return;
   rtdb.ref('admins').once('value',snap=>{
-    const d=snap.val()||{};const list=Object.keys(d).map(k=>({id:k,...d[k]}));
+    const d=snap.val()||{};
+    const list=Object.keys(d).map(k=>({id:k,...d[k]}));
     el.innerHTML=list.length?list.map(a=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px;background:var(--input);border-radius:10px;margin-bottom:6px"><div><div style="font-weight:700;font-size:13px">${esc(a.name)}</div><div style="font-size:11px;color:var(--text2)" dir="ltr">${esc(a.email)}</div></div><button style="background:none;border:none;color:var(--danger);cursor:pointer;padding:3px" onclick="if(rtdb)rtdb.ref('admins/${a.id}').remove().then(()=>{showToast('تم الحذف','success');loadSubAdmins()})"><svg class="icon"><use href="#i-trash"/></svg></button></div>`).join(''):'<p style="color:var(--text2);font-size:12px">لا يوجد مشرفون مساعدون</p>';
   });
 }
 function renderAdminProfile(){
-  if(!isMainAdmin){document.getElementById('admin-main-content').innerHTML=`<div class="card" style="text-align:center;max-width:460px;margin:36px auto"><h3 style="margin-bottom:6px">صلاحيات محدودة</h3><p style="color:var(--text2);font-size:13px">تعديل بيانات المشرف الرئيسي متاح للمشرف الرئيسي فقط.</p></div>`;return}
+  if(!isMainAdmin){ document.getElementById('admin-main-content').innerHTML=`<div class="card" style="text-align:center;max-width:460px;margin:36px auto"><h3 style="margin-bottom:6px">صلاحيات محدودة</h3><p style="color:var(--text2);font-size:13px">تعديل بيانات المشرف الرئيسي متاح للمشرف الرئيسي فقط.</p></div>`; return; }
   document.getElementById('admin-main-content').innerHTML=`<div class="card" style="max-width:480px"><h3 style="margin-bottom:16px">بيانات المشرف الرئيسي</h3><div style="margin-bottom:10px"><input type="email" id="pe" class="input-field" value="${esc(HIDDEN_ADMIN.email)}" dir="ltr"></div><div style="margin-bottom:6px"><div style="position:relative"><input type="password" id="pp" class="input-field" placeholder="كلمة المرور الجديدة" style="padding-left:44px"><button onclick="togglePassVis('pp',this)" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;padding:4px"><svg class="icon"><use href="#i-eye"/></svg></button></div></div><div style="margin-bottom:14px"><div style="position:relative"><input type="password" id="ppc" class="input-field" placeholder="تأكيد كلمة المرور" style="padding-left:44px"><button onclick="togglePassVis('ppc',this)" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);cursor:pointer;padding:4px"><svg class="icon"><use href="#i-eye"/></svg></button></div></div><button class="btn btn-primary" style="width:100%" onclick="saveAdminProfile()"><svg class="icon" style="margin-left:6px"><use href="#i-save"/></svg>حفظ</button></div>`;
 }
 function saveAdminProfile(){
   const e=document.getElementById('pe').value.trim(),p=document.getElementById('pp').value,pc=document.getElementById('ppc').value;
-  if(!e)return showToast('أدخل البريد','error');
-  if(p&&p!==pc)return showToast('كلمات المرور غير متطابقة','error');
-  if(p&&p.length<6)return showToast('كلمة المرور قصيرة','error');
-  HIDDEN_ADMIN.email=e;if(p)HIDDEN_ADMIN.password=p;
-  if(rtdb)rtdb.ref('settings/admin').update({email:e,password:p||HIDDEN_ADMIN.password}).then(()=>showToast('تم التحديث','success'));
+  if(!e) return showToast('أدخل البريد','error');
+  if(p&&p!==pc) return showToast('كلمات المرور غير متطابقة','error');
+  if(p&&p.length<6) return showToast('كلمة المرور قصيرة','error');
+  HIDDEN_ADMIN.email=e; if(p) HIDDEN_ADMIN.password=p;
+  if(rtdb) rtdb.ref('settings/admin').update({email:e,password:p||HIDDEN_ADMIN.password}).then(()=>showToast('تم التحديث','success'));
 }
 
 // =============================================
-// Init
+// ✅ Init - مع تحميل البيانات العامة أولاً
 // =============================================
 function init(){
   setupPWA();
-  // إظهار الصفحة الرئيسية فورًا (قبل Firebase)
+  // عرض الصفحة الرئيسية فوراً بدون انتظار Firebase
   navigateTo('home');
-  // ثم تهيئة Firebase
+  // تهيئة Firebase (تحمّل البيانات للجميع)
   initFirebase();
-  const checkMobile=()=>{const t=document.getElementById('sidebar-toggle');if(t)t.style.display=window.innerWidth<=768?'flex':'none'};
-  window.addEventListener('resize',checkMobile);setTimeout(checkMobile,200);
-  document.addEventListener('click',e=>{
-    const s=document.getElementById('admin-sidebar'),t=document.getElementById('sidebar-toggle');
-    if(s&&s.classList.contains('open')&&!s.contains(e.target)&&t&&!t.contains(e.target))s.classList.remove('open');
+
+  const checkMobile=()=>{ const t=document.getElementById('sidebar-toggle'); if(t) t.style.display=window.innerWidth<=768?'flex':'none'; };
+  window.addEventListener('resize', checkMobile);
+  setTimeout(checkMobile, 200);
+
+  document.addEventListener('click', e=>{
+    const s=document.getElementById('admin-sidebar'), t=document.getElementById('sidebar-toggle');
+    if(s && s.classList.contains('open') && !s.contains(e.target) && t && !t.contains(e.target))
+      s.classList.remove('open');
   });
 }
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
+
+<!--
+================================================================
+⚠️ مهم جداً: قواعد Firebase Realtime Database
+================================================================
+يجب نسخ هذه القواعد في Firebase Console:
+Firebase Console → Realtime Database → Rules → Edit rules
+
+{
+  "rules": {
+    "settings": {
+      ".read": true,
+      ".write": true
+    },
+    "categories": {
+      ".read": true,
+      ".write": true
+    },
+    "doctors": {
+      ".read": true,
+      ".write": true
+    },
+    "users": {
+      ".read": true,
+      ".write": true
+    },
+    "consultations": {
+      ".read": true,
+      ".write": true
+    },
+    "messages": {
+      ".read": true,
+      ".write": true
+    },
+    "clientChats": {
+      ".read": true,
+      ".write": true
+    },
+    "admins": {
+      ".read": true,
+      ".write": true
+    },
+    "calls": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+
+ملاحظة: هذه القواعد مفتوحة للتطوير. في الإنتاج يجب تقييدها.
+================================================================
+-->
 </body>
 </html>
