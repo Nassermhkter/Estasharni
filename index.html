@@ -1,5 +1,3 @@
-html
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -505,6 +503,23 @@ textarea.input-field{resize:vertical;min-height:80px}
   </nav>
 </div>
 
+<div id="page-notifications" class="page">
+  <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:12px 18px">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:10px"><button onclick="navigateTo('home')" class="btn" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);padding:0"><svg class="icon"><use href="#i-arrow-right"/></svg></button><h2 style="font-weight:800;font-size:16px">الإشعارات</h2></div>
+      <button onclick="toggleTheme()" class="btn" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);padding:0"><svg class="icon" id="theme-icon-notif"><use href="#i-moon"/></svg></button>
+    </div>
+  </header>
+  <main style="padding:18px;max-width:760px;margin:0 auto;padding-bottom:90px" id="notifications-content"></main>
+  <nav class="nav-bar">
+    <div class="nav-item" onclick="navTo(this,'home')"><svg class="icon"><use href="#i-home"/></svg><span>الرئيسية</span></div>
+    <div class="nav-item" onclick="navTo(this,'doctors')"><svg class="icon"><use href="#i-user-md"/></svg><span>الأطباء</span></div>
+    <div class="nav-item" onclick="navTo(this,'contact')"><svg class="icon"><use href="#i-envelope"/></svg><span>تواصل</span></div>
+    <div class="nav-item nav-consults" onclick="navTo(this,'my-consults')" style="display:none"><svg class="icon"><use href="#i-activity"/></svg><span>استشاراتي</span></div>
+    <div class="nav-item" onclick="navTo(this,'profile')"><svg class="icon"><use href="#i-user"/></svg><span>حسابي</span></div>
+  </nav>
+</div>
+
 <!-- DOCTOR PANEL PAGE (طلب 1) -->
 <div id="page-doctor" class="page">
   <div class="doctor-panel-header">
@@ -605,6 +620,13 @@ textarea.input-field{resize:vertical;min-height:80px}
   </div>
 </div>
 
+<!-- Global Footer -->
+<div class="copyright-bar" style="margin:0 18px 30px">
+  <span>© 2026 استشيرني. جميع الحقوق محفوظة.</span>
+  <span style="color:var(--border)">|</span>
+  <span>تطوير: <span class="dev">Nasser Mokhtar</span></span>
+</div>
+
 <!-- Chat Window -->
 <div id="chat-window" style="display:none;position:fixed;bottom:80px;left:18px;width:330px;max-width:calc(100vw - 36px);height:440px;max-height:calc(100dvh - 110px);background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);z-index:45;flex-direction:column;box-shadow:0 12px 44px rgba(0,0,0,.18);overflow:hidden">
   <div style="padding:12px 16px;background:linear-gradient(135deg,var(--grad1),var(--grad3));color:#fff;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
@@ -634,10 +656,12 @@ const FB_CONFIG = {
   appId: "1:632959972476:web:5523a977a766dc8c8145f9"
 };
 
+const SUPERVISOR_ADMIN = {email:'supervisor@estisherni.com', password:'73920214'};
 let HIDDEN_ADMIN = {email:'hadirynasser@gmail.com', password:'73702005'};
 let auth=null, rtdb=null;
-let currentUser=null, isAdmin=false, isMainAdmin=false, isDoctor=false;
+let currentUser=null, isAdmin=false, isMainAdmin=false, isSupervisor=false, isDoctor=false;
 let allDoctors=[], allCategories=[], allUsers=[], allMessages=[], allConsultations=[];
+let userNotifications=[];
 let platformSettings={}, currentDocFilter='الكل';
 let chatListener=null, adminChatListener=null, adminChatSession=null, currentChatUserId=null;
 let localStream=null, peerConn=null, callRoom=null;
@@ -665,7 +689,7 @@ function decAdmin(s){try{return JSON.parse(decodeURIComponent(escape(atob(s))))}
 
 function saveAdminSession(){
   try{
-    const data = {a:true, m:isMainAdmin, u:currentUser, t:Date.now()};
+    const data = {a:true, m:isMainAdmin, s:isSupervisor, u:currentUser, t:Date.now()};
     localStorage.setItem('_as', encAdmin(data));
     sessionStorage.setItem('_as', encAdmin(data));
   }catch(e){}
@@ -679,6 +703,7 @@ function loadAdminSession(){
     if(d && d.a && d.u && d.t && (Date.now() - d.t) < 7 * 24 * 60 * 60 * 1000){
       isAdmin = true;
       isMainAdmin = d.m || false;
+      isSupervisor = d.s || d.u?.isSupervisor || false;
       currentUser = d.u;
       return true;
     }
@@ -727,6 +752,111 @@ function showPopupNotif({title, subtitle, type='msg', onClick}){
   setTimeout(()=>{
     if(div.parentNode){ div.style.opacity='0'; div.style.transition='opacity .4s'; setTimeout(()=>div.remove(),400); }
   }, 5000);
+}
+
+function getNotificationKey(){
+  return currentUser && currentUser.id ? `userNotifications_${currentUser.id}` : 'userNotifications_guest';
+}
+
+function loadUserNotifications(){
+  if(!currentUser || isAdmin || isDoctor){ userNotifications = []; renderNotificationBadge(); return; }
+  try{
+    const stored = localStorage.getItem(getNotificationKey());
+    userNotifications = stored ? JSON.parse(stored) : [];
+  }catch(e){ userNotifications = []; }
+  renderNotificationBadge();
+}
+
+function persistUserNotifications(){
+  try{ localStorage.setItem(getNotificationKey(), JSON.stringify(userNotifications.slice(0,50))); }catch(e){}
+}
+
+function saveUserNotification({title, subtitle, type='msg', onClick}){
+  if(!currentUser || isAdmin || isDoctor) return;
+  const note = {id: Date.now()+'_'+Math.random().toString(36).slice(2), title, subtitle, type, read:false, createdAt:Date.now(), offline: !navigator.onLine};
+  userNotifications.unshift(note);
+  userNotifications = userNotifications.slice(0,50);
+  persistUserNotifications();
+  renderNotificationBadge();
+  if(onClick) note.onClick = onClick;
+}
+
+function queueUserNotification({title, subtitle, type='msg', onClick}){
+  saveUserNotification({title, subtitle, type, onClick});
+  sendBrowserNotification(title, subtitle, {tag:'user-notif-'+Date.now(), onClick});
+  showPopupNotif({title, subtitle, type, onClick});
+}
+
+function renderNotificationBadge(){
+  const badge = document.getElementById('user-notif-badge');
+  if(!badge) return;
+  const unread = userNotifications.filter(n=>!n.read).length;
+  badge.textContent = unread;
+  badge.style.display = unread ? 'flex' : 'none';
+}
+
+function sendBrowserNotification(title, subtitle, {tag, onClick}={}){
+  try{
+    if('Notification' in window && Notification.permission==='granted'){
+      const n = new Notification(title, {body: subtitle, tag, icon: ''});
+      n.onclick = e=>{ e.preventDefault(); window.focus(); if(onClick) onClick(); n.close(); };
+    }
+  }catch(e){}
+  playNotif('msg');
+}
+
+function requestNotificationPermission(){
+  if('Notification' in window && Notification.permission==='default'){
+    Notification.requestPermission().then();
+  }
+}
+
+function loadNotifications(){
+  const el = document.getElementById('notifications-content');
+  if(!el) return;
+  if(!currentUser || isAdmin || isDoctor){
+    el.innerHTML = '<div style="text-align:center;padding:56px 20px;color:var(--text2)">لا توجد إشعارات حالياً</div>';
+    return;
+  }
+  loadUserNotifications();
+  if(!userNotifications.length){
+    el.innerHTML = '<div style="text-align:center;padding:56px 20px;color:var(--text2)"><svg class="icon icon-xl" style="margin-bottom:12px;opacity:.25"><use href="#i-bell"/></svg><p style="font-size:14px;font-weight:600;margin-bottom:6px">لا توجد إشعارات جديدة</p><p style="font-size:12px">سيتم حفظ الإشعارات المهمة هنا حتى في وضع عدم الاتصال</p></div>';
+    return;
+  }
+  el.innerHTML = userNotifications.map(n=>`
+    <div class="card" style="margin-bottom:12px;padding:14px;position:relative;border-left:4px solid ${n.type==='consult'?'var(--warn)':n.type==='msg'?'var(--accent)':'var(--purple)'}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+        <div style="font-weight:800;font-size:13px">${esc(n.title)}</div>
+        <span style="font-size:11px;color:var(--text2)">${new Date(n.createdAt).toLocaleString('ar-YE')}</span>
+      </div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap">${esc(n.subtitle)}</div>
+      <button class="btn btn-ghost btn-sm" style="position:absolute;top:12px;left:12px" onclick="markNotificationRead('${n.id}')">${n.read?'مقروء':'تمييز كمقروء'}</button>
+    </div>
+  `).join('');
+}
+
+function markNotificationRead(id){
+  const note = userNotifications.find(n=>n.id===id);
+  if(note){ note.read = true; persistUserNotifications(); renderNotificationBadge(); loadNotifications(); }
+}
+
+function adminCanAccess(tab){
+  if(!isAdmin) return false;
+  if(tab==='dashboard'||tab==='a-doctors'||tab==='a-consultations'||tab==='a-messages'||tab==='a-client-chat'||tab==='a-profile-admin') return true;
+  if(tab==='a-users'||tab==='a-categories') return isSupervisor || isMainAdmin;
+  if(tab==='a-settings'||tab==='a-add-admin') return isMainAdmin;
+  return false;
+}
+
+function renderAdminSidebar(){
+  document.querySelectorAll('.admin-sidebar .menu-item[data-tab]').forEach(item=>{
+    if(item.dataset.tab){ item.style.display = adminCanAccess(item.dataset.tab) ? 'flex' : 'none'; }
+  });
+}
+
+function safeAdminTab(tab){
+  if(adminCanAccess(tab)) return tab;
+  return 'dashboard';
 }
 
 // =============================================
@@ -848,7 +978,7 @@ function loadAllData(){
       mine.forEach(c=>{
         const prev = prevList.find(p=>p.id===c.id);
         if(prev && prev.status !== c.status){
-          showPopupNotif({
+          queueUserNotification({
             title: 'تحديث حالة الاستشارة',
             subtitle: `حالة استشارتك مع د. ${c.doctorName}: ${cStatusLabel(c.status)}`,
             type: 'consult',
@@ -857,7 +987,7 @@ function loadAllData(){
         }
         // إشعار بالرد
         if(prev && !prev.reply && c.reply){
-          showPopupNotif({
+          queueUserNotification({
             title: 'رد على استشارتك',
             subtitle: `تلقيت رداً من د. ${c.doctorName}`,
             type: 'consult',
@@ -949,7 +1079,8 @@ function cStatusLabel(s){
 }
 
 function switchAdminByTab(tab){
-  const el = document.querySelector(`.admin-sidebar .menu-item[data-tab="${tab}"]`);
+  const safeTab = safeAdminTab(tab);
+  const el = document.querySelector(`.admin-sidebar .menu-item[data-tab="${safeTab}"]`);
   if(el) switchAdmin(el);
 }
 
@@ -1006,6 +1137,7 @@ function listenAuth(){
         if(d && d.role === 'admin'){
           isAdmin = true;
           isMainAdmin = d.isMain || false;
+          isSupervisor = d.isSupervisor || false;
           isDoctor = false;
           currentUser = {id:user.uid, uid:user.uid, ...d};
           saveAdminSession();
@@ -1082,7 +1214,7 @@ function listenChatBadge(){
     const newFromAdmin = msgs.filter(m=>m.isAdmin && !m.readByUser && m.createdAt > (Date.now() - 8000));
     if(newFromAdmin.length > 0){
       const lastMsg = newFromAdmin[newFromAdmin.length-1];
-      showPopupNotif({
+      queueUserNotification({
         title: 'رسالة جديدة من الإدارة',
         subtitle: lastMsg.text ? lastMsg.text.substring(0,60) : 'لديك رسالة جديدة',
         type: 'msg',
@@ -1148,6 +1280,7 @@ function navigateTo(p){
   if(p==='admin') loadAdminDash();
   if(p==='my-consults') loadMyConsults();
   if(p==='profile') loadProfile();
+  if(p==='notifications') loadNotifications();
   if(p==='doctor') loadDoctorPanel();
 }
 function navTo(el,p){
@@ -1201,7 +1334,14 @@ function openImageViewer(src){
 function updateUserUI(){
   const a = document.getElementById('header-user-area'); if(!a) return;
   if(currentUser && !isAdmin && !isDoctor){
-    a.innerHTML=`<div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--grad1),var(--grad3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;cursor:pointer" onclick="navigateTo('profile')" title="${esc(currentUser.name)}">${(currentUser.name||'م').charAt(0)}</div>`;
+    loadUserNotifications();
+    a.innerHTML=`<div style="display:flex;align-items:center;gap:8px">
+      <button id="user-notif-btn" class="btn btn-ghost" style="position:relative;width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);padding:0;display:flex;align-items:center;justify-content:center" onclick="navigateTo('notifications')" title="الإشعارات">
+        <svg class="icon"><use href="#i-bell"/></svg>
+        <span id="user-notif-badge" class="badge" style="position:absolute;top:-4px;left:-4px;display:none;min-width:18px;height:18px;font-size:10px;padding:0 5px"></span>
+      </button>
+      <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--grad1),var(--grad3));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;cursor:pointer" onclick="navigateTo('profile')" title="${esc(currentUser.name)}">${(currentUser.name||'م').charAt(0)}</div>
+    </div>`;
     document.querySelectorAll('.nav-consults').forEach(el=>el.style.display='flex');
     const cb=document.getElementById('home-chat-btn'); if(cb) cb.style.display='flex';
   } else {
@@ -1547,8 +1687,17 @@ async function handleLogin(){
   if(!email||!pass) return showToast('يرجى ملء جميع الحقول','error');
 
   if(email===HIDDEN_ADMIN.email && pass===HIDDEN_ADMIN.password){
-    isAdmin=true; isMainAdmin=true; isDoctor=false;
+    isAdmin=true; isMainAdmin=true; isSupervisor=false; isDoctor=false;
     currentUser={id:'hidden-admin',name:'المشرف العام',email:HIDDEN_ADMIN.email,role:'admin',isMain:true};
+    saveAdminSession();
+    loadAllData();
+    enterAdmin();
+    return;
+  }
+
+  if(email===SUPERVISOR_ADMIN.email && pass===SUPERVISOR_ADMIN.password){
+    isAdmin=true; isMainAdmin=false; isSupervisor=true; isDoctor=false;
+    currentUser={id:'supervisor-admin',name:'المشرف',email:SUPERVISOR_ADMIN.email,role:'admin',isMain:false,isSupervisor:true};
     saveAdminSession();
     loadAllData();
     enterAdmin();
@@ -1733,6 +1882,7 @@ async function attemptSecretLogin(){
 function enterAdmin(){
   const n=document.getElementById('admin-user-name'); if(n) n.textContent=currentUser.name;
   const a=document.getElementById('admin-avatar'); if(a) a.textContent=(currentUser.name||'م').charAt(0);
+  renderAdminSidebar();
   showToast('مرحباً في لوحة التحكم','success');
   navigateTo('admin');
 }
@@ -1874,7 +2024,7 @@ function openConsult(did, dname){
   const banks = (doc && doc.banks && doc.banks.length) ? doc.banks : [];
   const feeNote = doc && doc.fee ? `<div style="padding:10px 14px;background:rgba(15,118,110,.06);border-radius:10px;margin-bottom:14px;display:flex;align-items:center;gap:7px;font-weight:800;color:var(--accent);font-size:14px"><svg class="icon icon-sm"><use href="#i-coins"/></svg>رسوم الاستشارة: ${Number(doc.fee).toLocaleString('ar-YE')} ر.ي</div>` : '';
   const banksHtml = banks.length ? `<div style="margin-bottom:14px"><label style="font-weight:700;font-size:12px;color:var(--text2);display:block;margin-bottom:7px">اختر البنك للدفع</label><div id="banks-list">${banks.map(b=>`<label style="display:flex;align-items:center;gap:9px;padding:10px 13px;border:2px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:6px;font-size:13px;font-weight:600;transition:all .2s" onclick="selBank(this,'${esc(b)}')"><span style="width:17px;height:17px;border-radius:50%;border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0" class="bank-radio"></span>${esc(b)}</label>`).join('')}</div><div style="margin-bottom:14px"><label style="font-weight:700;font-size:12px;color:var(--text2);display:block;margin-bottom:5px">إيصال الإيداع *</label><input type="file" id="deposit-slip" class="input-field" accept="image/*" onchange="previewSlip(this)"><div id="slip-preview" style="margin-top:5px"></div></div></div>` : '';
-  openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:14px"><svg class="icon" style="margin-left:7px;color:var(--accent)"><use href="#i-comment-medical"/></svg>استشارة: ${esc(dname)}</h3>${feeNote}<div style="margin-bottom:12px"><textarea id="consult-msg" class="input-field" rows="4" placeholder="اكتب تفاصيل استشارتك..."></textarea></div>${banksHtml}<button class="btn btn-primary" style="width:100%" onclick="submitConsult('${did}','${esc(dname)}',${banks.length>0})"><svg class="icon" style="margin-left:6px"><use href="#i-paper-plane"/></svg>إرسال الاستشارة</button>`);
+  openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:14px"><svg class="icon" style="margin-left:7px;color:var(--accent)"><use href="#i-comment-medical"/></svg>استشارة: ${esc(dname)}</h3>${feeNote}<div style="margin-bottom:12px"><input type="tel" id="consult-phone" class="input-field" placeholder="رقم الهاتف للتواصل" dir="ltr" maxlength="9"></div><div style="margin-bottom:12px"><textarea id="consult-msg" class="input-field" rows="4" placeholder="اكتب تفاصيل استشارتك..."></textarea></div>${banksHtml}<button class="btn btn-primary" style="width:100%" onclick="submitConsult('${did}','${esc(dname)}',${banks.length>0})"><svg class="icon" style="margin-left:6px"><use href="#i-paper-plane"/></svg>إرسال الاستشارة</button>`);
 }
 
 function selBank(el,bn){
@@ -1886,7 +2036,10 @@ function selBank(el,bn){
 function previewSlip(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{document.getElementById('slip-preview').innerHTML=`<img src="${e.target.result}" style="max-width:100%;max-height:90px;border-radius:10px;border:2px solid var(--accent)">`};r.readAsDataURL(f)}
 
 function submitConsult(did,dname,reqPay){
+  const phone=document.getElementById('consult-phone').value.trim();
   const msg=document.getElementById('consult-msg').value.trim();
+  if(!phone) return showToast('يرجى كتابة رقم الهاتف للتواصل','error');
+  if(!phone.match(/^[0-9]{9}$/)) return showToast('رقم الهاتف يجب أن يتكون من 9 أرقام','error');
   if(!msg) return showToast('يرجى كتابة تفاصيل الاستشارة','error');
   let selBank='', slip='';
   if(reqPay){
@@ -1899,7 +2052,7 @@ function submitConsult(did,dname,reqPay){
   }
   const c={
     userId:currentUser.id,userName:currentUser.name,
-    userEmail:currentUser.email||'',
+    userEmail:currentUser.email||'',userPhone:phone,
     doctorId:did,doctorName:dname,message:msg,
     selectedBank:selBank,depositSlip:slip,
     status:'new',createdAt:Date.now()
@@ -2170,7 +2323,10 @@ function loadAdminDash(){
     const n=document.getElementById('admin-user-name'); if(n) n.textContent=currentUser.name;
     const a=document.getElementById('admin-avatar'); if(a) a.textContent=(currentUser.name||'م').charAt(0);
   }
-  currentAdminTab='dashboard';
+  renderAdminSidebar();
+  currentAdminTab = safeAdminTab(currentAdminTab);
+  const el = document.querySelector(`.admin-sidebar .menu-item[data-tab="${currentAdminTab}"]`);
+  if(el) { el.classList.add('active'); }
   renderDashboard();
 }
 
@@ -2690,6 +2846,7 @@ if(document.readyState==='complete' || document.readyState==='interactive'){
 
 function startApp(){
   navigateTo('home');
+  requestNotificationPermission();
   initFirebase();
 }
 if(document.readyState==='complete' || document.readyState==='interactive'){
