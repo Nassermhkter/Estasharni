@@ -2776,31 +2776,123 @@ function saveAdminSettings(){
 // =============================================
 // Admin Add User
 function renderAddAdmin(){
-  const el=document.getElementById('admin-main-content');
+  const el = document.getElementById('admin-main-content');
   if(!el) return;
-  el.innerHTML=`
-  <div class="card admin-table-wrap" style="padding:18px;max-width:620px;margin:auto">
-    <h3 style="font-size:15px;font-weight:800;color:var(--accent);margin-bottom:14px">إضافة مشرف جديد</h3>
-    <div style="margin-bottom:12px"><input id="new-admin-name" class="input-field" placeholder="الاسم"></div>
-    <div style="margin-bottom:12px"><input id="new-admin-email" class="input-field" placeholder="البريد الإلكتروني" dir="ltr"></div>
-    <div style="margin-bottom:12px"><input id="new-admin-pass" class="input-field" type="password" placeholder="كلمة المرور"></div>
-    <div style="margin-bottom:18px;display:flex;align-items:center;gap:10px"><label class="switch"><input type="checkbox" id="new-admin-main"><span class="slider"></span></label><span style="font-size:13px;color:var(--text2);font-weight:700">مشرف أساسي</span></div>
-    <button class="btn btn-primary" onclick="addAdminUser()">إضافة المشرف</button>
-  </div>`;
+  
+  el.innerHTML = `
+    <div class="card" style="padding:18px;max-width:620px;margin:auto">
+      <h3 style="font-size:15px;font-weight:800;color:var(--accent);margin-bottom:14px">
+        <svg class="icon" style="margin-left:7px"><use href="#i-user-shield"/></svg>
+        إضافة مشرف جديد
+      </h3>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:4px">الاسم الكامل *</label>
+        <input id="new-admin-name" class="input-field" placeholder="مثال: أحمد محمد">
+      </div>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:4px">البريد الإلكتروني *</label>
+        <input id="new-admin-email" class="input-field" type="email" dir="ltr" placeholder="admin@example.com">
+      </div>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:4px">كلمة المرور *</label>
+        <input id="new-admin-pass" class="input-field" type="password" placeholder="6 أحرف على الأقل">
+      </div>
+      
+      <div style="margin-bottom:18px;display:flex;align-items:center;gap:10px">
+        <label class="switch">
+          <input type="checkbox" id="new-admin-main">
+          <span class="slider"></span>
+        </label>
+        <span style="font-size:13px;color:var(--text2);font-weight:700">مشرف أساسي (صلاحية كاملة)</span>
+      </div>
+      
+      <div style="background:rgba(217,119,6,.1);padding:10px;border-radius:10px;margin-bottom:18px;font-size:12px;color:var(--warn)">
+        ⚠️ ملاحظة: فقط المشرف الأساسي الحالي يمكنه إضافة مشرفين جدد
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%" id="btn-add-admin" onclick="addAdminUser()">
+        <svg class="icon" style="margin-left:6px"><use href="#i-user-plus"/></svg>
+        إضافة المشرف
+      </button>
+    </div>
+  `;
 }
-
-function addAdminUser(){
-  const name=document.getElementById('new-admin-name').value.trim();
-  const email=document.getElementById('new-admin-email').value.trim();
-  const pass=document.getElementById('new-admin-pass').value.trim();
-  const isMain=document.getElementById('new-admin-main').checked;
-  if(!name||!email||!pass) return showToast('يرجى ملء جميع الحقول','error');
-  if(!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) return showToast('البريد غير صالح','error');
-  if(!rtdb) return showToast('قاعدة البيانات غير متصلة','error');
-  rtdb.ref('admins').push({name,email,password:pass,isMain}).then(()=>{
-    showToast('تم إضافة مشرف جديد','success');
-    renderAddAdmin();
-  }).catch(e=>showToast('خطأ: '+(e.message||e),'error'));
+async function addAdminUser(){
+  const name = document.getElementById('new-admin-name').value.trim();
+  const email = document.getElementById('new-admin-email').value.trim();
+  const pass = document.getElementById('new-admin-pass').value.trim();
+  const isMain = document.getElementById('new-admin-main').checked;
+  
+  if(!name || !email || !pass) {
+    showToast('يرجى ملء جميع الحقول', 'error');
+    return;
+  }
+  
+  if(!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+    showToast('البريد غير صالح', 'error');
+    return;
+  }
+  
+  if(pass.length < 6) {
+    showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+    return;
+  }
+  
+  setBtnLoading('btn-add-admin', true);
+  
+  try {
+    // التحقق من صلاحيات المستخدم الحالي
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      showToast('يجب تسجيل الدخول كمشرف أولاً', 'error');
+      setBtnLoading('btn-add-admin', false);
+      return;
+    }
+    
+    // التحقق إذا كان المستخدم الحالي مشرفاً أساسياً
+    const adminSnapshot = await rtdb.ref('admins/' + currentUser.uid).once('value');
+    const adminData = adminSnapshot.val();
+    
+    if (!adminData || !adminData.isMain) {
+      showToast('⚠️ ليس لديك صلاحية! فقط المشرف الأساسي يمكنه إضافة مشرفين', 'error');
+      setBtnLoading('btn-add-admin', false);
+      return;
+    }
+    
+    // إنشاء مستخدم في Firebase Authentication
+    const userCred = await auth.createUserWithEmailAndPassword(email, pass);
+    const uid = userCred.user.uid;
+    
+    // تخزين بيانات المشرف في Realtime Database
+    await rtdb.ref('admins/' + uid).set({
+      name: name,
+      email: email,
+      isMain: isMain,
+      createdAt: Date.now()
+    });
+    
+    showToast('✅ تم إضافة المشرف بنجاح', 'success');
+    closeModal();
+    if(currentAdminTab === 'a-add-admin') renderAddAdmin();
+    
+  } catch(error) {
+    console.error('خطأ:', error);
+    
+    if(error.code === 'auth/email-already-in-use') {
+      showToast('البريد الإلكتروني مستخدم بالفعل', 'error');
+    } else if(error.code === 'auth/weak-password') {
+      showToast('كلمة المرور ضعيفة (6 أحرف على الأقل)', 'error');
+    } else if(error.code === 'auth/network-request-failed') {
+      showToast('خطأ في الشبكة، تأكد من اتصالك بالإنترنت', 'error');
+    } else {
+      showToast('خطأ: ' + (error.message || 'حدث خطأ غير متوقع'), 'error');
+    }
+  } finally {
+    setBtnLoading('btn-add-admin', false);
+  }
 }
 
 // =============================================
