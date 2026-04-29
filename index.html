@@ -401,12 +401,6 @@ textarea.input-field{resize:vertical;min-height:80px}
     </section>
     <section style="padding:8px 18px 28px;max-width:1080px;margin:0 auto"><h2 style="font-size:20px;font-weight:900;margin-bottom:16px;text-align:center">التخصصات الطبية</h2><div id="home-categories" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;justify-content:center;flex-wrap:wrap"></div></section>
     <section style="padding:8px 18px 20px;max-width:1080px;margin:0 auto"><h2 style="font-size:20px;font-weight:900;margin-bottom:16px;text-align:center">أطباء مميزون</h2><div id="home-doctors" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px"></div></section>
-    <!-- حقوق النشر في الصفحة الرئيسية -->
-    <div class="copyright-bar" style="margin-bottom:70px">
-      <span>© 2026 استشيرني. جميع الحقوق محفوظة.</span>
-      <span style="color:var(--border)">|</span>
-      <span>تطوير وتصميم: <span class="dev">Nasser Mokhtar</span></span>
-    </div>
   </main>
   <button class="chat-fab pulse-ring" id="home-chat-btn" onclick="openChat()" style="display:none"><svg class="icon" style="width:22px;height:22px;color:#fff"><use href="#i-comments"/></svg><span class="badge" id="chat-unread-badge" style="display:none">0</span></button>
   <nav class="nav-bar" id="nav-home">
@@ -564,12 +558,6 @@ textarea.input-field{resize:vertical;min-height:80px}
     </div>
     <div id="doc-reqs-list"></div>
   </main>
-  <!-- حقوق النشر -->
-  <div class="copyright-bar">
-    <span>© 2026 استشيرني. جميع الحقوق محفوظة.</span>
-    <span style="color:var(--border)">|</span>
-    <span>تطوير: <span class="dev">Nasser Mokhtar</span></span>
-  </div>
 </div>
 
 <!-- ADMIN PANEL -->
@@ -592,11 +580,6 @@ textarea.input-field{resize:vertical;min-height:80px}
       <div class="menu-item" data-tab="a-profile-admin" onclick="switchAdmin(this)"><svg class="icon"><use href="#i-user-cog"/></svg>حساب المشرف</div>
       <div class="menu-item" onclick="handleLogout()" style="color:var(--danger)"><svg class="icon"><use href="#i-sign-out"/></svg>تسجيل الخروج</div>
     </div>
-    <!-- حقوق النشر في الشريط الجانبي -->
-    <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--border);font-size:10px;color:var(--text2);line-height:1.7;text-align:center">
-      <div>© 2026 استشيرني</div>
-      <div>تطوير: <span style="color:var(--accent);font-weight:700">Nasser Mokhtar</span></div>
-    </div>
   </aside>
   <div class="admin-content" style="margin-right:256px;min-height:100vh">
     <header style="position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:12px 18px;display:flex;align-items:center;justify-content:space-between">
@@ -611,12 +594,6 @@ textarea.input-field{resize:vertical;min-height:80px}
       </div>
     </header>
     <main style="padding:22px" id="admin-main-content"></main>
-    <!-- حقوق النشر في قسم الأدمن -->
-    <div class="copyright-bar" style="border-top:1px solid var(--border)">
-      <span>© 2026 استشيرني. جميع الحقوق محفوظة.</span>
-      <span style="color:var(--border)">|</span>
-      <span>تطوير وتصميم: <span class="dev">Nasser Mokhtar</span></span>
-    </div>
   </div>
 </div>
 
@@ -2248,6 +2225,8 @@ function loadAdminChatWith(uid, uname){
   currentChatUserId=uid;
   const title = document.getElementById('admin-chat-title');
   const backBtn = document.getElementById('back-to-list-btn');
+  const list = document.querySelector('.admin-chat-list');
+  if(list && list.classList.contains('mobile-open')) list.classList.remove('mobile-open');
   if(title) title.textContent = uname;
   if(backBtn) backBtn.style.display = 'block';
 
@@ -2362,7 +2341,6 @@ function renderDashboard(){
     <div class="card" style="border-right:4px solid var(--accent);padding:14px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div>
-          <div style="font-size:11px;color:var(--text2);font-weight:600;margin-bottom:3px">الأطباء</div>
           <div style="font-size:26px;font-weight:900;color:var(--accent)">${allDoctors.filter(d=>d.status==='approved').length}</div>
           <div style="font-size:10px;color:var(--text2)">${allDoctors.filter(d=>d.status==='pending').length} معلق</div>
         </div>
@@ -2471,7 +2449,7 @@ function renderADoctors(){
 
 function openAddDocModal(){
   const cats = allCategories;
-  const banks = ['بنك الكريمي', 'بنك القطيبي', 'البنك الإسلامي عدن', 'بنك البسيري, 'بنك بن دول'];
+  const banks = ['بنك الكريمي', 'بنك القطيبي', 'البنك الإسلامي عدن', 'بنك البسيري', 'بنك بن دول'];
   
   openModal(`
     <h3 style="font-size:16px;font-weight:800;margin-bottom:16px">
