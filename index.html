@@ -2471,24 +2471,67 @@ function renderADoctors(){
 
 function openAddDocModal(){
   const cats = allCategories;
-  const banks = ['بنك الكريمي','بنك القطيبي','البنك الإسلامي عدن','بنك البصيري','بنك بن دول'];
-  openModal(`<h3 style="font-size:16px;font-weight:800;margin-bottom:16px">إضافة طبيب</h3>
-  <div style="margin-bottom:10px"><label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:4px">صورة الطبيب</label><input type="file" id="add-doc-photo" class="input-field" accept="image/*" onchange="previewDP(this)"><div id="dp-preview" style="margin-top:5px"></div></div>
-  <div style="margin-bottom:10px"><input type="text" id="add-doc-name" class="input-field" placeholder="اسم الطبيب *"></div>
-  <div style="margin-bottom:10px"><input type="text" id="add-doc-title" class="input-field" placeholder="اللقب الطبي *"></div>
-  <div style="margin-bottom:10px"><input type="tel" id="add-doc-phone" class="input-field" placeholder="رقم الهاتف *" dir="ltr" maxlength="9"></div>
-  <div style="margin-bottom:10px"><input type="text" id="add-doc-location" class="input-field" placeholder="الموقع"></div>
-  <div style="margin-bottom:10px"><input type="email" id="add-doc-email" class="input-field" placeholder="البريد" dir="ltr"></div>
-  <div style="margin-bottom:10px">
-    <select id="add-doc-cat" class="input-field">
-      <option value="">اختر التخصص</option>
-      ${cats.map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('')}
-    </select>
-    ${cats.length===0?'<p style="color:var(--warn);font-size:11px;margin-top:4px">⚠️ لا توجد تخصصات. أضف تخصصاً أولاً من قسم التخصصات.</p>':''}
-  </div>
-  <div style="margin-bottom:10px"><input type="number" id="add-doc-fee" class="input-field" placeholder="رسوم الاستشارة (ريال)" dir="ltr" min="0"></div>
-  <div style="margin-bottom:14px"><label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:7px">البنوك المتاحة</label>${banks.map(b=>`<label style="display:flex;align-items:center;gap:7px;margin-bottom:5px;cursor:pointer;font-size:13px"><input type="checkbox" class="doc-bank-cb" value="${esc(b)}" style="width:15px;height:15px;accent-color:var(--accent)">${esc(b)}</label>`).join('')}</div>
-  <button class="btn btn-primary" style="width:100%" id="btn-add-doc" onclick="addDoc()"><svg class="icon" style="margin-left:6px"><use href="#i-plus"/></svg>إضافة الطبيب</button>`);
+  const banks = ['بنك الكريمي', 'بنك القطيبي', 'البنك الإسلامي عدن', 'بنك البسيري, 'بنك بن دول'];
+  
+  openModal(`
+    <h3 style="font-size:16px;font-weight:800;margin-bottom:16px">
+      <svg class="icon" style="margin-left:7px;color:var(--accent)"><use href="#i-user-md"/></svg>
+      إضافة طبيب جديد
+    </h3>
+    
+    <div style="margin-bottom:10px">
+      <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:4px">صورة الطبيب</label>
+      <input type="file" id="add-doc-photo" class="input-field" accept="image/*" onchange="previewDocPhoto(this)">
+      <div id="dp-preview" style="margin-top:5px"></div>
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <input type="text" id="add-doc-name" class="input-field" placeholder="اسم الطبيب *">
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <input type="text" id="add-doc-title" class="input-field" placeholder="اللقب الطبي *">
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <input type="tel" id="add-doc-phone" class="input-field" placeholder="رقم الهاتف *" dir="ltr" maxlength="9">
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <input type="text" id="add-doc-location" class="input-field" placeholder="الموقع">
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <input type="email" id="add-doc-email" class="input-field" placeholder="البريد الإلكتروني" dir="ltr">
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <select id="add-doc-cat" class="input-field">
+        <option value="">اختر التخصص</option>
+        ${cats.map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('')}
+      </select>
+      ${cats.length===0?'<p style="color:var(--warn);font-size:11px;margin-top:4px">⚠️ لا توجد تخصصات. أضف تخصصاً أولاً.</p>':''}
+    </div>
+    
+    <div style="margin-bottom:10px">
+      <input type="number" id="add-doc-fee" class="input-field" placeholder="رسوم الاستشارة (ريال)" dir="ltr" min="0">
+    </div>
+    
+    <div style="margin-bottom:14px">
+      <label style="font-weight:700;font-size:11px;color:var(--text2);display:block;margin-bottom:7px">البنوك المتاحة</label>
+      ${banks.map(b=>`
+        <label style="display:flex;align-items:center;gap:7px;margin-bottom:5px;cursor:pointer;font-size:13px">
+          <input type="checkbox" class="doc-bank-cb" value="${esc(b)}" style="width:15px;height:15px;accent-color:var(--accent)">
+          ${esc(b)}
+        </label>
+      `).join('')}
+    </div>
+    
+    <button class="btn btn-primary" style="width:100%" id="btn-add-doc" onclick="addNewDoctor()">
+      <svg class="icon" style="margin-left:6px"><use href="#i-save"/></svg>
+      حفظ الطبيب
+    </button>
+  `);
 }
 
 function previewDP(input){
